@@ -13,8 +13,12 @@ import WeddingMenu from "@/components/wedding/WeddingMenu";
 import WeddingAccommodations from "@/components/wedding/WeddingAccommodations";
 import WeddingGuestbook from "@/components/wedding/WeddingGuestbook";
 import WeddingShare from "@/components/wedding/WeddingShare";
+import WeddingSeating from "@/components/wedding/WeddingSeating";
+import WeddingAgenda from "@/components/wedding/WeddingAgenda";
+import WeddingFaq from "@/components/wedding/WeddingFaq";
+import WeddingMap from "@/components/wedding/WeddingMap";
 import {
-  Heart, MapPin, Gift, Music, Camera, Mail, BookHeart, UtensilsCrossed, Hotel, BookOpen, Share2,
+  Heart, MapPin, Gift, Music, Camera, Mail, BookHeart, UtensilsCrossed, Hotel, BookOpen, Share2, Users, Clock, HelpCircle, Navigation,
 } from "lucide-react";
 
 interface WeddingData {
