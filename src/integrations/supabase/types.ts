@@ -56,6 +56,13 @@ export type Database = {
             referencedRelation: "weddings"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "accommodations_wedding_id_fkey"
+            columns: ["wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       agenda_items: {
@@ -103,6 +110,13 @@ export type Database = {
             referencedRelation: "weddings"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "agenda_items_wedding_id_fkey"
+            columns: ["wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       faqs: {
@@ -138,6 +152,13 @@ export type Database = {
             referencedRelation: "weddings"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "faqs_wedding_id_fkey"
+            columns: ["wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       guestbook: {
@@ -171,6 +192,13 @@ export type Database = {
             columns: ["wedding_id"]
             isOneToOne: false
             referencedRelation: "weddings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "guestbook_wedding_id_fkey"
+            columns: ["wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings_public"
             referencedColumns: ["id"]
           },
         ]
@@ -209,6 +237,13 @@ export type Database = {
             columns: ["wedding_id"]
             isOneToOne: false
             referencedRelation: "weddings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "playlist_songs_wedding_id_fkey"
+            columns: ["wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings_public"
             referencedColumns: ["id"]
           },
         ]
@@ -294,6 +329,13 @@ export type Database = {
             referencedRelation: "weddings"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "rsvps_wedding_id_fkey"
+            columns: ["wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       seating_assignments: {
@@ -333,6 +375,13 @@ export type Database = {
             referencedRelation: "weddings"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "seating_assignments_wedding_id_fkey"
+            columns: ["wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       seating_tables: {
@@ -368,6 +417,13 @@ export type Database = {
             referencedRelation: "weddings"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "seating_tables_wedding_id_fkey"
+            columns: ["wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       wedding_photos: {
@@ -401,6 +457,13 @@ export type Database = {
             columns: ["wedding_id"]
             isOneToOne: false
             referencedRelation: "weddings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wedding_photos_wedding_id_fkey"
+            columns: ["wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings_public"
             referencedColumns: ["id"]
           },
         ]
@@ -439,6 +502,13 @@ export type Database = {
             columns: ["wedding_id"]
             isOneToOne: false
             referencedRelation: "weddings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wedding_stories_wedding_id_fkey"
+            columns: ["wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings_public"
             referencedColumns: ["id"]
           },
         ]
@@ -532,7 +602,81 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      weddings_public: {
+        Row: {
+          ceremony_address: string | null
+          ceremony_time: string | null
+          ceremony_venue: string | null
+          custom_colors: Json | null
+          dress_code: string | null
+          gift_message: string | null
+          hero_image_url: string | null
+          id: string | null
+          location_lat: number | null
+          location_lng: number | null
+          menu_desserts: string | null
+          menu_mains: string | null
+          menu_starters: string | null
+          partner1_name: string | null
+          partner2_name: string | null
+          reception_address: string | null
+          reception_time: string | null
+          reception_venue: string | null
+          slug: string | null
+          theme_preset: string | null
+          wedding_date: string | null
+          whatsapp_number: string | null
+        }
+        Insert: {
+          ceremony_address?: string | null
+          ceremony_time?: string | null
+          ceremony_venue?: string | null
+          custom_colors?: Json | null
+          dress_code?: string | null
+          gift_message?: string | null
+          hero_image_url?: string | null
+          id?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          menu_desserts?: string | null
+          menu_mains?: string | null
+          menu_starters?: string | null
+          partner1_name?: string | null
+          partner2_name?: string | null
+          reception_address?: string | null
+          reception_time?: string | null
+          reception_venue?: string | null
+          slug?: string | null
+          theme_preset?: string | null
+          wedding_date?: string | null
+          whatsapp_number?: string | null
+        }
+        Update: {
+          ceremony_address?: string | null
+          ceremony_time?: string | null
+          ceremony_venue?: string | null
+          custom_colors?: Json | null
+          dress_code?: string | null
+          gift_message?: string | null
+          hero_image_url?: string | null
+          id?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          menu_desserts?: string | null
+          menu_mains?: string | null
+          menu_starters?: string | null
+          partner1_name?: string | null
+          partner2_name?: string | null
+          reception_address?: string | null
+          reception_time?: string | null
+          reception_venue?: string | null
+          slug?: string | null
+          theme_preset?: string | null
+          wedding_date?: string | null
+          whatsapp_number?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
