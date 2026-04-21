@@ -17,6 +17,7 @@ import WeddingSeating from "@/components/wedding/WeddingSeating";
 import WeddingAgenda from "@/components/wedding/WeddingAgenda";
 import WeddingFaq from "@/components/wedding/WeddingFaq";
 import WeddingMap from "@/components/wedding/WeddingMap";
+import AnimatedSection from "@/components/wedding/AnimatedSection";
 import {
   Heart, MapPin, Gift, Music, Camera, Mail, BookHeart, UtensilsCrossed, Hotel, BookOpen, Share2, Users, Clock, HelpCircle, Navigation,
 } from "lucide-react";
