@@ -127,6 +127,17 @@ const Dashboard = () => {
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
+                    <a
+                      href={`https://wa.me/?text=${encodeURIComponent(
+                        `¡Hola! Os recordamos que nuestra boda se acerca. 💍 Toda la info aquí: ${window.location.origin}/w/${w.slug}`
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 rounded-md hover:bg-secondary transition-colors text-green-600"
+                      title="Enviar recordatorio por WhatsApp"
+                    >
+                      <MessageCircle className="w-4 h-4" />
+                    </a>
                     <Link
                       to={`/w/${w.slug}`}
                       className="p-2 rounded-md hover:bg-secondary transition-colors text-muted-foreground"
