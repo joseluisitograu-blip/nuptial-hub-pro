@@ -142,6 +142,7 @@ export type Database = {
       }
       guestbook: {
         Row: {
+          audio_url: string | null
           author_name: string
           created_at: string
           id: string
@@ -149,6 +150,7 @@ export type Database = {
           wedding_id: string
         }
         Insert: {
+          audio_url?: string | null
           author_name: string
           created_at?: string
           id?: string
@@ -156,6 +158,7 @@ export type Database = {
           wedding_id: string
         }
         Update: {
+          audio_url?: string | null
           author_name?: string
           created_at?: string
           id?: string

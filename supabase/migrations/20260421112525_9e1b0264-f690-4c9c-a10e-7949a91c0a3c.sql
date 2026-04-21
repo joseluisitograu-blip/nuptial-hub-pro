@@ -1,0 +1,1 @@
+ALTER TABLE public.guestbook ADD COLUMN audio_url text DEFAULT '' NULL;
