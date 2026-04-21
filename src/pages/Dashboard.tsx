@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Plus, ExternalLink, LogOut, Heart, MessageCircle, ChevronDown, ChevronUp, Lock } from "lucide-react";
+import { Plus, ExternalLink, LogOut, Heart, MessageCircle, ChevronDown, ChevronUp, Lock, Mail } from "lucide-react";
 import WeddingStats from "@/components/dashboard/WeddingStats";
+import DashboardMessages from "@/components/dashboard/DashboardMessages";
 import { usePurchase } from "@/hooks/usePurchase";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 
@@ -22,7 +23,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const { hasPurchase, loading: purchaseLoading } = usePurchase();
+  const { hasPurchase, loading: purchaseLoading, isOwner } = usePurchase();
   const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
 
   useEffect(() => {
@@ -210,6 +211,17 @@ const Dashboard = () => {
               })}
             </div>
           </>
+        )}
+
+        {/* Messages section - only for owner */}
+        {isOwner && (
+          <div className="mt-12">
+            <div className="flex items-center gap-2 mb-6">
+              <Mail className="w-5 h-5 text-primary" />
+              <h2 className="font-heading text-2xl">Mensajes</h2>
+            </div>
+            <DashboardMessages />
+          </div>
         )}
       </div>
     </div>

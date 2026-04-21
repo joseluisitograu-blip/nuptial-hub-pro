@@ -4,6 +4,7 @@ import { Heart, Sparkles, Users, Music, Camera, MapPin, Clock, HelpCircle, BookH
 import heroImage from "@/assets/hero-wedding.jpg";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
+import ContactModal from "@/components/ContactModal";
 
 const features = [
   { icon: Heart, title: "Página inmersiva", desc: "Experiencia a pantalla completa con animaciones, temas visuales y navegación por secciones." },
@@ -99,6 +100,8 @@ const RevealSection = ({ children, className = "", delay = 0 }: { children: Reac
 const Index = () => {
   const { openCheckout, loading } = usePaddleCheckout();
   const [heroLoaded, setHeroLoaded] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
+  const [contactSubject, setContactSubject] = useState("");
 
   const handleBuy = (priceId: string) => {
     openCheckout({
@@ -443,12 +446,12 @@ const Index = () => {
                     </li>
                   ))}
                 </ul>
-                <a
-                  href="mailto:hola@clicktuboda.com"
-                  className="block text-center px-6 py-3 rounded-xl border-2 border-primary text-primary font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                <button
+                  onClick={() => { setContactSubject("Plan Wedding Planner"); setContactOpen(true); }}
+                  className="block w-full text-center px-6 py-3 rounded-xl border-2 border-primary text-primary font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-300"
                 >
                   Contáctanos
-                </a>
+                </button>
               </div>
             </RevealSection>
           </div>
@@ -494,6 +497,8 @@ const Index = () => {
           </div>
         </div>
       </footer>
+
+      <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} subject={contactSubject} />
     </div>
   );
 };
