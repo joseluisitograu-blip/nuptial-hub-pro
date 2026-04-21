@@ -444,7 +444,7 @@ const Index = () => {
                   ))}
                 </ul>
                 <a
-                  href="mailto:hola@nuptialhub.com"
+                  href="mailto:hola@clicktuboda.com"
                   className="block text-center px-6 py-3 rounded-xl border-2 border-primary text-primary font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-300"
                 >
                   Contáctanos
@@ -482,10 +482,17 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 border-t border-border text-center">
-        <p className="text-muted-foreground text-sm font-light">
-          Hecho con <Heart className="w-3.5 h-3.5 inline text-primary" /> para los días más bonitos
-        </p>
+      <footer className="py-8 border-t border-border">
+        <div className="container max-w-4xl flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-muted-foreground text-sm font-light">
+            © {new Date().getFullYear()} Click Tu Boda. Hecho con <Heart className="w-3.5 h-3.5 inline text-primary" /> en España.
+          </p>
+          <div className="flex gap-4 text-xs text-muted-foreground">
+            <Link to="/privacidad" className="hover:text-foreground transition-colors">Privacidad</Link>
+            <Link to="/terminos" className="hover:text-foreground transition-colors">Términos</Link>
+            <Link to="/reembolso" className="hover:text-foreground transition-colors">Reembolso</Link>
+          </div>
+        </div>
       </footer>
     </div>
   );
