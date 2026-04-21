@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Gift, Copy, Check } from "lucide-react";
+import { Gift, Copy, Check, ChevronDown } from "lucide-react";
 
 interface Props {
   bankAccount: string;
@@ -8,6 +8,7 @@ interface Props {
 
 const WeddingGift = ({ bankAccount, message }: Props) => {
   const [copied, setCopied] = useState(false);
+  const [revealed, setRevealed] = useState(false);
 
   if (!bankAccount && !message) return null;
 
@@ -30,22 +31,35 @@ const WeddingGift = ({ bankAccount, message }: Props) => {
           </p>
         )}
         {bankAccount && (
-          <>
-            <div className="bg-card border border-border rounded-xl p-5 inline-flex items-center gap-3">
-              <span className="text-foreground font-mono text-sm md:text-base tracking-wide">
-                {bankAccount}
-              </span>
+          <div className="mt-6">
+            {!revealed ? (
               <button
-                onClick={handleCopy}
-                className="p-2 rounded-md hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground"
+                onClick={() => setRevealed(true)}
+                className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-all"
               >
-                {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                <Gift className="w-4 h-4" />
+                Ver datos bancarios
+                <ChevronDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
               </button>
-            </div>
-            {copied && (
-              <p className="text-sm text-muted-foreground mt-3">¡Copiado!</p>
+            ) : (
+              <div className="animate-fade-in">
+                <div className="bg-card border border-border rounded-xl p-5 inline-flex items-center gap-3">
+                  <span className="text-foreground font-mono text-sm md:text-base tracking-wide">
+                    {bankAccount}
+                  </span>
+                  <button
+                    onClick={handleCopy}
+                    className="p-2 rounded-md hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground"
+                  >
+                    {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                  </button>
+                </div>
+                {copied && (
+                  <p className="text-sm text-muted-foreground mt-3">¡Copiado!</p>
+                )}
+              </div>
             )}
-          </>
+          </div>
         )}
       </div>
     </div>
