@@ -134,10 +134,14 @@ const EditWedding = () => {
   useEffect(() => {
     if (!user || !id) return;
     const fetchData = async () => {
-      const [{ data: wedding }, { data: storyData }, { data: accommData }] = await Promise.all([
+      const [{ data: wedding }, { data: storyData }, { data: accommData }, { data: agendaData }, { data: tablesData }, { data: assignData }, { data: faqData }] = await Promise.all([
         supabase.from("weddings").select("*").eq("id", id).single(),
         supabase.from("wedding_stories").select("*").eq("wedding_id", id).order("sort_order"),
         supabase.from("accommodations").select("*").eq("wedding_id", id).order("sort_order"),
+        supabase.from("agenda_items").select("*").eq("wedding_id", id).order("sort_order"),
+        supabase.from("seating_tables").select("*").eq("wedding_id", id).order("sort_order"),
+        supabase.from("seating_assignments").select("*").eq("wedding_id", id),
+        supabase.from("faqs").select("*").eq("wedding_id", id).order("sort_order"),
       ]);
       if (wedding) {
         setForm({
@@ -162,6 +166,20 @@ const EditWedding = () => {
       }
       setStories((storyData as StoryItem[]) || []);
       setAccommodations((accommData as AccommodationItem[]) || []);
+      setAgendaItems((agendaData as AgendaItem[]) || []);
+      setFaqItems((faqData as FaqItem[]) || []);
+
+      // Build seating tables with guest names
+      const tables = (tablesData || []) as any[];
+      const assigns = (assignData || []) as any[];
+      setSeatingTables(tables.map((t) => ({
+        id: t.id,
+        table_name: t.table_name,
+        capacity: t.capacity,
+        sort_order: t.sort_order,
+        guests: assigns.filter((a: any) => a.table_id === t.id).map((a: any) => a.guest_name),
+      })));
+
       setLoading(false);
     };
     fetchData();
