@@ -236,8 +236,10 @@ const WeddingPage = () => {
       </nav>
 
       {/* Tab content */}
-      <main className="flex-1 animate-fade-in" key={activeTab}>
-        {renderContent()}
+      <main className="flex-1" key={activeTab}>
+        <AnimatedSection>
+          {renderContent()}
+        </AnimatedSection>
       </main>
 
       {/* Footer */}
