@@ -103,10 +103,18 @@ const Index = () => {
   const [contactOpen, setContactOpen] = useState(false);
   const [contactSubject, setContactSubject] = useState("");
 
+  // Capture UTM params & discount code from URL (Google Ads, Instagram, etc.)
+  const urlParams = new URLSearchParams(window.location.search);
+  const discountCode = urlParams.get("code") || urlParams.get("discount") || undefined;
+  const utmSource = urlParams.get("utm_source") || "";
+
   const handleBuy = (priceId: string) => {
     openCheckout({
       priceId,
       successUrl: `${window.location.origin}/dashboard?checkout=success`,
+      customData: {
+        ...(utmSource ? { utm_source: utmSource, utm_medium: urlParams.get("utm_medium") || "", utm_campaign: urlParams.get("utm_campaign") || "" } : {}),
+      },
     });
   };
 
