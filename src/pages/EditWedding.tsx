@@ -125,6 +125,7 @@ const EditWedding = () => {
     menu_mains: "",
     menu_desserts: "",
     theme_preset: "elegant",
+    whatsapp_number: "",
   });
 
   useEffect(() => {
@@ -162,6 +163,7 @@ const EditWedding = () => {
           menu_mains: wedding.menu_mains || "",
           menu_desserts: wedding.menu_desserts || "",
           theme_preset: wedding.theme_preset || "elegant",
+          whatsapp_number: (wedding as any).whatsapp_number || "",
         });
       }
       setStories((storyData as StoryItem[]) || []);
@@ -209,7 +211,8 @@ const EditWedding = () => {
         menu_mains: form.menu_mains,
         menu_desserts: form.menu_desserts,
         theme_preset: form.theme_preset,
-      })
+        whatsapp_number: form.whatsapp_number,
+      } as any)
       .eq("id", id!);
 
     // Save stories: delete all and re-insert
