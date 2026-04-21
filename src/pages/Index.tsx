@@ -143,7 +143,7 @@ const Index = () => {
               to="/auth"
               className="group px-8 py-4 rounded-xl bg-primary-foreground text-foreground font-medium text-lg hover:shadow-xl hover:shadow-primary-foreground/20 hover:-translate-y-0.5 transition-all duration-300"
             >
-              Crear mi boda gratis
+              Crear mi boda
               <ArrowRight className="w-4 h-4 inline ml-2 group-hover:translate-x-1 transition-transform" />
             </Link>
             <a

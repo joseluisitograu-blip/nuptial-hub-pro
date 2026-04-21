@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Plus, ExternalLink, LogOut, Heart, MessageCircle, ChevronDown, ChevronUp } from "lucide-react";
+import { Plus, ExternalLink, LogOut, Heart, MessageCircle, ChevronDown, ChevronUp, Lock } from "lucide-react";
 import WeddingStats from "@/components/dashboard/WeddingStats";
+import { usePurchase } from "@/hooks/usePurchase";
+import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 
 interface Wedding {
   id: string;
@@ -20,6 +22,8 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const { hasPurchase, loading: purchaseLoading } = usePurchase();
+  const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/auth");
@@ -53,7 +57,16 @@ const Dashboard = () => {
     setCreating(false);
   };
 
-  if (authLoading || loading) {
+  const handleBuy = (priceId: string) => {
+    openCheckout({
+      priceId,
+      customerEmail: user?.email || undefined,
+      customData: { userId: user?.id || "" },
+      successUrl: `${window.location.origin}/dashboard?checkout=success`,
+    });
+  };
+
+  if (authLoading || loading || purchaseLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-pulse font-heading text-2xl text-muted-foreground">Cargando...</div>
@@ -77,7 +90,33 @@ const Dashboard = () => {
       </header>
 
       <div className="container max-w-4xl py-12">
-        {weddings.length === 0 ? (
+        {!hasPurchase ? (
+          <div className="text-center py-20">
+            <Lock className="w-16 h-16 text-muted-foreground mx-auto mb-6 opacity-40" />
+            <h2 className="font-heading text-3xl text-foreground mb-3">
+              Elige tu plan para empezar
+            </h2>
+            <p className="text-muted-foreground font-light mb-8 max-w-md mx-auto">
+              Selecciona un plan y crea la web de vuestra boda en minutos.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={() => handleBuy("basico_one_time")}
+                disabled={checkoutLoading}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border-2 border-primary text-primary font-medium hover:bg-primary hover:text-primary-foreground transition-all"
+              >
+                Básico · 35€
+              </button>
+              <button
+                onClick={() => handleBuy("completo_one_time")}
+                disabled={checkoutLoading}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity"
+              >
+                Completo · 65€
+              </button>
+            </div>
+          </div>
+        ) : weddings.length === 0 ? (
           <div className="text-center py-20">
             <Heart className="w-16 h-16 text-muted-foreground mx-auto mb-6 opacity-40" />
             <h2 className="font-heading text-3xl text-foreground mb-3">
