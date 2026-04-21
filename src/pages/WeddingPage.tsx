@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import heroImage from "@/assets/hero-wedding.jpg";
@@ -8,10 +8,18 @@ import WeddingGift from "@/components/wedding/WeddingGift";
 import WeddingPlaylist from "@/components/wedding/WeddingPlaylist";
 import WeddingPhotos from "@/components/wedding/WeddingPhotos";
 import WeddingRsvp from "@/components/wedding/WeddingRsvp";
-import { Heart, MapPin, Gift, Music, Camera, Mail, CalendarHeart } from "lucide-react";
+import WeddingStory from "@/components/wedding/WeddingStory";
+import WeddingMenu from "@/components/wedding/WeddingMenu";
+import WeddingAccommodations from "@/components/wedding/WeddingAccommodations";
+import WeddingGuestbook from "@/components/wedding/WeddingGuestbook";
+import WeddingShare from "@/components/wedding/WeddingShare";
+import {
+  Heart, MapPin, Gift, Music, Camera, Mail, BookHeart, UtensilsCrossed, Hotel, BookOpen, Share2,
+} from "lucide-react";
 
 interface WeddingData {
   id: string;
+  slug: string;
   partner1_name: string;
   partner2_name: string;
   wedding_date: string | null;
@@ -25,15 +33,43 @@ interface WeddingData {
   gift_message: string;
   dress_code: string;
   hero_image_url: string;
+  menu_starters: string;
+  menu_mains: string;
+  menu_desserts: string;
+  theme_preset: string;
 }
+
+const themeStyles: Record<string, Record<string, string>> = {
+  elegant: {
+    "--theme-primary": "33 30% 40%",
+    "--theme-accent": "30 25% 33%",
+  },
+  romantic: {
+    "--theme-primary": "340 40% 55%",
+    "--theme-accent": "340 35% 45%",
+  },
+  rustic: {
+    "--theme-primary": "30 40% 35%",
+    "--theme-accent": "25 35% 28%",
+  },
+  modern: {
+    "--theme-primary": "220 20% 20%",
+    "--theme-accent": "220 15% 35%",
+  },
+};
 
 const tabs = [
   { id: "inicio", label: "Inicio", icon: Heart },
+  { id: "historia", label: "Historia", icon: BookHeart },
   { id: "lugar", label: "Lugar", icon: MapPin },
+  { id: "menu", label: "Menú", icon: UtensilsCrossed },
+  { id: "alojamiento", label: "Alojamiento", icon: Hotel },
   { id: "regalo", label: "Regalo", icon: Gift },
   { id: "playlist", label: "Playlist", icon: Music },
   { id: "fotos", label: "Fotos", icon: Camera },
+  { id: "firmas", label: "Firmas", icon: BookOpen },
   { id: "rsvp", label: "RSVP", icon: Mail },
+  { id: "compartir", label: "Compartir", icon: Share2 },
 ];
 
 const WeddingPage = () => {
@@ -55,6 +91,11 @@ const WeddingPage = () => {
     };
     fetchWedding();
   }, [slug]);
+
+  const themeVars = useMemo(() => {
+    if (!wedding) return {};
+    return themeStyles[wedding.theme_preset] || themeStyles.elegant;
+  }, [wedding]);
 
   if (loading) {
     return (
@@ -84,26 +125,36 @@ const WeddingPage = () => {
     switch (activeTab) {
       case "inicio":
         return <TabInicio wedding={wedding} weddingDate={weddingDate} formattedDate={formattedDate} />;
+      case "historia":
+        return <WeddingStory weddingId={wedding.id} />;
       case "lugar":
         return <WeddingVenue wedding={wedding} />;
+      case "menu":
+        return <WeddingMenu starters={wedding.menu_starters} mains={wedding.menu_mains} desserts={wedding.menu_desserts} />;
+      case "alojamiento":
+        return <WeddingAccommodations weddingId={wedding.id} />;
       case "regalo":
         return <WeddingGift bankAccount={wedding.bank_account} message={wedding.gift_message} />;
       case "playlist":
         return <WeddingPlaylist weddingId={wedding.id} />;
       case "fotos":
         return <WeddingPhotos weddingId={wedding.id} />;
+      case "firmas":
+        return <WeddingGuestbook weddingId={wedding.id} />;
       case "rsvp":
         return <WeddingRsvp weddingId={wedding.id} />;
+      case "compartir":
+        return <WeddingShare slug={wedding.slug} partner1={wedding.partner1_name} partner2={wedding.partner2_name} />;
       default:
         return null;
     }
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col" style={themeVars as React.CSSProperties}>
       {/* Fixed top nav */}
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="max-w-4xl mx-auto px-2">
+        <div className="max-w-5xl mx-auto px-2">
           <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide py-2">
             {tabs.map((tab) => {
               const Icon = tab.icon;
@@ -157,7 +208,6 @@ const TabInicio = ({
   formattedDate: string;
 }) => (
   <div>
-    {/* Hero */}
     <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0">
         <img
@@ -187,14 +237,12 @@ const TabInicio = ({
       </div>
     </section>
 
-    {/* Countdown */}
     {weddingDate && (
       <div className="bg-secondary py-16">
         <WeddingCountdown targetDate={weddingDate} />
       </div>
     )}
 
-    {/* Dress code */}
     {wedding.dress_code && (
       <div className="py-12 bg-background text-center">
         <p className="text-muted-foreground text-sm uppercase tracking-widest mb-1">Código de vestimenta</p>
