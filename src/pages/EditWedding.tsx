@@ -5,6 +5,46 @@ import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Save, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 
+const inputClass =
+  "w-full min-w-0 px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring font-light box-border";
+
+const Field = ({
+  label,
+  value,
+  onChange,
+  type = "text",
+  placeholder = "",
+  multiline = false,
+}: {
+  label: string;
+  value: string;
+  onChange: (val: string) => void;
+  type?: string;
+  placeholder?: string;
+  multiline?: boolean;
+}) => (
+  <div>
+    <label className="block text-sm font-medium text-foreground mb-1.5">{label}</label>
+    {multiline ? (
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        rows={3}
+        className={`${inputClass} resize-none`}
+        placeholder={placeholder}
+      />
+    ) : (
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={inputClass}
+        placeholder={placeholder}
+      />
+    )}
+  </div>
+);
+
 const EditWedding = () => {
   const { id } = useParams<{ id: string }>();
   const { user, loading: authLoading } = useAuth();
@@ -33,7 +73,7 @@ const EditWedding = () => {
 
   useEffect(() => {
     if (!user || !id) return;
-    const fetch = async () => {
+    const fetchData = async () => {
       const { data } = await supabase.from("weddings").select("*").eq("id", id).single();
       if (data) {
         setForm({
@@ -54,7 +94,7 @@ const EditWedding = () => {
       }
       setLoading(false);
     };
-    fetch();
+    fetchData();
   }, [user, id]);
 
   const handleSave = async () => {
@@ -77,7 +117,7 @@ const EditWedding = () => {
         dress_code: form.dress_code,
       })
       .eq("id", id!);
-    
+
     if (error) {
       toast.error("Error al guardar");
     } else {
@@ -95,41 +135,6 @@ const EditWedding = () => {
       </div>
     );
   }
-
-  const Field = ({
-    label,
-    field,
-    type = "text",
-    placeholder = "",
-    multiline = false,
-  }: {
-    label: string;
-    field: string;
-    type?: string;
-    placeholder?: string;
-    multiline?: boolean;
-  }) => (
-    <div>
-      <label className="block text-sm font-medium text-foreground mb-1.5">{label}</label>
-      {multiline ? (
-        <textarea
-          value={(form as any)[field]}
-          onChange={(e) => update(field, e.target.value)}
-          rows={3}
-          className="w-full min-w-0 px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring font-light resize-none box-border"
-          placeholder={placeholder}
-        />
-      ) : (
-        <input
-          type={type}
-          value={(form as any)[field]}
-          onChange={(e) => update(field, e.target.value)}
-          className="w-full min-w-0 px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring font-light box-border"
-          placeholder={placeholder}
-        />
-      )}
-    </div>
-  );
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
@@ -161,33 +166,34 @@ const EditWedding = () => {
         <section className="space-y-4">
           <h2 className="font-heading text-2xl border-b border-border pb-2">Pareja</h2>
           <div className="grid sm:grid-cols-2 gap-4">
-            <Field label="Nombre 1" field="partner1_name" placeholder="María" />
-            <Field label="Nombre 2" field="partner2_name" placeholder="Carlos" />
+            <Field label="Nombre 1" value={form.partner1_name} onChange={(v) => update("partner1_name", v)} placeholder="María" />
+            <Field label="Nombre 2" value={form.partner2_name} onChange={(v) => update("partner2_name", v)} placeholder="Carlos" />
           </div>
-          <Field label="URL personalizada" field="slug" placeholder="maria-y-carlos" />
-          <Field label="Fecha de la boda" field="wedding_date" type="date" />
+          <Field label="URL personalizada" value={form.slug} onChange={(v) => update("slug", v)} placeholder="maria-y-carlos" />
+          <Field label="Fecha de la boda" value={form.wedding_date} onChange={(v) => update("wedding_date", v)} type="date" />
         </section>
 
         <section className="space-y-4">
           <h2 className="font-heading text-2xl border-b border-border pb-2">Ceremonia</h2>
-          <Field label="Lugar" field="ceremony_venue" placeholder="Iglesia de Santa María" />
-          <Field label="Dirección" field="ceremony_address" placeholder="Calle Mayor, 12" />
-          <Field label="Hora" field="ceremony_time" placeholder="17:00" />
+          <Field label="Lugar" value={form.ceremony_venue} onChange={(v) => update("ceremony_venue", v)} placeholder="Iglesia de Santa María" />
+          <Field label="Dirección" value={form.ceremony_address} onChange={(v) => update("ceremony_address", v)} placeholder="Calle Mayor, 12" />
+          <Field label="Hora" value={form.ceremony_time} onChange={(v) => update("ceremony_time", v)} placeholder="17:00" />
         </section>
 
         <section className="space-y-4">
           <h2 className="font-heading text-2xl border-b border-border pb-2">Celebración</h2>
-          <Field label="Lugar" field="reception_venue" placeholder="Finca Los Olivos" />
-          <Field label="Dirección" field="reception_address" placeholder="Camino Rural s/n" />
-          <Field label="Hora" field="reception_time" placeholder="19:30" />
+          <Field label="Lugar" value={form.reception_venue} onChange={(v) => update("reception_venue", v)} placeholder="Finca Los Olivos" />
+          <Field label="Dirección" value={form.reception_address} onChange={(v) => update("reception_address", v)} placeholder="Camino Rural s/n" />
+          <Field label="Hora" value={form.reception_time} onChange={(v) => update("reception_time", v)} placeholder="19:30" />
         </section>
 
         <section className="space-y-4">
           <h2 className="font-heading text-2xl border-b border-border pb-2">Regalos</h2>
-          <Field label="Número de cuenta (IBAN)" field="bank_account" placeholder="ES12 3456 7890 ..." />
+          <Field label="Número de cuenta (IBAN)" value={form.bank_account} onChange={(v) => update("bank_account", v)} placeholder="ES12 3456 7890 ..." />
           <Field
             label="Mensaje para los invitados"
-            field="gift_message"
+            value={form.gift_message}
+            onChange={(v) => update("gift_message", v)}
             multiline
             placeholder="El mejor regalo es vuestra presencia..."
           />
@@ -195,7 +201,7 @@ const EditWedding = () => {
 
         <section className="space-y-4">
           <h2 className="font-heading text-2xl border-b border-border pb-2">Código de vestimenta</h2>
-          <Field label="Estilo" field="dress_code" placeholder="Elegante / Cóctel" />
+          <Field label="Estilo" value={form.dress_code} onChange={(v) => update("dress_code", v)} placeholder="Elegante / Cóctel" />
         </section>
       </div>
     </div>
