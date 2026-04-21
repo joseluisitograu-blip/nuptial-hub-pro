@@ -14,6 +14,82 @@ export type Database = {
   }
   public: {
     Tables: {
+      accommodations: {
+        Row: {
+          address: string | null
+          created_at: string
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+          sort_order: number
+          website: string | null
+          wedding_id: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          sort_order?: number
+          website?: string | null
+          wedding_id: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          sort_order?: number
+          website?: string | null
+          wedding_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "accommodations_wedding_id_fkey"
+            columns: ["wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      guestbook: {
+        Row: {
+          author_name: string
+          created_at: string
+          id: string
+          message: string
+          wedding_id: string
+        }
+        Insert: {
+          author_name: string
+          created_at?: string
+          id?: string
+          message: string
+          wedding_id: string
+        }
+        Update: {
+          author_name?: string
+          created_at?: string
+          id?: string
+          message?: string
+          wedding_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guestbook_wedding_id_fkey"
+            columns: ["wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       playlist_songs: {
         Row: {
           artist: string | null
@@ -131,6 +207,44 @@ export type Database = {
           },
         ]
       }
+      wedding_stories: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          sort_order: number
+          story_date: string | null
+          title: string
+          wedding_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          sort_order?: number
+          story_date?: string | null
+          title: string
+          wedding_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          sort_order?: number
+          story_date?: string | null
+          title?: string
+          wedding_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wedding_stories_wedding_id_fkey"
+            columns: ["wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       weddings: {
         Row: {
           bank_account: string | null
@@ -145,12 +259,16 @@ export type Database = {
           id: string
           location_lat: number | null
           location_lng: number | null
+          menu_desserts: string | null
+          menu_mains: string | null
+          menu_starters: string | null
           partner1_name: string
           partner2_name: string
           reception_address: string | null
           reception_time: string | null
           reception_venue: string | null
           slug: string
+          theme_preset: string | null
           updated_at: string
           user_id: string
           wedding_date: string | null
@@ -168,12 +286,16 @@ export type Database = {
           id?: string
           location_lat?: number | null
           location_lng?: number | null
+          menu_desserts?: string | null
+          menu_mains?: string | null
+          menu_starters?: string | null
           partner1_name?: string
           partner2_name?: string
           reception_address?: string | null
           reception_time?: string | null
           reception_venue?: string | null
           slug: string
+          theme_preset?: string | null
           updated_at?: string
           user_id: string
           wedding_date?: string | null
@@ -191,12 +313,16 @@ export type Database = {
           id?: string
           location_lat?: number | null
           location_lng?: number | null
+          menu_desserts?: string | null
+          menu_mains?: string | null
+          menu_starters?: string | null
           partner1_name?: string
           partner2_name?: string
           reception_address?: string | null
           reception_time?: string | null
           reception_venue?: string | null
           slug?: string
+          theme_preset?: string | null
           updated_at?: string
           user_id?: string
           wedding_date?: string | null
