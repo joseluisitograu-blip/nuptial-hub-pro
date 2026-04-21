@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import heroImage from "@/assets/hero-wedding.jpg";
@@ -18,8 +18,9 @@ import WeddingAgenda from "@/components/wedding/WeddingAgenda";
 import WeddingFaq from "@/components/wedding/WeddingFaq";
 import WeddingMap from "@/components/wedding/WeddingMap";
 import AnimatedSection from "@/components/wedding/AnimatedSection";
+import { LangProvider, LangToggle, useLang } from "@/contexts/LangContext";
 import {
-  Heart, MapPin, Gift, Music, Camera, Mail, BookHeart, UtensilsCrossed, Hotel, BookOpen, Share2, Users, Clock, HelpCircle, Navigation,
+  Heart, MapPin, Gift, Music, Camera, Mail, BookHeart, UtensilsCrossed, Hotel, BookOpen, Share2, Users, Clock, HelpCircle, Navigation, ChevronUp,
 } from "lucide-react";
 
 interface WeddingData {
@@ -103,7 +104,7 @@ const themeStyles: Record<string, Record<string, string>> = {
   },
 };
 
-const tabs = [
+const sections = [
   { id: "inicio", label: "Inicio", icon: Heart },
   { id: "historia", label: "Historia", icon: BookHeart },
   { id: "agenda", label: "Agenda", icon: Clock },
@@ -125,7 +126,10 @@ const WeddingPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const [wedding, setWedding] = useState<WeddingData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("inicio");
+  const [activeSection, setActiveSection] = useState("inicio");
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const isScrollingRef = useRef(false);
 
   useEffect(() => {
     if (!slug) return;
@@ -141,6 +145,45 @@ const WeddingPage = () => {
     fetchWedding();
   }, [slug]);
 
+  // Intersection observer for active section tracking
+  useEffect(() => {
+    if (!wedding) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (isScrollingRef.current) return;
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+            break;
+          }
+        }
+      },
+      { rootMargin: "-20% 0px -60% 0px", threshold: 0 }
+    );
+
+    Object.values(sectionRefs.current).forEach((el) => {
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [wedding]);
+
+  // Show/hide scroll-to-top
+  useEffect(() => {
+    const onScroll = () => setShowScrollTop(window.scrollY > 600);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const scrollTo = useCallback((id: string) => {
+    const el = sectionRefs.current[id];
+    if (!el) return;
+    isScrollingRef.current = true;
+    setActiveSection(id);
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+    setTimeout(() => { isScrollingRef.current = false; }, 800);
+  }, []);
+
   const themeVars = useMemo(() => {
     if (!wedding) return {};
     return themeStyles[wedding.theme_preset] || themeStyles.elegant;
@@ -149,7 +192,7 @@ const WeddingPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <Heart className="w-8 h-8 text-sand-accent animate-pulse" />
+        <Heart className="w-8 h-8 text-primary animate-pulse" />
       </div>
     );
   }
@@ -170,81 +213,195 @@ const WeddingPage = () => {
     ? weddingDate.toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })
     : "";
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case "inicio":
-        return <TabInicio wedding={wedding} weddingDate={weddingDate} formattedDate={formattedDate} />;
-      case "historia":
-        return <WeddingStory weddingId={wedding.id} />;
-      case "agenda":
-        return <WeddingAgenda weddingId={wedding.id} />;
-      case "lugar":
-        return <WeddingVenue wedding={wedding} />;
-      case "mapa":
-        return <WeddingMap ceremonyVenue={wedding.ceremony_venue} ceremonyAddress={wedding.ceremony_address} receptionVenue={wedding.reception_venue} receptionAddress={wedding.reception_address} />;
-      case "menu":
-        return <WeddingMenu starters={wedding.menu_starters} mains={wedding.menu_mains} desserts={wedding.menu_desserts} />;
-      case "alojamiento":
-        return <WeddingAccommodations weddingId={wedding.id} />;
-      case "mesas":
-        return <WeddingSeating weddingId={wedding.id} weddingDate={wedding.wedding_date} />;
-      case "regalo":
-        return <WeddingGift bankAccount={wedding.bank_account} message={wedding.gift_message} />;
-      case "playlist":
-        return <WeddingPlaylist weddingId={wedding.id} />;
-      case "fotos":
-        return <WeddingPhotos weddingId={wedding.id} />;
-      case "firmas":
-        return <WeddingGuestbook weddingId={wedding.id} />;
-      case "faq":
-        return <WeddingFaq weddingId={wedding.id} />;
-      case "rsvp":
-        return <WeddingRsvp weddingId={wedding.id} />;
-      case "compartir":
-        return <WeddingShare slug={wedding.slug} partner1={wedding.partner1_name} partner2={wedding.partner2_name} />;
-      default:
-        return null;
-    }
+  const setRef = (id: string) => (el: HTMLDivElement | null) => {
+    sectionRefs.current[id] = el;
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col" style={themeVars as React.CSSProperties}>
-      {/* Fixed top nav */}
+    <div className="min-h-screen bg-background" style={themeVars as React.CSSProperties}>
+      {/* Sticky nav */}
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="max-w-5xl mx-auto px-2">
-          <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide py-2">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
+         <div className="flex items-center gap-0.5 overflow-x-auto scrollbar-hide py-2">
+            {sections.map((s) => {
+              const Icon = s.icon;
+              const isActive = activeSection === s.id;
               return (
                 <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm whitespace-nowrap transition-all ${
+                  key={s.id}
+                  onClick={() => scrollTo(s.id)}
+                  className={`flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-xs sm:text-sm whitespace-nowrap transition-all ${
                     isActive
                       ? "bg-primary text-primary-foreground font-medium"
                       : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
-                  <span className="hidden sm:inline">{tab.label}</span>
+                  <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">{s.label}</span>
                 </button>
               );
             })}
+            <div className="ml-auto pl-2 flex-shrink-0">
+              <LangToggle />
+            </div>
           </div>
         </div>
       </nav>
 
-      {/* Tab content */}
-      <main className="flex-1" key={activeTab}>
-        <AnimatedSection>
-          {renderContent()}
-        </AnimatedSection>
+      {/* All sections rendered continuously */}
+      <main>
+        {/* Inicio */}
+        <section id="inicio" ref={setRef("inicio")}>
+          <div className="relative h-[70vh] sm:h-[80vh] flex items-center justify-center overflow-hidden">
+            <div className="absolute inset-0">
+              <img
+                src={wedding.hero_image_url || heroImage}
+                alt="Boda"
+                className="w-full h-full object-cover"
+                style={{ animation: "slowZoom 20s ease-in-out infinite alternate" }}
+              />
+              <div className="absolute inset-0 bg-foreground/40" />
+            </div>
+            <div className="relative z-10 text-center px-6">
+              <p className="font-body text-primary-foreground/70 tracking-[0.3em] sm:tracking-[0.4em] uppercase text-[10px] sm:text-xs mb-4 sm:mb-6">
+                ¡Nos casamos!
+              </p>
+              <h1 className="font-heading text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-primary-foreground mb-4 leading-[0.9]">
+                {wedding.partner1_name || "Nombre"}
+                <span className="block text-xl sm:text-2xl md:text-3xl font-body font-light tracking-widest my-2 sm:my-3 text-primary-foreground/60">
+                  &
+                </span>
+                {wedding.partner2_name || "Nombre"}
+              </h1>
+              {formattedDate && (
+                <p className="text-primary-foreground/80 text-base sm:text-lg font-light tracking-wide mt-4">
+                  {formattedDate}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {weddingDate && (
+            <div className="bg-secondary py-12 sm:py-16">
+              <WeddingCountdown targetDate={weddingDate} />
+            </div>
+          )}
+
+          {wedding.dress_code && (
+            <div className="py-10 sm:py-12 bg-background text-center">
+              <p className="text-muted-foreground text-xs sm:text-sm uppercase tracking-widest mb-1">Código de vestimenta</p>
+              <p className="font-heading text-lg sm:text-xl text-foreground">{wedding.dress_code}</p>
+            </div>
+          )}
+        </section>
+
+        {/* Historia */}
+        <section id="historia" ref={setRef("historia")} className="scroll-mt-14">
+          <AnimatedSection>
+            <WeddingStory weddingId={wedding.id} />
+          </AnimatedSection>
+        </section>
+
+        {/* Agenda */}
+        <section id="agenda" ref={setRef("agenda")} className="scroll-mt-14">
+          <AnimatedSection>
+            <WeddingAgenda weddingId={wedding.id} />
+          </AnimatedSection>
+        </section>
+
+        {/* Lugar */}
+        <section id="lugar" ref={setRef("lugar")} className="scroll-mt-14">
+          <AnimatedSection>
+            <WeddingVenue wedding={wedding} />
+          </AnimatedSection>
+        </section>
+
+        {/* Mapa */}
+        <section id="mapa" ref={setRef("mapa")} className="scroll-mt-14">
+          <AnimatedSection>
+            <WeddingMap
+              ceremonyVenue={wedding.ceremony_venue}
+              ceremonyAddress={wedding.ceremony_address}
+              receptionVenue={wedding.reception_venue}
+              receptionAddress={wedding.reception_address}
+            />
+          </AnimatedSection>
+        </section>
+
+        {/* Menú */}
+        <section id="menu" ref={setRef("menu")} className="scroll-mt-14">
+          <AnimatedSection>
+            <WeddingMenu starters={wedding.menu_starters} mains={wedding.menu_mains} desserts={wedding.menu_desserts} />
+          </AnimatedSection>
+        </section>
+
+        {/* Alojamiento */}
+        <section id="alojamiento" ref={setRef("alojamiento")} className="scroll-mt-14">
+          <AnimatedSection>
+            <WeddingAccommodations weddingId={wedding.id} />
+          </AnimatedSection>
+        </section>
+
+        {/* Mesas */}
+        <section id="mesas" ref={setRef("mesas")} className="scroll-mt-14">
+          <AnimatedSection>
+            <WeddingSeating weddingId={wedding.id} weddingDate={wedding.wedding_date} />
+          </AnimatedSection>
+        </section>
+
+        {/* Regalo */}
+        <section id="regalo" ref={setRef("regalo")} className="scroll-mt-14">
+          <AnimatedSection>
+            <WeddingGift bankAccount={wedding.bank_account} message={wedding.gift_message} />
+          </AnimatedSection>
+        </section>
+
+        {/* Playlist */}
+        <section id="playlist" ref={setRef("playlist")} className="scroll-mt-14">
+          <AnimatedSection>
+            <WeddingPlaylist weddingId={wedding.id} />
+          </AnimatedSection>
+        </section>
+
+        {/* Fotos */}
+        <section id="fotos" ref={setRef("fotos")} className="scroll-mt-14">
+          <AnimatedSection>
+            <WeddingPhotos weddingId={wedding.id} />
+          </AnimatedSection>
+        </section>
+
+        {/* Firmas */}
+        <section id="firmas" ref={setRef("firmas")} className="scroll-mt-14">
+          <AnimatedSection>
+            <WeddingGuestbook weddingId={wedding.id} />
+          </AnimatedSection>
+        </section>
+
+        {/* FAQ */}
+        <section id="faq" ref={setRef("faq")} className="scroll-mt-14">
+          <AnimatedSection>
+            <WeddingFaq weddingId={wedding.id} />
+          </AnimatedSection>
+        </section>
+
+        {/* RSVP */}
+        <section id="rsvp" ref={setRef("rsvp")} className="scroll-mt-14">
+          <AnimatedSection>
+            <WeddingRsvp weddingId={wedding.id} />
+          </AnimatedSection>
+        </section>
+
+        {/* Compartir */}
+        <section id="compartir" ref={setRef("compartir")} className="scroll-mt-14">
+          <AnimatedSection>
+            <WeddingShare slug={wedding.slug} partner1={wedding.partner1_name} partner2={wedding.partner2_name} />
+          </AnimatedSection>
+        </section>
       </main>
 
       {/* Footer */}
       <footer className="py-8 bg-card border-t border-border text-center">
-        <Heart className="w-5 h-5 text-sand-dark mx-auto mb-3" />
+        <Heart className="w-5 h-5 text-primary mx-auto mb-3" />
         <p className="font-heading text-xl text-foreground">
           {wedding.partner1_name} & {wedding.partner2_name}
         </p>
@@ -252,70 +409,33 @@ const WeddingPage = () => {
           <p className="text-muted-foreground text-sm font-light mt-1">{formattedDate}</p>
         )}
       </footer>
+
+      {/* Scroll to top */}
+      {showScrollTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="fixed bottom-6 right-6 z-50 w-10 h-10 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:opacity-90 transition-opacity animate-fade-in"
+        >
+          <ChevronUp className="w-5 h-5" />
+        </button>
+      )}
+
+      <style>{`
+        @keyframes slowZoom {
+          from { transform: scale(1); }
+          to { transform: scale(1.08); }
+        }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
     </div>
   );
 };
 
-/* ---------- Tab: Inicio ---------- */
-const TabInicio = ({
-  wedding,
-  weddingDate,
-  formattedDate,
-}: {
-  wedding: WeddingData;
-  weddingDate: Date | null;
-  formattedDate: string;
-}) => (
-  <div>
-    <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0">
-        <img
-          src={wedding.hero_image_url || heroImage}
-          alt="Boda"
-          className="w-full h-full object-cover"
-          style={{ animation: "slowZoom 20s ease-in-out infinite alternate" }}
-        />
-        <div className="absolute inset-0 bg-foreground/40" />
-      </div>
-      <div className="relative z-10 text-center px-6">
-        <p className="font-body text-primary-foreground/70 tracking-[0.4em] uppercase text-xs mb-6">
-          ¡Nos casamos!
-        </p>
-        <h1 className="font-heading text-5xl md:text-7xl lg:text-8xl text-primary-foreground mb-4 leading-[0.9]">
-          {wedding.partner1_name || "Nombre"}
-          <span className="block text-2xl md:text-3xl font-body font-light tracking-widest my-3 text-primary-foreground/60">
-            &
-          </span>
-          {wedding.partner2_name || "Nombre"}
-        </h1>
-        {formattedDate && (
-          <p className="text-primary-foreground/80 text-lg font-light tracking-wide mt-4">
-            {formattedDate}
-          </p>
-        )}
-      </div>
-    </section>
-
-    {weddingDate && (
-      <div className="bg-secondary py-16">
-        <WeddingCountdown targetDate={weddingDate} />
-      </div>
-    )}
-
-    {wedding.dress_code && (
-      <div className="py-12 bg-background text-center">
-        <p className="text-muted-foreground text-sm uppercase tracking-widest mb-1">Código de vestimenta</p>
-        <p className="font-heading text-xl text-foreground">{wedding.dress_code}</p>
-      </div>
-    )}
-
-    <style>{`
-      @keyframes slowZoom {
-        from { transform: scale(1); }
-        to { transform: scale(1.08); }
-      }
-    `}</style>
-  </div>
+const WeddingPageWrapper = () => (
+  <LangProvider>
+    <WeddingPage />
+  </LangProvider>
 );
 
-export default WeddingPage;
+export default WeddingPageWrapper;
