@@ -275,7 +275,7 @@ const Index = () => {
           </RevealSection>
           <div className="space-y-6">
             {[
-              { step: "1", title: "Regístrate gratis", desc: "Crea tu cuenta en segundos y accede al panel de control." },
+              { step: "1", title: "Regístrate", desc: "Crea tu cuenta en segundos y accede al panel de control." },
               { step: "2", title: "Personaliza tu boda", desc: "Elige un tema, añade los datos, sube fotos y configura cada sección." },
               { step: "3", title: "Comparte con un QR", desc: "Genera un código QR o envía el enlace por WhatsApp. ¡Listo!" },
             ].map((s, i) => (
@@ -468,7 +468,7 @@ const Index = () => {
               ¿Listos para el gran día?
             </h2>
             <p className="text-muted-foreground font-light text-lg mb-10">
-              Cread vuestra página de boda en minutos. Gratis.
+              Cread vuestra página de boda en minutos. Desde 35€.
             </p>
             <Link
               to="/auth"
