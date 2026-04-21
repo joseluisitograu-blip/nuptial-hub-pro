@@ -487,6 +487,97 @@ const EditWedding = () => {
           <h2 className="font-heading text-2xl border-b border-border pb-2">Código de vestimenta</h2>
           <Field label="Estilo" value={form.dress_code} onChange={(v) => update("dress_code", v)} placeholder="Elegante / Cóctel" />
         </section>
+
+        {/* Agenda */}
+        <section className="space-y-4">
+          <div className="flex items-center justify-between border-b border-border pb-2">
+            <h2 className="font-heading text-2xl">Agenda del día</h2>
+            <button onClick={addAgendaItem} className="inline-flex items-center gap-1 text-sm text-primary hover:opacity-80">
+              <Plus className="w-4 h-4" /> Añadir
+            </button>
+          </div>
+          {agendaItems.map((a, i) => (
+            <div key={i} className="bg-card border border-border rounded-lg p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Evento {i + 1}</span>
+                <button onClick={() => removeAgendaItem(i)} className="text-destructive hover:opacity-80">
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+              <input value={a.title} onChange={(e) => updateAgendaItem(i, "title", e.target.value)} className={inputClass} placeholder="Título (ej: Ceremonia)" />
+              <div className="grid grid-cols-2 gap-3">
+                <input value={a.start_time} onChange={(e) => updateAgendaItem(i, "start_time", e.target.value)} className={inputClass} placeholder="Hora inicio (17:00)" />
+                <input value={a.end_time} onChange={(e) => updateAgendaItem(i, "end_time", e.target.value)} className={inputClass} placeholder="Hora fin (18:00)" />
+              </div>
+              <input value={a.location} onChange={(e) => updateAgendaItem(i, "location", e.target.value)} className={inputClass} placeholder="Lugar" />
+              <input value={a.description} onChange={(e) => updateAgendaItem(i, "description", e.target.value)} className={inputClass} placeholder="Descripción breve" />
+              <select value={a.icon} onChange={(e) => updateAgendaItem(i, "icon", e.target.value)} className={inputClass}>
+                <option value="clock">⏰ Reloj</option>
+                <option value="church">⛪ Ceremonia</option>
+                <option value="wine">🍷 Cóctel</option>
+                <option value="food">🍽️ Banquete</option>
+                <option value="music">🎵 Música</option>
+                <option value="party">🎉 Fiesta</option>
+                <option value="camera">📸 Fotos</option>
+                <option value="location">📍 Lugar</option>
+              </select>
+            </div>
+          ))}
+        </section>
+
+        {/* Seating / Mesas */}
+        <section className="space-y-4">
+          <div className="flex items-center justify-between border-b border-border pb-2">
+            <h2 className="font-heading text-2xl">Mesas</h2>
+            <button onClick={addSeatingTable} className="inline-flex items-center gap-1 text-sm text-primary hover:opacity-80">
+              <Plus className="w-4 h-4" /> Añadir mesa
+            </button>
+          </div>
+          <p className="text-xs text-muted-foreground">Los invitados solo verán las mesas un día antes de la boda.</p>
+          {seatingTables.map((t, i) => (
+            <div key={i} className="bg-card border border-border rounded-lg p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Mesa {i + 1}</span>
+                <button onClick={() => removeSeatingTable(i)} className="text-destructive hover:opacity-80">
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <input value={t.table_name} onChange={(e) => updateSeatingTable(i, "table_name", e.target.value)} className={inputClass} placeholder="Nombre (Mesa 1, Mesa Nupcial...)" />
+                <input type="number" value={t.capacity} onChange={(e) => updateSeatingTable(i, "capacity", parseInt(e.target.value) || 8)} className={inputClass} placeholder="Capacidad" />
+              </div>
+              <textarea
+                value={t.guests.join("\n")}
+                onChange={(e) => updateSeatingGuests(i, e.target.value)}
+                className={`${inputClass} resize-none`}
+                rows={4}
+                placeholder="Un invitado por línea..."
+              />
+            </div>
+          ))}
+        </section>
+
+        {/* FAQ */}
+        <section className="space-y-4">
+          <div className="flex items-center justify-between border-b border-border pb-2">
+            <h2 className="font-heading text-2xl">Preguntas frecuentes</h2>
+            <button onClick={addFaqItem} className="inline-flex items-center gap-1 text-sm text-primary hover:opacity-80">
+              <Plus className="w-4 h-4" /> Añadir
+            </button>
+          </div>
+          {faqItems.map((f, i) => (
+            <div key={i} className="bg-card border border-border rounded-lg p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Pregunta {i + 1}</span>
+                <button onClick={() => removeFaqItem(i)} className="text-destructive hover:opacity-80">
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+              <input value={f.question} onChange={(e) => updateFaqItem(i, "question", e.target.value)} className={inputClass} placeholder="¿Hay parking?" />
+              <textarea value={f.answer} onChange={(e) => updateFaqItem(i, "answer", e.target.value)} className={`${inputClass} resize-none`} rows={2} placeholder="Sí, hay parking gratuito..." />
+            </div>
+          ))}
+        </section>
       </div>
     </div>
   );
