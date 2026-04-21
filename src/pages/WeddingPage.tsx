@@ -222,7 +222,7 @@ const WeddingPage = () => {
       {/* Sticky nav */}
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="max-w-5xl mx-auto px-2">
-          <div className="flex items-center gap-0.5 overflow-x-auto scrollbar-hide py-2">
+         <div className="flex items-center gap-0.5 overflow-x-auto scrollbar-hide py-2">
             {sections.map((s) => {
               const Icon = s.icon;
               const isActive = activeSection === s.id;
@@ -241,6 +241,9 @@ const WeddingPage = () => {
                 </button>
               );
             })}
+            <div className="ml-auto pl-2 flex-shrink-0">
+              <LangToggle />
+            </div>
           </div>
         </div>
       </nav>
@@ -429,4 +432,10 @@ const WeddingPage = () => {
   );
 };
 
-export default WeddingPage;
+const WeddingPageWrapper = () => (
+  <LangProvider>
+    <WeddingPage />
+  </LangProvider>
+);
+
+export default WeddingPageWrapper;
