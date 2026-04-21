@@ -12,7 +12,7 @@ const Privacy = () => (
         <p><strong>Última actualización:</strong> {new Date().toLocaleDateString("es-ES")}</p>
 
         <h2 className="font-heading text-xl text-foreground mt-8">1. Responsable del tratamiento</h2>
-        <p>[NOMBRE LEGAL O RAZÓN SOCIAL] (en adelante, "Click Tu Boda") es el responsable del tratamiento de los datos personales recogidos a través de esta web.</p>
+        <p>José Luis Grau Perales (en adelante, "Click Tu Boda") es el responsable del tratamiento de los datos personales recogidos a través de esta web.</p>
 
         <h2 className="font-heading text-xl text-foreground mt-8">2. Datos que recogemos</h2>
         <ul className="list-disc pl-6 space-y-1">

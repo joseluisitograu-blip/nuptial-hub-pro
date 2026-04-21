@@ -12,7 +12,7 @@ const Terms = () => (
         <p><strong>Última actualización:</strong> {new Date().toLocaleDateString("es-ES")}</p>
 
         <h2 className="font-heading text-xl text-foreground mt-8">1. Identificación del prestador</h2>
-        <p>El presente servicio es ofrecido por [NOMBRE LEGAL O RAZÓN SOCIAL] (en adelante, "Click Tu Boda"). Al utilizar el servicio, aceptas estos términos.</p>
+        <p>El presente servicio es ofrecido por José Luis Grau Perales (en adelante, "Click Tu Boda"). Al utilizar el servicio, aceptas estos términos.</p>
 
         <h2 className="font-heading text-xl text-foreground mt-8">2. Aceptación</h2>
         <p>El uso continuado del servicio implica la aceptación plena de estos términos. Si no estás de acuerdo, no utilices el servicio.</p>
