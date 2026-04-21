@@ -104,6 +104,9 @@ const EditWedding = () => {
   const [saving, setSaving] = useState(false);
   const [stories, setStories] = useState<StoryItem[]>([]);
   const [accommodations, setAccommodations] = useState<AccommodationItem[]>([]);
+  const [agendaItems, setAgendaItems] = useState<AgendaItem[]>([]);
+  const [seatingTables, setSeatingTables] = useState<SeatingTableItem[]>([]);
+  const [faqItems, setFaqItems] = useState<FaqItem[]>([]);
   const [form, setForm] = useState({
     slug: "",
     partner1_name: "",
