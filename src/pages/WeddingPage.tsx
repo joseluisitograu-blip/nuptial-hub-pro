@@ -175,12 +175,18 @@ const WeddingPage = () => {
         return <TabInicio wedding={wedding} weddingDate={weddingDate} formattedDate={formattedDate} />;
       case "historia":
         return <WeddingStory weddingId={wedding.id} />;
+      case "agenda":
+        return <WeddingAgenda weddingId={wedding.id} />;
       case "lugar":
         return <WeddingVenue wedding={wedding} />;
+      case "mapa":
+        return <WeddingMap ceremonyVenue={wedding.ceremony_venue} ceremonyAddress={wedding.ceremony_address} receptionVenue={wedding.reception_venue} receptionAddress={wedding.reception_address} />;
       case "menu":
         return <WeddingMenu starters={wedding.menu_starters} mains={wedding.menu_mains} desserts={wedding.menu_desserts} />;
       case "alojamiento":
         return <WeddingAccommodations weddingId={wedding.id} />;
+      case "mesas":
+        return <WeddingSeating weddingId={wedding.id} weddingDate={wedding.wedding_date} />;
       case "regalo":
         return <WeddingGift bankAccount={wedding.bank_account} message={wedding.gift_message} />;
       case "playlist":
@@ -189,6 +195,8 @@ const WeddingPage = () => {
         return <WeddingPhotos weddingId={wedding.id} />;
       case "firmas":
         return <WeddingGuestbook weddingId={wedding.id} />;
+      case "faq":
+        return <WeddingFaq weddingId={wedding.id} />;
       case "rsvp":
         return <WeddingRsvp weddingId={wedding.id} />;
       case "compartir":
