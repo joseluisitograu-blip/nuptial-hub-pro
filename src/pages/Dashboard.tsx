@@ -212,6 +212,17 @@ const Dashboard = () => {
             </div>
           </>
         )}
+
+        {/* Messages section - only for owner */}
+        {isOwner && (
+          <div className="mt-12">
+            <div className="flex items-center gap-2 mb-6">
+              <Mail className="w-5 h-5 text-primary" />
+              <h2 className="font-heading text-2xl">Mensajes</h2>
+            </div>
+            <DashboardMessages />
+          </div>
+        )}
       </div>
     </div>
   );
