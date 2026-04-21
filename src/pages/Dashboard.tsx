@@ -23,7 +23,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const { hasPurchase, loading: purchaseLoading } = usePurchase();
+  const { hasPurchase, loading: purchaseLoading, isOwner } = usePurchase();
   const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
 
   useEffect(() => {
