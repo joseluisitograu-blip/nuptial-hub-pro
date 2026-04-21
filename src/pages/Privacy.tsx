@@ -49,7 +49,7 @@ const Privacy = () => (
         <p>Conservamos tus datos mientras mantengas tu cuenta activa. Tras la eliminación de la cuenta, los datos se eliminan en un plazo máximo de 30 días, salvo obligación legal.</p>
 
         <h2 className="font-heading text-xl text-foreground mt-8">8. Tus derechos</h2>
-        <p>Puedes ejercer tus derechos de acceso, rectificación, supresión, limitación, portabilidad y oposición escribiendo a <a href="mailto:hola@clicktuboda.com" className="text-primary hover:underline">hola@clicktuboda.com</a>. Responderemos en un plazo máximo de un mes. También puedes presentar una reclamación ante la Agencia Española de Protección de Datos (AEPD).</p>
+        <p>Puedes ejercer tus derechos de acceso, rectificación, supresión, limitación, portabilidad y oposición a través del formulario de contacto disponible en nuestra web. Responderemos en un plazo máximo de un mes. También puedes presentar una reclamación ante la Agencia Española de Protección de Datos (AEPD).</p>
 
         <h2 className="font-heading text-xl text-foreground mt-8">9. Cookies</h2>
         <p>Utilizamos cookies técnicas esenciales para el funcionamiento del servicio. No utilizamos cookies de seguimiento o publicitarias de terceros.</p>
