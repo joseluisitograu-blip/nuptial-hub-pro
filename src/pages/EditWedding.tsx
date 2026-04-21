@@ -25,8 +25,6 @@ const EditWedding = () => {
     bank_account: "",
     gift_message: "",
     dress_code: "",
-    location_lat: "",
-    location_lng: "",
   });
 
   useEffect(() => {
@@ -52,8 +50,6 @@ const EditWedding = () => {
           bank_account: data.bank_account || "",
           gift_message: data.gift_message || "",
           dress_code: data.dress_code || "",
-          location_lat: data.location_lat?.toString() || "",
-          location_lng: data.location_lng?.toString() || "",
         });
       }
       setLoading(false);
@@ -79,8 +75,6 @@ const EditWedding = () => {
         bank_account: form.bank_account,
         gift_message: form.gift_message,
         dress_code: form.dress_code,
-        location_lat: form.location_lat ? parseFloat(form.location_lat) : null,
-        location_lng: form.location_lng ? parseFloat(form.location_lng) : null,
       })
       .eq("id", id!);
     
@@ -122,7 +116,7 @@ const EditWedding = () => {
           value={(form as any)[field]}
           onChange={(e) => update(field, e.target.value)}
           rows={3}
-          className="w-full px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring font-light resize-none"
+          className="w-full min-w-0 px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring font-light resize-none box-border"
           placeholder={placeholder}
         />
       ) : (
@@ -130,7 +124,7 @@ const EditWedding = () => {
           type={type}
           value={(form as any)[field]}
           onChange={(e) => update(field, e.target.value)}
-          className="w-full px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring font-light"
+          className="w-full min-w-0 px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring font-light box-border"
           placeholder={placeholder}
         />
       )}
@@ -138,15 +132,15 @@ const EditWedding = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border px-6 py-4 flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-sm z-50">
-        <div className="flex items-center gap-3">
-          <Link to="/dashboard" className="p-2 rounded-md hover:bg-secondary transition-colors">
+    <div className="min-h-screen bg-background overflow-x-hidden">
+      <header className="border-b border-border px-4 sm:px-6 py-4 flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-sm z-50">
+        <div className="flex items-center gap-3 min-w-0">
+          <Link to="/dashboard" className="p-2 rounded-md hover:bg-secondary transition-colors shrink-0">
             <ArrowLeft className="w-4 h-4" />
           </Link>
-          <span className="font-heading text-xl">Editar boda</span>
+          <span className="font-heading text-xl truncate">Editar boda</span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <Link
             to={`/w/${form.slug}`}
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-secondary text-secondary-foreground text-sm hover:opacity-90 transition-opacity"
@@ -163,7 +157,7 @@ const EditWedding = () => {
         </div>
       </header>
 
-      <div className="container max-w-2xl py-10 space-y-10">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10 space-y-10">
         <section className="space-y-4">
           <h2 className="font-heading text-2xl border-b border-border pb-2">Pareja</h2>
           <div className="grid sm:grid-cols-2 gap-4">
@@ -186,14 +180,6 @@ const EditWedding = () => {
           <Field label="Lugar" field="reception_venue" placeholder="Finca Los Olivos" />
           <Field label="Dirección" field="reception_address" placeholder="Camino Rural s/n" />
           <Field label="Hora" field="reception_time" placeholder="19:30" />
-        </section>
-
-        <section className="space-y-4">
-          <h2 className="font-heading text-2xl border-b border-border pb-2">Ubicación (mapa)</h2>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <Field label="Latitud" field="location_lat" placeholder="37.3886" />
-            <Field label="Longitud" field="location_lng" placeholder="-5.9823" />
-          </div>
         </section>
 
         <section className="space-y-4">
