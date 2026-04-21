@@ -111,6 +111,7 @@ const Index = () => {
   const handleBuy = (priceId: string) => {
     openCheckout({
       priceId,
+      discountCode,
       successUrl: `${window.location.origin}/dashboard?checkout=success`,
       customData: {
         ...(utmSource ? { utm_source: utmSource, utm_medium: urlParams.get("utm_medium") || "", utm_campaign: urlParams.get("utm_campaign") || "" } : {}),
