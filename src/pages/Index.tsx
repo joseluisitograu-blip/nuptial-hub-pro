@@ -205,30 +205,125 @@ const Index = () => {
         </div>
       </section>
 
-      {/* For Wedding Planners */}
-      <section className="py-24 bg-secondary">
-        <div className="container max-w-2xl text-center">
-          <Sparkles className="w-8 h-8 text-muted-foreground mx-auto mb-4" />
-          <h2 className="font-heading text-4xl md:text-5xl text-foreground mb-4">
-            ¿Eres Wedding Planner?
-          </h2>
-          <p className="text-muted-foreground font-light text-lg mb-8">
-            Gestiona múltiples bodas desde un solo panel. Cada pareja con su propio enlace y QR. Ofrece un servicio premium sin esfuerzo.
-          </p>
-          <div className="space-y-3 max-w-md mx-auto text-left mb-10">
-            {["Dashboard multi-boda", "4 temas visuales distintos", "QR individual por boda", "Sitting plan inteligente", "Sin marca de agua"].map((item) => (
-              <div key={item} className="flex items-center gap-3">
-                <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
-                <p className="text-foreground text-sm">{item}</p>
-              </div>
-            ))}
+      {/* Pricing */}
+      <section id="pricing" className="py-24 bg-secondary">
+        <div className="container max-w-5xl">
+          <div className="text-center mb-16">
+            <h2 className="font-heading text-4xl md:text-5xl text-foreground mb-3">
+              Nuestros planes
+            </h2>
+            <p className="text-muted-foreground font-light text-lg">
+              Elige el que mejor se adapte a tu día especial
+            </p>
           </div>
-          <Link
-            to="/auth"
-            className="inline-block px-10 py-4 rounded-xl bg-primary text-primary-foreground font-medium text-lg hover:opacity-90 transition-opacity"
-          >
-            Empezar ahora
-          </Link>
+          <div className="grid sm:grid-cols-3 gap-6">
+            {/* Plan Básico */}
+            <div className="bg-card border border-border rounded-xl p-7 flex flex-col">
+              <h3 className="font-heading text-2xl text-foreground mb-1">Básico</h3>
+              <div className="mb-4">
+                <span className="font-heading text-4xl text-foreground">35€</span>
+                <span className="text-muted-foreground text-sm ml-1">/ boda</span>
+              </div>
+              <p className="text-muted-foreground text-sm font-light mb-6">Ideal para parejas que quieren algo sencillo y bonito.</p>
+              <ul className="space-y-3 mb-8 flex-1">
+                {[
+                  "Página web personalizada",
+                  "1 tema visual a elegir",
+                  "RSVP online",
+                  "Código QR para invitaciones",
+                  "Información de ceremonia y recepción",
+                  "Countdown del gran día",
+                  "Borrador de la web en 24h",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2.5 text-sm text-foreground">
+                    <CheckCircle className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to="/auth"
+                className="block text-center px-6 py-3 rounded-xl border-2 border-primary text-primary font-medium hover:bg-primary hover:text-primary-foreground transition-colors"
+              >
+                Empezar
+              </Link>
+            </div>
+
+            {/* Plan Completo */}
+            <div className="bg-card border-2 border-primary rounded-xl p-7 flex flex-col relative shadow-lg">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-medium px-4 py-1 rounded-full">
+                Más popular
+              </div>
+              <h3 className="font-heading text-2xl text-foreground mb-1">Completo</h3>
+              <div className="mb-4">
+                <span className="font-heading text-4xl text-foreground">65€</span>
+                <span className="text-muted-foreground text-sm ml-1">/ boda</span>
+              </div>
+              <p className="text-muted-foreground text-sm font-light mb-6">Todo incluido para una experiencia inolvidable.</p>
+              <ul className="space-y-3 mb-8 flex-1">
+                {[
+                  "Todo lo del plan Básico",
+                  "4 temas visuales disponibles",
+                  "Playlist colaborativa con votos",
+                  "Muro de fotos en vivo",
+                  "Sitting plan inteligente",
+                  "Agenda del día completa",
+                  "FAQ + Mapa interactivo",
+                  "Lista de regalos / cuenta bancaria",
+                  "Vuestra historia de amor",
+                  "Compartir por WhatsApp",
+                  "Mantenimiento y ajustes incluidos",
+                  "Soporte 24 horas",
+                  "Borrador de la web en 24h",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2.5 text-sm text-foreground">
+                    <CheckCircle className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to="/auth"
+                className="block text-center px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity"
+              >
+                Elegir Completo
+              </Link>
+            </div>
+
+            {/* Plan Wedding Planner */}
+            <div className="bg-card border border-border rounded-xl p-7 flex flex-col">
+              <h3 className="font-heading text-2xl text-foreground mb-1">Wedding Planner</h3>
+              <div className="mb-4">
+                <span className="font-heading text-3xl text-foreground">A medida</span>
+              </div>
+              <p className="text-muted-foreground text-sm font-light mb-6">Para profesionales que gestionan múltiples bodas.</p>
+              <ul className="space-y-3 mb-8 flex-1">
+                {[
+                  "Todo lo del plan Completo",
+                  "Dashboard multi-boda",
+                  "Bodas ilimitadas",
+                  "QR individual por boda",
+                  "Personalización avanzada",
+                  "Sin marca de agua",
+                  "Soporte prioritario 24h",
+                  "Mantenimiento y ajustes incluidos",
+                  "Borrador de cada web en 24h",
+                  "Precios especiales por volumen",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2.5 text-sm text-foreground">
+                    <CheckCircle className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <a
+                href="mailto:hola@nuptialhub.com"
+                className="block text-center px-6 py-3 rounded-xl border-2 border-primary text-primary font-medium hover:bg-primary hover:text-primary-foreground transition-colors"
+              >
+                Contáctanos
+              </a>
+            </div>
+          </div>
         </div>
       </section>
 
