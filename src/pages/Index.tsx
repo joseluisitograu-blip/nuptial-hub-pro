@@ -33,8 +33,18 @@ const testimonials = [
 ];
 
 const Index = () => {
+  const { openCheckout, loading } = usePaddleCheckout();
+
+  const handleBuy = (priceId: string) => {
+    openCheckout({
+      priceId,
+      successUrl: `${window.location.origin}/dashboard?checkout=success`,
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <PaymentTestModeBanner />
       {/* Hero */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
