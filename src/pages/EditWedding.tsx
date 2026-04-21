@@ -242,6 +242,58 @@ const EditWedding = () => {
       );
     }
 
+    // Save agenda items
+    await supabase.from("agenda_items").delete().eq("wedding_id", id!);
+    if (agendaItems.length > 0) {
+      await supabase.from("agenda_items").insert(
+        agendaItems.map((a, i) => ({
+          wedding_id: id!,
+          title: a.title,
+          start_time: a.start_time,
+          end_time: a.end_time,
+          location: a.location,
+          description: a.description,
+          icon: a.icon,
+          sort_order: i,
+        }))
+      );
+    }
+
+    // Save seating: delete assignments first, then tables, then re-insert
+    await supabase.from("seating_assignments").delete().eq("wedding_id", id!);
+    await supabase.from("seating_tables").delete().eq("wedding_id", id!);
+    for (let i = 0; i < seatingTables.length; i++) {
+      const t = seatingTables[i];
+      const { data: tableData } = await supabase.from("seating_tables").insert({
+        wedding_id: id!,
+        table_name: t.table_name,
+        capacity: t.capacity,
+        sort_order: i,
+      }).select("id").single();
+      if (tableData && t.guests.length > 0) {
+        await supabase.from("seating_assignments").insert(
+          t.guests.filter(g => g.trim()).map(g => ({
+            wedding_id: id!,
+            table_id: tableData.id,
+            guest_name: g.trim(),
+          }))
+        );
+      }
+    }
+
+    // Save FAQs
+    await supabase.from("faqs").delete().eq("wedding_id", id!);
+    if (faqItems.length > 0) {
+      await supabase.from("faqs").insert(
+        faqItems.map((f, i) => ({
+          wedding_id: id!,
+          question: f.question,
+          answer: f.answer,
+          sort_order: i,
+        }))
+      );
+    }
+
     if (error) {
       toast.error("Error al guardar");
     } else {
@@ -263,6 +315,26 @@ const EditWedding = () => {
   const removeAccommodation = (i: number) => setAccommodations(accommodations.filter((_, idx) => idx !== i));
   const updateAccommodation = (i: number, key: keyof AccommodationItem, val: string) =>
     setAccommodations(accommodations.map((a, idx) => (idx === i ? { ...a, [key]: val } : a)));
+
+  const addAgendaItem = () =>
+    setAgendaItems([...agendaItems, { title: "", start_time: "", end_time: "", location: "", description: "", icon: "clock", sort_order: agendaItems.length }]);
+  const removeAgendaItem = (i: number) => setAgendaItems(agendaItems.filter((_, idx) => idx !== i));
+  const updateAgendaItem = (i: number, key: keyof AgendaItem, val: string) =>
+    setAgendaItems(agendaItems.map((a, idx) => (idx === i ? { ...a, [key]: val } : a)));
+
+  const addSeatingTable = () =>
+    setSeatingTables([...seatingTables, { table_name: "", capacity: 8, sort_order: seatingTables.length, guests: [] }]);
+  const removeSeatingTable = (i: number) => setSeatingTables(seatingTables.filter((_, idx) => idx !== i));
+  const updateSeatingTable = (i: number, key: string, val: any) =>
+    setSeatingTables(seatingTables.map((t, idx) => (idx === i ? { ...t, [key]: val } : t)));
+  const updateSeatingGuests = (i: number, val: string) =>
+    setSeatingTables(seatingTables.map((t, idx) => (idx === i ? { ...t, guests: val.split("\n") } : t)));
+
+  const addFaqItem = () =>
+    setFaqItems([...faqItems, { question: "", answer: "", sort_order: faqItems.length }]);
+  const removeFaqItem = (i: number) => setFaqItems(faqItems.filter((_, idx) => idx !== i));
+  const updateFaqItem = (i: number, key: keyof FaqItem, val: string) =>
+    setFaqItems(faqItems.map((f, idx) => (idx === i ? { ...f, [key]: val } : f)));
 
   if (authLoading || loading) {
     return (
