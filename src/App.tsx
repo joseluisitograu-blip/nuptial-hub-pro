@@ -9,6 +9,9 @@ import Auth from "./pages/Auth.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import EditWedding from "./pages/EditWedding.tsx";
 import WeddingPage from "./pages/WeddingPage.tsx";
+import Privacy from "./pages/Privacy.tsx";
+import Terms from "./pages/Terms.tsx";
+import Refund from "./pages/Refund.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -26,6 +29,9 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/dashboard/edit/:id" element={<EditWedding />} />
             <Route path="/w/:slug" element={<WeddingPage />} />
+            <Route path="/privacidad" element={<Privacy />} />
+            <Route path="/terminos" element={<Terms />} />
+            <Route path="/reembolso" element={<Refund />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
