@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Heart, Sparkles, Users, Music, Camera, MapPin, Clock, HelpCircle, BookHeart, Gift, Share2, Star, ArrowRight, CheckCircle } from "lucide-react";
-import heroImage from "@/assets/hero-wedding-romantic.jpg";
+import heroImage from "@/assets/hero-wedding.jpg";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 
