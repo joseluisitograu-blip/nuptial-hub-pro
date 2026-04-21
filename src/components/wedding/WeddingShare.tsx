@@ -9,7 +9,8 @@ interface Props {
 
 const WeddingShare = ({ slug, partner1, partner2 }: Props) => {
   const [showQR, setShowQR] = useState(false);
-  const url = `${window.location.origin}/w/${slug}`;
+  const publishedOrigin = "https://nuptial-hub-pro.lovable.app";
+  const url = `${publishedOrigin}/w/${slug}`;
   const text = encodeURIComponent(`¡${partner1} y ${partner2} se casan! 💍 Confirma tu asistencia aquí:`);
   const whatsappUrl = `https://wa.me/?text=${text}%20${encodeURIComponent(url)}`;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
