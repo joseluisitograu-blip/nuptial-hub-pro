@@ -105,13 +105,17 @@ const themeStyles: Record<string, Record<string, string>> = {
 const tabs = [
   { id: "inicio", label: "Inicio", icon: Heart },
   { id: "historia", label: "Historia", icon: BookHeart },
+  { id: "agenda", label: "Agenda", icon: Clock },
   { id: "lugar", label: "Lugar", icon: MapPin },
+  { id: "mapa", label: "Mapa", icon: Navigation },
   { id: "menu", label: "Menú", icon: UtensilsCrossed },
   { id: "alojamiento", label: "Alojamiento", icon: Hotel },
+  { id: "mesas", label: "Mesas", icon: Users },
   { id: "regalo", label: "Regalo", icon: Gift },
   { id: "playlist", label: "Playlist", icon: Music },
   { id: "fotos", label: "Fotos", icon: Camera },
   { id: "firmas", label: "Firmas", icon: BookOpen },
+  { id: "faq", label: "FAQ", icon: HelpCircle },
   { id: "rsvp", label: "RSVP", icon: Mail },
   { id: "compartir", label: "Compartir", icon: Share2 },
 ];
