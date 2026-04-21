@@ -70,6 +70,32 @@ interface AccommodationItem {
   sort_order: number;
 }
 
+interface AgendaItem {
+  id?: string;
+  title: string;
+  start_time: string;
+  end_time: string;
+  location: string;
+  description: string;
+  icon: string;
+  sort_order: number;
+}
+
+interface SeatingTableItem {
+  id?: string;
+  table_name: string;
+  capacity: number;
+  sort_order: number;
+  guests: string[]; // guest names
+}
+
+interface FaqItem {
+  id?: string;
+  question: string;
+  answer: string;
+  sort_order: number;
+}
+
 const EditWedding = () => {
   const { id } = useParams<{ id: string }>();
   const { user, loading: authLoading } = useAuth();
