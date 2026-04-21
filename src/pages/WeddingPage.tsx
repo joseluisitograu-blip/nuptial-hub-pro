@@ -13,8 +13,12 @@ import WeddingMenu from "@/components/wedding/WeddingMenu";
 import WeddingAccommodations from "@/components/wedding/WeddingAccommodations";
 import WeddingGuestbook from "@/components/wedding/WeddingGuestbook";
 import WeddingShare from "@/components/wedding/WeddingShare";
+import WeddingSeating from "@/components/wedding/WeddingSeating";
+import WeddingAgenda from "@/components/wedding/WeddingAgenda";
+import WeddingFaq from "@/components/wedding/WeddingFaq";
+import WeddingMap from "@/components/wedding/WeddingMap";
 import {
-  Heart, MapPin, Gift, Music, Camera, Mail, BookHeart, UtensilsCrossed, Hotel, BookOpen, Share2,
+  Heart, MapPin, Gift, Music, Camera, Mail, BookHeart, UtensilsCrossed, Hotel, BookOpen, Share2, Users, Clock, HelpCircle, Navigation,
 } from "lucide-react";
 
 interface WeddingData {
@@ -101,13 +105,17 @@ const themeStyles: Record<string, Record<string, string>> = {
 const tabs = [
   { id: "inicio", label: "Inicio", icon: Heart },
   { id: "historia", label: "Historia", icon: BookHeart },
+  { id: "agenda", label: "Agenda", icon: Clock },
   { id: "lugar", label: "Lugar", icon: MapPin },
+  { id: "mapa", label: "Mapa", icon: Navigation },
   { id: "menu", label: "Menú", icon: UtensilsCrossed },
   { id: "alojamiento", label: "Alojamiento", icon: Hotel },
+  { id: "mesas", label: "Mesas", icon: Users },
   { id: "regalo", label: "Regalo", icon: Gift },
   { id: "playlist", label: "Playlist", icon: Music },
   { id: "fotos", label: "Fotos", icon: Camera },
   { id: "firmas", label: "Firmas", icon: BookOpen },
+  { id: "faq", label: "FAQ", icon: HelpCircle },
   { id: "rsvp", label: "RSVP", icon: Mail },
   { id: "compartir", label: "Compartir", icon: Share2 },
 ];
@@ -167,12 +175,18 @@ const WeddingPage = () => {
         return <TabInicio wedding={wedding} weddingDate={weddingDate} formattedDate={formattedDate} />;
       case "historia":
         return <WeddingStory weddingId={wedding.id} />;
+      case "agenda":
+        return <WeddingAgenda weddingId={wedding.id} />;
       case "lugar":
         return <WeddingVenue wedding={wedding} />;
+      case "mapa":
+        return <WeddingMap ceremonyVenue={wedding.ceremony_venue} ceremonyAddress={wedding.ceremony_address} receptionVenue={wedding.reception_venue} receptionAddress={wedding.reception_address} />;
       case "menu":
         return <WeddingMenu starters={wedding.menu_starters} mains={wedding.menu_mains} desserts={wedding.menu_desserts} />;
       case "alojamiento":
         return <WeddingAccommodations weddingId={wedding.id} />;
+      case "mesas":
+        return <WeddingSeating weddingId={wedding.id} weddingDate={wedding.wedding_date} />;
       case "regalo":
         return <WeddingGift bankAccount={wedding.bank_account} message={wedding.gift_message} />;
       case "playlist":
@@ -181,6 +195,8 @@ const WeddingPage = () => {
         return <WeddingPhotos weddingId={wedding.id} />;
       case "firmas":
         return <WeddingGuestbook weddingId={wedding.id} />;
+      case "faq":
+        return <WeddingFaq weddingId={wedding.id} />;
       case "rsvp":
         return <WeddingRsvp weddingId={wedding.id} />;
       case "compartir":

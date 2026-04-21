@@ -1,31 +1,80 @@
-import { MapPin } from "lucide-react";
+import { MapPin, Navigation } from "lucide-react";
 
 interface Props {
-  lat: number;
-  lng: number;
+  ceremonyVenue: string;
+  ceremonyAddress: string;
+  receptionVenue: string;
+  receptionAddress: string;
 }
 
-const WeddingMap = ({ lat, lng }: Props) => {
-  const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${lng - 0.01},${lat - 0.005},${lng + 0.01},${lat + 0.005}&layer=mapnik&marker=${lat},${lng}`;
-  const linkUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+const WeddingMap = ({ ceremonyVenue, ceremonyAddress, receptionVenue, receptionAddress }: Props) => {
+  const ceremonyQuery = encodeURIComponent(`${ceremonyVenue}, ${ceremonyAddress}`);
+  const receptionQuery = encodeURIComponent(`${receptionVenue}, ${receptionAddress}`);
+
+  const openMaps = (query: string) => {
+    window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, "_blank");
+  };
 
   return (
-    <div className="relative">
-      <iframe
-        src={mapUrl}
-        className="w-full h-[400px] border-0"
-        loading="lazy"
-        title="Ubicación de la boda"
-      />
-      <div className="absolute bottom-4 right-4">
-        <a
-          href={linkUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-card/90 backdrop-blur-sm border border-border text-foreground text-sm font-medium hover:bg-card transition-colors shadow-lg"
-        >
-          <MapPin className="w-4 h-4" /> Abrir en Google Maps
-        </a>
+    <div className="py-24 bg-background">
+      <div className="container max-w-2xl">
+        <div className="text-center mb-12">
+          <MapPin className="w-8 h-8 text-muted-foreground mx-auto mb-4" />
+          <h2 className="font-heading text-4xl md:text-5xl text-foreground mb-3">Cómo llegar</h2>
+          <p className="text-muted-foreground font-light">Ubicaciones del evento</p>
+        </div>
+
+        <div className="grid gap-4">
+          {ceremonyVenue && (
+            <div className="bg-card border border-border rounded-xl overflow-hidden">
+              <iframe
+                title="Ceremonia"
+                src={`https://www.google.com/maps?q=${ceremonyQuery}&output=embed`}
+                className="w-full h-48"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+              <div className="p-5 flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Ceremonia</p>
+                  <h3 className="font-heading text-lg text-foreground">{ceremonyVenue}</h3>
+                  <p className="text-sm text-muted-foreground">{ceremonyAddress}</p>
+                </div>
+                <button
+                  onClick={() => openMaps(ceremonyQuery)}
+                  className="flex-shrink-0 p-3 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
+                >
+                  <Navigation className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {receptionVenue && (
+            <div className="bg-card border border-border rounded-xl overflow-hidden">
+              <iframe
+                title="Recepción"
+                src={`https://www.google.com/maps?q=${receptionQuery}&output=embed`}
+                className="w-full h-48"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+              <div className="p-5 flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Recepción</p>
+                  <h3 className="font-heading text-lg text-foreground">{receptionVenue}</h3>
+                  <p className="text-sm text-muted-foreground">{receptionAddress}</p>
+                </div>
+                <button
+                  onClick={() => openMaps(receptionQuery)}
+                  className="flex-shrink-0 p-3 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
+                >
+                  <Navigation className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

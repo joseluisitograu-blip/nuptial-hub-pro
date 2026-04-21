@@ -70,6 +70,32 @@ interface AccommodationItem {
   sort_order: number;
 }
 
+interface AgendaItem {
+  id?: string;
+  title: string;
+  start_time: string;
+  end_time: string;
+  location: string;
+  description: string;
+  icon: string;
+  sort_order: number;
+}
+
+interface SeatingTableItem {
+  id?: string;
+  table_name: string;
+  capacity: number;
+  sort_order: number;
+  guests: string[]; // guest names
+}
+
+interface FaqItem {
+  id?: string;
+  question: string;
+  answer: string;
+  sort_order: number;
+}
+
 const EditWedding = () => {
   const { id } = useParams<{ id: string }>();
   const { user, loading: authLoading } = useAuth();
@@ -78,6 +104,9 @@ const EditWedding = () => {
   const [saving, setSaving] = useState(false);
   const [stories, setStories] = useState<StoryItem[]>([]);
   const [accommodations, setAccommodations] = useState<AccommodationItem[]>([]);
+  const [agendaItems, setAgendaItems] = useState<AgendaItem[]>([]);
+  const [seatingTables, setSeatingTables] = useState<SeatingTableItem[]>([]);
+  const [faqItems, setFaqItems] = useState<FaqItem[]>([]);
   const [form, setForm] = useState({
     slug: "",
     partner1_name: "",
@@ -105,10 +134,14 @@ const EditWedding = () => {
   useEffect(() => {
     if (!user || !id) return;
     const fetchData = async () => {
-      const [{ data: wedding }, { data: storyData }, { data: accommData }] = await Promise.all([
+      const [{ data: wedding }, { data: storyData }, { data: accommData }, { data: agendaData }, { data: tablesData }, { data: assignData }, { data: faqData }] = await Promise.all([
         supabase.from("weddings").select("*").eq("id", id).single(),
         supabase.from("wedding_stories").select("*").eq("wedding_id", id).order("sort_order"),
         supabase.from("accommodations").select("*").eq("wedding_id", id).order("sort_order"),
+        supabase.from("agenda_items").select("*").eq("wedding_id", id).order("sort_order"),
+        supabase.from("seating_tables").select("*").eq("wedding_id", id).order("sort_order"),
+        supabase.from("seating_assignments").select("*").eq("wedding_id", id),
+        supabase.from("faqs").select("*").eq("wedding_id", id).order("sort_order"),
       ]);
       if (wedding) {
         setForm({
@@ -133,6 +166,20 @@ const EditWedding = () => {
       }
       setStories((storyData as StoryItem[]) || []);
       setAccommodations((accommData as AccommodationItem[]) || []);
+      setAgendaItems((agendaData as AgendaItem[]) || []);
+      setFaqItems((faqData as FaqItem[]) || []);
+
+      // Build seating tables with guest names
+      const tables = (tablesData || []) as any[];
+      const assigns = (assignData || []) as any[];
+      setSeatingTables(tables.map((t) => ({
+        id: t.id,
+        table_name: t.table_name,
+        capacity: t.capacity,
+        sort_order: t.sort_order,
+        guests: assigns.filter((a: any) => a.table_id === t.id).map((a: any) => a.guest_name),
+      })));
+
       setLoading(false);
     };
     fetchData();
@@ -195,6 +242,58 @@ const EditWedding = () => {
       );
     }
 
+    // Save agenda items
+    await supabase.from("agenda_items").delete().eq("wedding_id", id!);
+    if (agendaItems.length > 0) {
+      await supabase.from("agenda_items").insert(
+        agendaItems.map((a, i) => ({
+          wedding_id: id!,
+          title: a.title,
+          start_time: a.start_time,
+          end_time: a.end_time,
+          location: a.location,
+          description: a.description,
+          icon: a.icon,
+          sort_order: i,
+        }))
+      );
+    }
+
+    // Save seating: delete assignments first, then tables, then re-insert
+    await supabase.from("seating_assignments").delete().eq("wedding_id", id!);
+    await supabase.from("seating_tables").delete().eq("wedding_id", id!);
+    for (let i = 0; i < seatingTables.length; i++) {
+      const t = seatingTables[i];
+      const { data: tableData } = await supabase.from("seating_tables").insert({
+        wedding_id: id!,
+        table_name: t.table_name,
+        capacity: t.capacity,
+        sort_order: i,
+      }).select("id").single();
+      if (tableData && t.guests.length > 0) {
+        await supabase.from("seating_assignments").insert(
+          t.guests.filter(g => g.trim()).map(g => ({
+            wedding_id: id!,
+            table_id: tableData.id,
+            guest_name: g.trim(),
+          }))
+        );
+      }
+    }
+
+    // Save FAQs
+    await supabase.from("faqs").delete().eq("wedding_id", id!);
+    if (faqItems.length > 0) {
+      await supabase.from("faqs").insert(
+        faqItems.map((f, i) => ({
+          wedding_id: id!,
+          question: f.question,
+          answer: f.answer,
+          sort_order: i,
+        }))
+      );
+    }
+
     if (error) {
       toast.error("Error al guardar");
     } else {
@@ -216,6 +315,26 @@ const EditWedding = () => {
   const removeAccommodation = (i: number) => setAccommodations(accommodations.filter((_, idx) => idx !== i));
   const updateAccommodation = (i: number, key: keyof AccommodationItem, val: string) =>
     setAccommodations(accommodations.map((a, idx) => (idx === i ? { ...a, [key]: val } : a)));
+
+  const addAgendaItem = () =>
+    setAgendaItems([...agendaItems, { title: "", start_time: "", end_time: "", location: "", description: "", icon: "clock", sort_order: agendaItems.length }]);
+  const removeAgendaItem = (i: number) => setAgendaItems(agendaItems.filter((_, idx) => idx !== i));
+  const updateAgendaItem = (i: number, key: keyof AgendaItem, val: string) =>
+    setAgendaItems(agendaItems.map((a, idx) => (idx === i ? { ...a, [key]: val } : a)));
+
+  const addSeatingTable = () =>
+    setSeatingTables([...seatingTables, { table_name: "", capacity: 8, sort_order: seatingTables.length, guests: [] }]);
+  const removeSeatingTable = (i: number) => setSeatingTables(seatingTables.filter((_, idx) => idx !== i));
+  const updateSeatingTable = (i: number, key: string, val: any) =>
+    setSeatingTables(seatingTables.map((t, idx) => (idx === i ? { ...t, [key]: val } : t)));
+  const updateSeatingGuests = (i: number, val: string) =>
+    setSeatingTables(seatingTables.map((t, idx) => (idx === i ? { ...t, guests: val.split("\n") } : t)));
+
+  const addFaqItem = () =>
+    setFaqItems([...faqItems, { question: "", answer: "", sort_order: faqItems.length }]);
+  const removeFaqItem = (i: number) => setFaqItems(faqItems.filter((_, idx) => idx !== i));
+  const updateFaqItem = (i: number, key: keyof FaqItem, val: string) =>
+    setFaqItems(faqItems.map((f, idx) => (idx === i ? { ...f, [key]: val } : f)));
 
   if (authLoading || loading) {
     return (
@@ -367,6 +486,97 @@ const EditWedding = () => {
         <section className="space-y-4">
           <h2 className="font-heading text-2xl border-b border-border pb-2">Código de vestimenta</h2>
           <Field label="Estilo" value={form.dress_code} onChange={(v) => update("dress_code", v)} placeholder="Elegante / Cóctel" />
+        </section>
+
+        {/* Agenda */}
+        <section className="space-y-4">
+          <div className="flex items-center justify-between border-b border-border pb-2">
+            <h2 className="font-heading text-2xl">Agenda del día</h2>
+            <button onClick={addAgendaItem} className="inline-flex items-center gap-1 text-sm text-primary hover:opacity-80">
+              <Plus className="w-4 h-4" /> Añadir
+            </button>
+          </div>
+          {agendaItems.map((a, i) => (
+            <div key={i} className="bg-card border border-border rounded-lg p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Evento {i + 1}</span>
+                <button onClick={() => removeAgendaItem(i)} className="text-destructive hover:opacity-80">
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+              <input value={a.title} onChange={(e) => updateAgendaItem(i, "title", e.target.value)} className={inputClass} placeholder="Título (ej: Ceremonia)" />
+              <div className="grid grid-cols-2 gap-3">
+                <input value={a.start_time} onChange={(e) => updateAgendaItem(i, "start_time", e.target.value)} className={inputClass} placeholder="Hora inicio (17:00)" />
+                <input value={a.end_time} onChange={(e) => updateAgendaItem(i, "end_time", e.target.value)} className={inputClass} placeholder="Hora fin (18:00)" />
+              </div>
+              <input value={a.location} onChange={(e) => updateAgendaItem(i, "location", e.target.value)} className={inputClass} placeholder="Lugar" />
+              <input value={a.description} onChange={(e) => updateAgendaItem(i, "description", e.target.value)} className={inputClass} placeholder="Descripción breve" />
+              <select value={a.icon} onChange={(e) => updateAgendaItem(i, "icon", e.target.value)} className={inputClass}>
+                <option value="clock">⏰ Reloj</option>
+                <option value="church">⛪ Ceremonia</option>
+                <option value="wine">🍷 Cóctel</option>
+                <option value="food">🍽️ Banquete</option>
+                <option value="music">🎵 Música</option>
+                <option value="party">🎉 Fiesta</option>
+                <option value="camera">📸 Fotos</option>
+                <option value="location">📍 Lugar</option>
+              </select>
+            </div>
+          ))}
+        </section>
+
+        {/* Seating / Mesas */}
+        <section className="space-y-4">
+          <div className="flex items-center justify-between border-b border-border pb-2">
+            <h2 className="font-heading text-2xl">Mesas</h2>
+            <button onClick={addSeatingTable} className="inline-flex items-center gap-1 text-sm text-primary hover:opacity-80">
+              <Plus className="w-4 h-4" /> Añadir mesa
+            </button>
+          </div>
+          <p className="text-xs text-muted-foreground">Los invitados solo verán las mesas un día antes de la boda.</p>
+          {seatingTables.map((t, i) => (
+            <div key={i} className="bg-card border border-border rounded-lg p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Mesa {i + 1}</span>
+                <button onClick={() => removeSeatingTable(i)} className="text-destructive hover:opacity-80">
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <input value={t.table_name} onChange={(e) => updateSeatingTable(i, "table_name", e.target.value)} className={inputClass} placeholder="Nombre (Mesa 1, Mesa Nupcial...)" />
+                <input type="number" value={t.capacity} onChange={(e) => updateSeatingTable(i, "capacity", parseInt(e.target.value) || 8)} className={inputClass} placeholder="Capacidad" />
+              </div>
+              <textarea
+                value={t.guests.join("\n")}
+                onChange={(e) => updateSeatingGuests(i, e.target.value)}
+                className={`${inputClass} resize-none`}
+                rows={4}
+                placeholder="Un invitado por línea..."
+              />
+            </div>
+          ))}
+        </section>
+
+        {/* FAQ */}
+        <section className="space-y-4">
+          <div className="flex items-center justify-between border-b border-border pb-2">
+            <h2 className="font-heading text-2xl">Preguntas frecuentes</h2>
+            <button onClick={addFaqItem} className="inline-flex items-center gap-1 text-sm text-primary hover:opacity-80">
+              <Plus className="w-4 h-4" /> Añadir
+            </button>
+          </div>
+          {faqItems.map((f, i) => (
+            <div key={i} className="bg-card border border-border rounded-lg p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Pregunta {i + 1}</span>
+                <button onClick={() => removeFaqItem(i)} className="text-destructive hover:opacity-80">
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+              <input value={f.question} onChange={(e) => updateFaqItem(i, "question", e.target.value)} className={inputClass} placeholder="¿Hay parking?" />
+              <textarea value={f.answer} onChange={(e) => updateFaqItem(i, "answer", e.target.value)} className={`${inputClass} resize-none`} rows={2} placeholder="Sí, hay parking gratuito..." />
+            </div>
+          ))}
         </section>
       </div>
     </div>
