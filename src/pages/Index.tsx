@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState, useCallback } from "react";
-import { Heart, Sparkles, Users, Music, Camera, MapPin, Clock, HelpCircle, BookHeart, Gift, Share2, Star, ArrowRight, CheckCircle, Play } from "lucide-react";
+import { Heart, Sparkles, Users, Music, Camera, MapPin, Clock, HelpCircle, BookHeart, Gift, Share2, Star, ArrowRight, CheckCircle, Play, Instagram } from "lucide-react";
 import heroImage from "@/assets/hero-wedding.jpg";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
@@ -498,7 +498,10 @@ const Index = () => {
           <p className="text-muted-foreground text-sm font-light">
             © {new Date().getFullYear()} Click Tu Boda. Hecho con <Heart className="w-3.5 h-3.5 inline text-primary" /> en España.
           </p>
-          <div className="flex gap-4 text-xs text-muted-foreground">
+          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+            <a href="https://instagram.com/clicktuboda" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors" title="Instagram">
+              <Instagram className="w-4 h-4" />
+            </a>
             <Link to="/privacidad" className="hover:text-foreground transition-colors">Privacidad</Link>
             <Link to="/terminos" className="hover:text-foreground transition-colors">Términos</Link>
             <Link to="/reembolso" className="hover:text-foreground transition-colors">Reembolso</Link>
