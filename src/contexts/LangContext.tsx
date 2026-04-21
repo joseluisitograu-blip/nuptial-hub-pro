@@ -145,7 +145,7 @@ const translations = {
   },
 } as const;
 
-type Translations = typeof translations.es;
+type Translations = Record<keyof typeof translations.es, string>;
 
 interface LangContextType {
   lang: Lang;
