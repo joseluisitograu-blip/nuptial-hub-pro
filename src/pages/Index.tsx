@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { Heart, Sparkles, Users, Music, Camera, MapPin, Clock, HelpCircle, BookHeart, Gift, Share2, Star, ArrowRight, CheckCircle } from "lucide-react";
 import heroImage from "@/assets/hero-wedding.jpg";
+import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
+import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 
 const features = [
   { icon: Heart, title: "Página inmersiva", desc: "Experiencia a pantalla completa con animaciones, temas visuales y navegación por secciones." },
