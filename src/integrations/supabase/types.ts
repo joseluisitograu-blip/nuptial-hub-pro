@@ -210,6 +210,45 @@ export type Database = {
           },
         ]
       }
+      purchases: {
+        Row: {
+          created_at: string | null
+          environment: string
+          id: string
+          paddle_customer_id: string
+          paddle_transaction_id: string
+          price_id: string
+          product_id: string
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          environment?: string
+          id?: string
+          paddle_customer_id: string
+          paddle_transaction_id: string
+          price_id: string
+          product_id: string
+          status?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          environment?: string
+          id?: string
+          paddle_customer_id?: string
+          paddle_transaction_id?: string
+          price_id?: string
+          product_id?: string
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       rsvps: {
         Row: {
           attending: boolean

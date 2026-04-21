@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { Heart, Sparkles, Users, Music, Camera, MapPin, Clock, HelpCircle, BookHeart, Gift, Share2, Star, ArrowRight, CheckCircle } from "lucide-react";
 import heroImage from "@/assets/hero-wedding.jpg";
+import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
+import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 
 const features = [
   { icon: Heart, title: "Página inmersiva", desc: "Experiencia a pantalla completa con animaciones, temas visuales y navegación por secciones." },
@@ -31,8 +33,18 @@ const testimonials = [
 ];
 
 const Index = () => {
+  const { openCheckout, loading } = usePaddleCheckout();
+
+  const handleBuy = (priceId: string) => {
+    openCheckout({
+      priceId,
+      successUrl: `${window.location.origin}/dashboard?checkout=success`,
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <PaymentTestModeBanner />
       {/* Hero */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
@@ -241,12 +253,13 @@ const Index = () => {
                   </li>
                 ))}
               </ul>
-              <Link
-                to="/auth"
-                className="block text-center px-6 py-3 rounded-xl border-2 border-primary text-primary font-medium hover:bg-primary hover:text-primary-foreground transition-colors"
+              <button
+                onClick={() => handleBuy("basico_one_time")}
+                disabled={loading}
+                className="block w-full text-center px-6 py-3 rounded-xl border-2 border-primary text-primary font-medium hover:bg-primary hover:text-primary-foreground transition-colors disabled:opacity-50"
               >
-                Empezar
-              </Link>
+                {loading ? "Cargando..." : "Empezar"}
+              </button>
             </div>
 
             {/* Plan Completo */}
@@ -282,12 +295,13 @@ const Index = () => {
                   </li>
                 ))}
               </ul>
-              <Link
-                to="/auth"
-                className="block text-center px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity"
+              <button
+                onClick={() => handleBuy("completo_one_time")}
+                disabled={loading}
+                className="block w-full text-center px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
               >
-                Elegir Completo
-              </Link>
+                {loading ? "Cargando..." : "Elegir Completo"}
+              </button>
             </div>
 
             {/* Plan Wedding Planner */}
