@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Plus, ExternalLink, LogOut, Heart, Users, Music, Camera } from "lucide-react";
+import { Plus, ExternalLink, LogOut, Heart, MessageCircle } from "lucide-react";
 
 interface Wedding {
   id: string;
