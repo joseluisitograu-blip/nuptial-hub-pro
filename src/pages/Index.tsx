@@ -301,7 +301,7 @@ const Index = () => {
                 className="block w-full text-center px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
               >
                 {loading ? "Cargando..." : "Elegir Completo"}
-              </Link>
+              </button>
             </div>
 
             {/* Plan Wedding Planner */}
