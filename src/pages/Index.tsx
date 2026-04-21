@@ -253,12 +253,13 @@ const Index = () => {
                   </li>
                 ))}
               </ul>
-              <Link
-                to="/auth"
-                className="block text-center px-6 py-3 rounded-xl border-2 border-primary text-primary font-medium hover:bg-primary hover:text-primary-foreground transition-colors"
+              <button
+                onClick={() => handleBuy("basico_one_time")}
+                disabled={loading}
+                className="block w-full text-center px-6 py-3 rounded-xl border-2 border-primary text-primary font-medium hover:bg-primary hover:text-primary-foreground transition-colors disabled:opacity-50"
               >
-                Empezar
-              </Link>
+                {loading ? "Cargando..." : "Empezar"}
+              </button>
             </div>
 
             {/* Plan Completo */}
@@ -294,11 +295,12 @@ const Index = () => {
                   </li>
                 ))}
               </ul>
-              <Link
-                to="/auth"
-                className="block text-center px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity"
+              <button
+                onClick={() => handleBuy("completo_one_time")}
+                disabled={loading}
+                className="block w-full text-center px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
               >
-                Elegir Completo
+                {loading ? "Cargando..." : "Elegir Completo"}
               </Link>
             </div>
 
