@@ -43,6 +43,7 @@ interface WeddingData {
   menu_mains: string;
   menu_desserts: string;
   theme_preset: string;
+  whatsapp_number: string;
 }
 
 const themeStyles: Record<string, Record<string, string>> = {
@@ -387,7 +388,7 @@ const WeddingPage = () => {
         {/* RSVP */}
         <section id="rsvp" ref={setRef("rsvp")} className="scroll-mt-14">
           <AnimatedSection>
-            <WeddingRsvp weddingId={wedding.id} />
+            <WeddingRsvp weddingId={wedding.id} whatsappNumber={wedding.whatsapp_number} partner1={wedding.partner1_name} partner2={wedding.partner2_name} />
           </AnimatedSection>
         </section>
 

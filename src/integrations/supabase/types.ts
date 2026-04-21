@@ -470,6 +470,7 @@ export type Database = {
           updated_at: string
           user_id: string
           wedding_date: string | null
+          whatsapp_number: string | null
         }
         Insert: {
           bank_account?: string | null
@@ -497,6 +498,7 @@ export type Database = {
           updated_at?: string
           user_id: string
           wedding_date?: string | null
+          whatsapp_number?: string | null
         }
         Update: {
           bank_account?: string | null
@@ -524,6 +526,7 @@ export type Database = {
           updated_at?: string
           user_id?: string
           wedding_date?: string | null
+          whatsapp_number?: string | null
         }
         Relationships: []
       }

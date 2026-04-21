@@ -125,6 +125,7 @@ const EditWedding = () => {
     menu_mains: "",
     menu_desserts: "",
     theme_preset: "elegant",
+    whatsapp_number: "",
   });
 
   useEffect(() => {
@@ -162,6 +163,7 @@ const EditWedding = () => {
           menu_mains: wedding.menu_mains || "",
           menu_desserts: wedding.menu_desserts || "",
           theme_preset: wedding.theme_preset || "elegant",
+          whatsapp_number: (wedding as any).whatsapp_number || "",
         });
       }
       setStories((storyData as StoryItem[]) || []);
@@ -209,7 +211,8 @@ const EditWedding = () => {
         menu_mains: form.menu_mains,
         menu_desserts: form.menu_desserts,
         theme_preset: form.theme_preset,
-      })
+        whatsapp_number: form.whatsapp_number,
+      } as any)
       .eq("id", id!);
 
     // Save stories: delete all and re-insert
@@ -488,7 +491,13 @@ const EditWedding = () => {
           <Field label="Estilo" value={form.dress_code} onChange={(v) => update("dress_code", v)} placeholder="Elegante / Cóctel" />
         </section>
 
-        {/* Agenda */}
+        {/* WhatsApp */}
+        <section className="space-y-4">
+          <h2 className="font-heading text-2xl border-b border-border pb-2">WhatsApp RSVP</h2>
+          <Field label="Número de WhatsApp" value={form.whatsapp_number} onChange={(v) => update("whatsapp_number", v)} placeholder="+34 600 000 000" />
+          <p className="text-xs text-muted-foreground">Los invitados podrán confirmar asistencia directamente por WhatsApp a este número.</p>
+        </section>
+
         <section className="space-y-4">
           <div className="flex items-center justify-between border-b border-border pb-2">
             <h2 className="font-heading text-2xl">Agenda del día</h2>
