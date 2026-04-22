@@ -378,6 +378,109 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Management Features — Completo exclusive */}
+      <section className="py-16 sm:py-24 bg-card">
+        <div className="container max-w-5xl px-5 sm:px-8">
+          <RevealSection>
+            <div className="text-center mb-10 sm:mb-14">
+              <span className="inline-block text-xs uppercase tracking-[0.3em] text-primary mb-3 sm:mb-4 font-medium">Exclusivo Plan Completo</span>
+              <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl text-foreground mb-2 sm:mb-3">
+                Tu wedding planner digital
+              </h2>
+              <p className="text-muted-foreground font-light text-base sm:text-lg max-w-2xl mx-auto">
+                Gestiona cada detalle de tu boda desde un solo lugar: presupuesto, checklist y regalos.
+              </p>
+            </div>
+          </RevealSection>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
+            <RevealSection delay={0}>
+              <div className="bg-background border border-border rounded-xl p-6 h-full hover:shadow-lg transition-all duration-300">
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                  <Wallet className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="font-heading text-xl text-foreground mb-2">Control de presupuesto</h3>
+                <p className="text-muted-foreground text-sm font-light mb-4">Lleva al céntimo cada gasto: finca, catering, fotógrafo, flores, DJ y 10 categorías más.</p>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">Catering</span>
+                    <span className="font-medium text-foreground">6.800€</span>
+                  </div>
+                  <div className="h-2 bg-secondary rounded-full overflow-hidden">
+                    <div className="h-full bg-primary rounded-full" style={{width: "85%"}} />
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">Fotografía</span>
+                    <span className="font-medium text-foreground">2.200€</span>
+                  </div>
+                  <div className="h-2 bg-secondary rounded-full overflow-hidden">
+                    <div className="h-full bg-primary rounded-full" style={{width: "55%"}} />
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">Flores</span>
+                    <span className="font-medium text-foreground">1.200€</span>
+                  </div>
+                  <div className="h-2 bg-secondary rounded-full overflow-hidden">
+                    <div className="h-full bg-primary rounded-full" style={{width: "30%"}} />
+                  </div>
+                </div>
+              </div>
+            </RevealSection>
+
+            <RevealSection delay={120}>
+              <div className="bg-background border border-border rounded-xl p-6 h-full hover:shadow-lg transition-all duration-300">
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                  <ListChecks className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="font-heading text-xl text-foreground mb-2">Checklist de boda</h3>
+                <p className="text-muted-foreground text-sm font-light mb-4">18 tareas predefinidas por una wedding planner profesional. Añade las tuyas.</p>
+                <div className="space-y-2">
+                  {["Reservar la finca", "Contratar catering", "Elegir fotógrafo", "Comprar alianzas", "Prueba de peluquería"].map((t, i) => (
+                    <div key={t} className="flex items-center gap-2">
+                      <div className={`w-4 h-4 rounded border-2 flex items-center justify-center ${i < 3 ? "bg-primary border-primary" : "border-border"}`}>
+                        {i < 3 && <CheckCircle className="w-3 h-3 text-primary-foreground" />}
+                      </div>
+                      <span className={`text-xs ${i < 3 ? "line-through text-muted-foreground" : "text-foreground"}`}>{t}</span>
+                    </div>
+                  ))}
+                  <p className="text-xs text-muted-foreground mt-1">+13 tareas más...</p>
+                </div>
+              </div>
+            </RevealSection>
+
+            <RevealSection delay={240}>
+              <div className="bg-background border border-border rounded-xl p-6 h-full hover:shadow-lg transition-all duration-300">
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                  <Gift className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="font-heading text-xl text-foreground mb-2">Control de regalos</h3>
+                <p className="text-muted-foreground text-sm font-light mb-4">Registra cada regalo, su valor y marca cuando hayas enviado el agradecimiento.</p>
+                <div className="space-y-2.5">
+                  <div className="flex items-center gap-2 text-xs">
+                    <span>🎁</span><span className="text-foreground font-medium">Familia García</span><span className="text-muted-foreground ml-auto">300€</span>
+                    <CheckCircle className="w-3.5 h-3.5 text-primary" />
+                  </div>
+                  <div className="flex items-center gap-2 text-xs">
+                    <span>💰</span><span className="text-foreground font-medium">Ana y Pedro</span><span className="text-muted-foreground ml-auto">900€</span>
+                    <CheckCircle className="w-3.5 h-3.5 text-primary" />
+                  </div>
+                  <div className="flex items-center gap-2 text-xs">
+                    <span>🏦</span><span className="text-foreground font-medium">Carlos y Marta</span><span className="text-muted-foreground ml-auto">500€</span>
+                    <div className="w-3.5 h-3.5 rounded-full border-2 border-border" />
+                  </div>
+                  <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
+                    <span>Agradecidos: 67%</span>
+                    <div className="w-20 h-1.5 bg-secondary rounded-full overflow-hidden">
+                      <div className="h-full bg-primary rounded-full" style={{width: "67%"}} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </RevealSection>
+          </div>
+        </div>
+      </section>
+
       {/* Pricing */}
       <section id="pricing" className="py-16 sm:py-24 bg-secondary">
         <div className="container max-w-5xl px-5 sm:px-8">
