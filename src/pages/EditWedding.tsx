@@ -50,6 +50,9 @@ const themes = [
   { id: "romantic", label: "Romántico", colors: "bg-[hsl(340,40%,55%)]" },
   { id: "rustic", label: "Rústico", colors: "bg-[hsl(30,40%,35%)]" },
   { id: "modern", label: "Moderno", colors: "bg-[hsl(220,20%,20%)]" },
+  { id: "garden", label: "Jardín", colors: "bg-[hsl(150,35%,35%)]" },
+  { id: "bohemian", label: "Bohemio", colors: "bg-[hsl(10,55%,45%)]" },
+  { id: "minimal", label: "Minimal", colors: "bg-[hsl(0,0%,12%)]" },
 ];
 
 interface StoryItem {
