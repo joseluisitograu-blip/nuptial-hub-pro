@@ -17,7 +17,7 @@ const features = [
   { icon: Gift, title: "Lista de regalos", desc: "Cuenta bancaria con sistema de revelado elegante para los invitados." },
   { icon: HelpCircle, title: "FAQ inteligente", desc: "Preguntas frecuentes: parking, niños, código de vestimenta, alojamiento..." },
   { icon: Share2, title: "QR & WhatsApp", desc: "Comparte con un QR imprimible o directamente por WhatsApp." },
-  { icon: Sparkles, title: "4 temas visuales", desc: "Elegante, Romántico, Rústico y Moderno. Cada boda con su personalidad." },
+  { icon: Sparkles, title: "7 temas visuales", desc: "Elegante, Romántico, Rústico, Moderno, Jardín, Bohemio y Minimal." },
   { icon: Users, title: "Plan de mesas", desc: "Asigna invitados a mesas. Visible solo un día antes de la boda." },
 ];
 

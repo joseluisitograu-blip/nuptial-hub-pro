@@ -40,6 +40,9 @@ const themes = [
   { id: "romantic", label: "Romántico", color: "hsl(340, 45%, 55%)" },
   { id: "rustic", label: "Rústico", color: "hsl(25, 50%, 32%)" },
   { id: "modern", label: "Moderno", color: "hsl(220, 25%, 18%)" },
+  { id: "garden", label: "Jardín", color: "hsl(150, 35%, 35%)" },
+  { id: "bohemian", label: "Bohemio", color: "hsl(10, 55%, 45%)" },
+  { id: "minimal", label: "Minimal", color: "hsl(0, 0%, 12%)" },
 ];
 
 const WeddingEditToolbar = ({
