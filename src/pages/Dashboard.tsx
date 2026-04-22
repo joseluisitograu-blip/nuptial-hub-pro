@@ -50,7 +50,11 @@ const Dashboard = () => {
         .from("weddings")
         .select("id, slug, partner1_name, partner2_name, wedding_date")
         .eq("user_id", user.id);
-      setWeddings(data || []);
+      // Filter out abandoned weddings with no names and no date
+      const valid = (data || []).filter(
+        (w) => w.partner1_name || w.partner2_name || w.wedding_date
+      );
+      setWeddings(valid);
       setLoading(false);
     };
     fetchWeddings();
