@@ -17,6 +17,7 @@ import WeddingSeating from "@/components/wedding/WeddingSeating";
 import WeddingAgenda from "@/components/wedding/WeddingAgenda";
 import WeddingFaq from "@/components/wedding/WeddingFaq";
 import WeddingMap from "@/components/wedding/WeddingMap";
+import WeddingCalendar from "@/components/wedding/WeddingCalendar";
 import AnimatedSection from "@/components/wedding/AnimatedSection";
 import { LangProvider, LangToggle, useLang } from "@/contexts/LangContext";
 import {
@@ -307,6 +308,16 @@ const WeddingPage = () => {
               <p className="text-muted-foreground text-xs sm:text-sm uppercase tracking-widest mb-1">Código de vestimenta</p>
               <p className="font-heading text-lg sm:text-xl text-foreground">{wedding.dress_code}</p>
             </div>
+          )}
+
+          {weddingDate && (
+            <WeddingCalendar
+              weddingDate={wedding.wedding_date!}
+              partner1={wedding.partner1_name}
+              partner2={wedding.partner2_name}
+              ceremonyVenue={wedding.ceremony_venue}
+              ceremonyAddress={wedding.ceremony_address}
+            />
           )}
         </section>
 

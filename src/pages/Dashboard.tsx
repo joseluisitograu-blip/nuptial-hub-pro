@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Plus, ExternalLink, LogOut, Heart, MessageCircle, ChevronDown, ChevronUp, Lock, Mail } from "lucide-react";
 import WeddingStats from "@/components/dashboard/WeddingStats";
+import ExportRsvps from "@/components/dashboard/ExportRsvps";
 import DashboardMessages from "@/components/dashboard/DashboardMessages";
 import { usePurchase } from "@/hooks/usePurchase";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
@@ -205,7 +206,14 @@ const Dashboard = () => {
                         </Link>
                       </div>
                     </div>
-                    {isExpanded && <WeddingStats weddingId={w.id} />}
+                    {isExpanded && (
+                      <>
+                        <WeddingStats weddingId={w.id} />
+                        <div className="mt-3 flex justify-end">
+                          <ExportRsvps weddingId={w.id} />
+                        </div>
+                      </>
+                    )}
                   </div>
                 );
               })}
