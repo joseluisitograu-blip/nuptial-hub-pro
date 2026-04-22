@@ -7,14 +7,7 @@ interface Props {
 }
 
 const WeddingMenu = ({ starters, mains, desserts }: Props) => {
-  if (!starters && !mains && !desserts) {
-    return (
-      <div className="py-24 bg-secondary text-center">
-        <UtensilsCrossed className="w-10 h-10 text-sand-dark mx-auto mb-4 opacity-30" />
-        <p className="text-muted-foreground font-light">El menú aún no está disponible.</p>
-      </div>
-    );
-  }
+  if (!starters && !mains && !desserts) return null;
 
   const sections = [
     { title: "Entrantes", items: starters },
