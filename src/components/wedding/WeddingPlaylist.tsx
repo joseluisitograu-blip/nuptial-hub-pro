@@ -46,7 +46,7 @@ const WeddingPlaylist = ({ weddingId }: { weddingId: string }) => {
   const vote = async (id: string, currentVotes: number) => {
     if (votedIds.has(id)) return;
     setVotedIds((prev) => new Set(prev).add(id));
-    await supabase.from("playlist_songs").update({ votes: currentVotes + 1 }).eq("id", id);
+    await supabase.rpc("vote_for_song", { song_id: id });
     fetchSongs();
   };
 

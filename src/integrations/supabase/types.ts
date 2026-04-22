@@ -709,7 +709,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      vote_for_song: { Args: { song_id: string }; Returns: undefined }
     }
     Enums: {
       [_ in never]: never
