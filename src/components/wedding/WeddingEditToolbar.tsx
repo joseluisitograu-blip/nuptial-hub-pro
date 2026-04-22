@@ -43,6 +43,11 @@ const themes = [
   { id: "garden", label: "Jardín", color: "hsl(150, 35%, 35%)" },
   { id: "bohemian", label: "Bohemio", color: "hsl(10, 55%, 45%)" },
   { id: "minimal", label: "Minimal", color: "hsl(0, 0%, 12%)" },
+  { id: "tropical", label: "Tropical", color: "hsl(170, 55%, 35%)" },
+  { id: "lavender", label: "Lavanda", color: "hsl(270, 35%, 50%)" },
+  { id: "mediterranean", label: "Mediterráneo", color: "hsl(210, 50%, 40%)" },
+  { id: "autumn", label: "Otoñal", color: "hsl(15, 60%, 40%)" },
+  { id: "nocturnal", label: "Nocturno", color: "hsl(45, 60%, 60%)" },
 ];
 
 const WeddingEditToolbar = ({
