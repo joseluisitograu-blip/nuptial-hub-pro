@@ -116,6 +116,7 @@ const sections = [
   { id: "agenda", label: "Agenda", icon: Clock },
   { id: "lugar", label: "Lugar", icon: MapPin },
   { id: "mapa", label: "Mapa", icon: Navigation },
+  { id: "rsvp", label: "RSVP", icon: Mail },
   { id: "menu", label: "Menú", icon: UtensilsCrossed },
   { id: "alojamiento", label: "Alojamiento", icon: Hotel },
   { id: "mesas", label: "Mesas", icon: Users },
@@ -124,7 +125,6 @@ const sections = [
   { id: "fotos", label: "Fotos", icon: Camera },
   { id: "firmas", label: "Firmas", icon: BookOpen },
   { id: "faq", label: "FAQ", icon: HelpCircle },
-  { id: "rsvp", label: "RSVP", icon: Mail },
   { id: "compartir", label: "Compartir", icon: Share2 },
 ];
 
@@ -434,6 +434,13 @@ const WeddingPage = () => {
           </AnimatedSection>
         </section>
 
+        {/* RSVP */}
+        <section id="rsvp" ref={setRef("rsvp")} className="scroll-mt-14">
+          <AnimatedSection>
+            <WeddingRsvp weddingId={wedding.id} whatsappNumber={wedding.whatsapp_number} partner1={p1} partner2={p2} />
+          </AnimatedSection>
+        </section>
+
         {/* Menú */}
         <section id="menu" ref={setRef("menu")} className="scroll-mt-14">
           <AnimatedSection>
@@ -487,13 +494,6 @@ const WeddingPage = () => {
         <section id="faq" ref={setRef("faq")} className="scroll-mt-14">
           <AnimatedSection>
             <WeddingFaq weddingId={wedding.id} />
-          </AnimatedSection>
-        </section>
-
-        {/* RSVP */}
-        <section id="rsvp" ref={setRef("rsvp")} className="scroll-mt-14">
-          <AnimatedSection>
-            <WeddingRsvp weddingId={wedding.id} whatsappNumber={wedding.whatsapp_number} partner1={p1} partner2={p2} />
           </AnimatedSection>
         </section>
 
