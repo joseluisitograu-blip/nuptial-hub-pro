@@ -243,27 +243,27 @@ const Index = () => {
       </section>
 
       {/* Features */}
-      <section id="features" className="py-24 bg-secondary">
-        <div className="container max-w-5xl">
+      <section id="features" className="py-16 sm:py-24 bg-secondary">
+        <div className="container max-w-5xl px-5 sm:px-8">
           <RevealSection>
-            <div className="text-center mb-16">
-              <span className="inline-block text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4 font-light">Funcionalidades</span>
-              <h2 className="font-heading text-4xl md:text-5xl text-foreground mb-3">
+            <div className="text-center mb-10 sm:mb-16">
+              <span className="inline-block text-xs uppercase tracking-[0.3em] text-muted-foreground mb-3 sm:mb-4 font-light">Funcionalidades</span>
+              <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl text-foreground mb-2 sm:mb-3">
                 Todo lo que necesitas
               </h2>
-              <p className="text-muted-foreground font-light text-lg max-w-lg mx-auto">
+              <p className="text-muted-foreground font-light text-base sm:text-lg max-w-lg mx-auto">
                 12 funcionalidades para que tu boda sea inolvidable
               </p>
             </div>
           </RevealSection>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {features.map((f, i) => (
               <RevealSection key={f.title} delay={i % 3 * 100}>
-                <div className="bg-card border border-border rounded-xl p-6 group hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 hover:-translate-y-1 h-full">
-                  <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-primary/10 transition-all duration-300">
+                <div className="bg-card border border-border rounded-xl p-5 sm:p-6 group hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 hover:-translate-y-1 h-full">
+                  <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 group-hover:bg-primary/10 transition-all duration-300">
                     <f.icon className="w-4.5 h-4.5 text-muted-foreground group-hover:text-primary transition-colors" />
                   </div>
-                  <h3 className="font-heading text-lg mb-1.5">{f.title}</h3>
+                  <h3 className="font-heading text-lg mb-1 sm:mb-1.5">{f.title}</h3>
                   <p className="text-muted-foreground font-light text-sm leading-relaxed">{f.desc}</p>
                 </div>
               </RevealSection>
