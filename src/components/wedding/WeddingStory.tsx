@@ -22,14 +22,7 @@ const WeddingStory = ({ weddingId }: { weddingId: string }) => {
       .then(({ data }) => setStories((data as Story[]) || []));
   }, [weddingId]);
 
-  if (stories.length === 0) {
-    return (
-      <div className="py-24 bg-background text-center">
-        <Heart className="w-10 h-10 text-sand-dark mx-auto mb-4 opacity-30" />
-        <p className="text-muted-foreground font-light">Aún no hay historia que contar...</p>
-      </div>
-    );
-  }
+  if (stories.length === 0) return null;
 
   return (
     <div className="py-24 bg-background">
