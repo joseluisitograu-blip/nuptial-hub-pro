@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import heroImage from "@/assets/hero-wedding.jpg";
 import WeddingCountdown from "@/components/wedding/WeddingCountdown";
 import WeddingVenue from "@/components/wedding/WeddingVenue";
@@ -19,6 +20,8 @@ import WeddingFaq from "@/components/wedding/WeddingFaq";
 import WeddingMap from "@/components/wedding/WeddingMap";
 import WeddingCalendar from "@/components/wedding/WeddingCalendar";
 import AnimatedSection from "@/components/wedding/AnimatedSection";
+import WeddingEditToolbar from "@/components/wedding/WeddingEditToolbar";
+import EditableText from "@/components/wedding/EditableText";
 import { LangProvider, LangToggle, useLang } from "@/contexts/LangContext";
 import {
   Heart, MapPin, Gift, Music, Camera, Mail, BookHeart, UtensilsCrossed, Hotel, BookOpen, Share2, Users, Clock, HelpCircle, Navigation, ChevronUp,
@@ -45,6 +48,7 @@ interface WeddingData {
   menu_desserts: string;
   theme_preset: string;
   whatsapp_number: string;
+  user_id?: string;
 }
 
 const themeStyles: Record<string, Record<string, string>> = {
@@ -126,6 +130,7 @@ const sections = [
 
 const WeddingPage = () => {
   const { slug } = useParams<{ slug: string }>();
+  const { user } = useAuth();
   const [wedding, setWedding] = useState<WeddingData | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeSection, setActiveSection] = useState("inicio");
@@ -134,6 +139,11 @@ const WeddingPage = () => {
   const [navVisible, setNavVisible] = useState(false);
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const isScrollingRef = useRef(false);
+
+  // Edit mode state
+  const [editMode, setEditMode] = useState(false);
+  const [edits, setEdits] = useState<Partial<WeddingData>>({});
+  const isOwner = !!(user && wedding && wedding.user_id === user.id);
 
   useEffect(() => {
     if (!slug) return;
@@ -192,10 +202,39 @@ const WeddingPage = () => {
     setTimeout(() => { isScrollingRef.current = false; }, 800);
   }, []);
 
+  // Helper: get current value (edited or original)
+  const val = useCallback(
+    <K extends keyof WeddingData>(key: K): WeddingData[K] => {
+      if (key in edits) return edits[key] as WeddingData[K];
+      return wedding![key];
+    },
+    [wedding, edits]
+  );
+
+  const setEdit = useCallback(<K extends keyof WeddingData>(key: K, value: WeddingData[K]) => {
+    setEdits((prev) => ({ ...prev, [key]: value }));
+  }, []);
+
+  const handleThemeChange = useCallback((theme: string) => {
+    setEdits((prev) => ({ ...prev, theme_preset: theme }));
+  }, []);
+
+  const handleSave = useCallback(async () => {
+    if (!wedding || Object.keys(edits).length === 0) return;
+    const { error } = await supabase
+      .from("weddings")
+      .update(edits)
+      .eq("id", wedding.id);
+    if (error) throw error;
+    setWedding((prev) => prev ? { ...prev, ...edits } : prev);
+    setEdits({});
+  }, [wedding, edits]);
+
   const themeVars = useMemo(() => {
     if (!wedding) return {};
-    return themeStyles[wedding.theme_preset] || themeStyles.elegant;
-  }, [wedding]);
+    const preset = (edits.theme_preset as string) || wedding.theme_preset;
+    return themeStyles[preset] || themeStyles.elegant;
+  }, [wedding, edits.theme_preset]);
 
   if (loading) {
     return (
@@ -225,10 +264,30 @@ const WeddingPage = () => {
     sectionRefs.current[id] = el;
   };
 
+  const p1 = val("partner1_name") || "Nombre";
+  const p2 = val("partner2_name") || "Nombre";
+  const dressCode = val("dress_code");
+  const giftMsg = val("gift_message");
+  const bankAcc = val("bank_account");
+
   return (
     <div className="min-h-screen bg-background" style={themeVars as React.CSSProperties}>
+      {/* Edit toolbar for owner */}
+      {isOwner && (
+        <WeddingEditToolbar
+          editMode={editMode}
+          setEditMode={setEditMode}
+          weddingId={wedding.id}
+          currentTheme={(edits.theme_preset as string) || wedding.theme_preset}
+          edits={edits}
+          onThemeChange={handleThemeChange}
+          onSave={handleSave}
+          hasChanges={Object.keys(edits).length > 0}
+        />
+      )}
+
       {/* Sticky nav with transition */}
-      <nav className={`sticky top-0 z-50 border-b border-border transition-all duration-500 ${navVisible ? "bg-background/95 backdrop-blur-md shadow-sm" : "bg-background/60 backdrop-blur-sm"}`}>
+      <nav className={`sticky ${editMode ? "top-[52px]" : "top-0"} z-50 border-b border-border transition-all duration-500 ${navVisible ? "bg-background/95 backdrop-blur-md shadow-sm" : "bg-background/60 backdrop-blur-sm"}`}>
         <div className="max-w-5xl mx-auto px-2">
           <div className="flex items-center gap-0.5 overflow-x-auto scrollbar-hide py-2">
             {sections.map((s) => {
@@ -276,11 +335,25 @@ const WeddingPage = () => {
                 ¡Nos casamos!
               </p>
               <h1 className="font-heading text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-primary-foreground mb-4 leading-[0.9]">
-                {wedding.partner1_name || "Nombre"}
+                <EditableText
+                  value={p1}
+                  onChange={(v) => setEdit("partner1_name", v)}
+                  editMode={editMode}
+                  tag="span"
+                  className="font-heading text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-primary-foreground leading-[0.9]"
+                  placeholder="Nombre 1"
+                />
                 <span className="block text-xl sm:text-2xl md:text-3xl font-body font-light tracking-widest my-2 sm:my-3 text-primary-foreground/50">
                   &
                 </span>
-                {wedding.partner2_name || "Nombre"}
+                <EditableText
+                  value={p2}
+                  onChange={(v) => setEdit("partner2_name", v)}
+                  editMode={editMode}
+                  tag="span"
+                  className="font-heading text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-primary-foreground leading-[0.9]"
+                  placeholder="Nombre 2"
+                />
               </h1>
               {formattedDate && (
                 <p className="text-primary-foreground/80 text-base sm:text-lg font-light tracking-wide mt-4">
@@ -303,18 +376,25 @@ const WeddingPage = () => {
             </div>
           )}
 
-          {wedding.dress_code && (
+          {(dressCode || editMode) && (
             <div className="py-10 sm:py-12 bg-background text-center">
               <p className="text-muted-foreground text-xs sm:text-sm uppercase tracking-widest mb-1">Código de vestimenta</p>
-              <p className="font-heading text-lg sm:text-xl text-foreground">{wedding.dress_code}</p>
+              <EditableText
+                value={dressCode}
+                onChange={(v) => setEdit("dress_code", v)}
+                editMode={editMode}
+                tag="p"
+                className="font-heading text-lg sm:text-xl text-foreground"
+                placeholder="Ej: Formal, Casual..."
+              />
             </div>
           )}
 
           {weddingDate && (
             <WeddingCalendar
               weddingDate={wedding.wedding_date!}
-              partner1={wedding.partner1_name}
-              partner2={wedding.partner2_name}
+              partner1={p1}
+              partner2={p2}
               ceremonyVenue={wedding.ceremony_venue}
               ceremonyAddress={wedding.ceremony_address}
             />
@@ -338,7 +418,7 @@ const WeddingPage = () => {
         {/* Lugar */}
         <section id="lugar" ref={setRef("lugar")} className="scroll-mt-14">
           <AnimatedSection>
-            <WeddingVenue wedding={wedding} />
+            <WeddingVenue wedding={{ ...wedding, ceremony_venue: val("ceremony_venue"), ceremony_address: val("ceremony_address"), ceremony_time: val("ceremony_time"), reception_venue: val("reception_venue"), reception_address: val("reception_address"), reception_time: val("reception_time"), dress_code: dressCode }} />
           </AnimatedSection>
         </section>
 
@@ -346,10 +426,10 @@ const WeddingPage = () => {
         <section id="mapa" ref={setRef("mapa")} className="scroll-mt-14">
           <AnimatedSection>
             <WeddingMap
-              ceremonyVenue={wedding.ceremony_venue}
-              ceremonyAddress={wedding.ceremony_address}
-              receptionVenue={wedding.reception_venue}
-              receptionAddress={wedding.reception_address}
+              ceremonyVenue={val("ceremony_venue")}
+              ceremonyAddress={val("ceremony_address")}
+              receptionVenue={val("reception_venue")}
+              receptionAddress={val("reception_address")}
             />
           </AnimatedSection>
         </section>
@@ -357,7 +437,7 @@ const WeddingPage = () => {
         {/* Menú */}
         <section id="menu" ref={setRef("menu")} className="scroll-mt-14">
           <AnimatedSection>
-            <WeddingMenu starters={wedding.menu_starters} mains={wedding.menu_mains} desserts={wedding.menu_desserts} />
+            <WeddingMenu starters={val("menu_starters")} mains={val("menu_mains")} desserts={val("menu_desserts")} />
           </AnimatedSection>
         </section>
 
@@ -378,7 +458,7 @@ const WeddingPage = () => {
         {/* Regalo */}
         <section id="regalo" ref={setRef("regalo")} className="scroll-mt-14">
           <AnimatedSection>
-            <WeddingGift bankAccount={wedding.bank_account} message={wedding.gift_message} />
+            <WeddingGift bankAccount={bankAcc} message={giftMsg} />
           </AnimatedSection>
         </section>
 
@@ -413,14 +493,14 @@ const WeddingPage = () => {
         {/* RSVP */}
         <section id="rsvp" ref={setRef("rsvp")} className="scroll-mt-14">
           <AnimatedSection>
-            <WeddingRsvp weddingId={wedding.id} whatsappNumber={wedding.whatsapp_number} partner1={wedding.partner1_name} partner2={wedding.partner2_name} />
+            <WeddingRsvp weddingId={wedding.id} whatsappNumber={wedding.whatsapp_number} partner1={p1} partner2={p2} />
           </AnimatedSection>
         </section>
 
         {/* Compartir */}
         <section id="compartir" ref={setRef("compartir")} className="scroll-mt-14">
           <AnimatedSection>
-            <WeddingShare slug={wedding.slug} partner1={wedding.partner1_name} partner2={wedding.partner2_name} />
+            <WeddingShare slug={wedding.slug} partner1={p1} partner2={p2} />
           </AnimatedSection>
         </section>
       </main>
@@ -429,7 +509,7 @@ const WeddingPage = () => {
       <footer className="py-10 bg-card border-t border-border text-center">
         <Heart className="w-5 h-5 text-primary mx-auto mb-3 opacity-60" />
         <p className="font-heading text-xl text-foreground">
-          {wedding.partner1_name} & {wedding.partner2_name}
+          {p1} & {p2}
         </p>
         {formattedDate && (
           <p className="text-muted-foreground text-sm font-light mt-1">{formattedDate}</p>
