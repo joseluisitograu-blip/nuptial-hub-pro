@@ -35,6 +35,8 @@ const App = () => (
             <Route path="/reembolso" element={<Refund />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <CookieBanner />
+          </Routes>
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
