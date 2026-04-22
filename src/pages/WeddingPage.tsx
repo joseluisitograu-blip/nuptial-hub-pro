@@ -22,6 +22,7 @@ import WeddingCalendar from "@/components/wedding/WeddingCalendar";
 import AnimatedSection from "@/components/wedding/AnimatedSection";
 import WeddingEditToolbar from "@/components/wedding/WeddingEditToolbar";
 import EditableText from "@/components/wedding/EditableText";
+import WeddingIntro from "@/components/wedding/WeddingIntro";
 import { LangProvider, LangToggle, useLang } from "@/contexts/LangContext";
 import {
   Heart, MapPin, Gift, Music, Camera, Mail, BookHeart, UtensilsCrossed, Hotel, BookOpen, Share2, Users, Clock, HelpCircle, Navigation, ChevronUp,
@@ -267,6 +268,7 @@ const WeddingPage = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [heroLoaded, setHeroLoaded] = useState(false);
   const [navVisible, setNavVisible] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const isScrollingRef = useRef(false);
 
@@ -409,6 +411,15 @@ const WeddingPage = () => {
 
   return (
     <div className="min-h-screen bg-background" style={themeVars as React.CSSProperties}>
+      {/* Intro animation — skip for demos and owners */}
+      {showIntro && !isDemo && !isOwner && (
+        <WeddingIntro
+          partner1={p1}
+          partner2={p2}
+          weddingDate={wedding.wedding_date}
+          onComplete={() => setShowIntro(false)}
+        />
+      )}
       {/* Edit toolbar for owner — never on demos */}
       {isOwner && !isDemo && (
         <WeddingEditToolbar
