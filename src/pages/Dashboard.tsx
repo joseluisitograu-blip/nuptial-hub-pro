@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Plus, ExternalLink, LogOut, Heart, MessageCircle, ChevronDown, ChevronUp, Lock, Mail, BarChart3, Gift, Wallet } from "lucide-react";
+import { Plus, ExternalLink, LogOut, Heart, MessageCircle, ChevronDown, ChevronUp, Lock, Mail, BarChart3, Gift, Wallet, ListChecks } from "lucide-react";
 import WeddingStats from "@/components/dashboard/WeddingStats";
 import ExportRsvps from "@/components/dashboard/ExportRsvps";
 import DashboardMessages from "@/components/dashboard/DashboardMessages";
 import WeddingBudget from "@/components/dashboard/WeddingBudget";
 import WeddingGifts from "@/components/dashboard/WeddingGifts";
+import WeddingChecklist from "@/components/dashboard/WeddingChecklist";
 import { usePurchase } from "@/hooks/usePurchase";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { useToast } from "@/hooks/use-toast";
@@ -20,7 +21,7 @@ interface Wedding {
   wedding_date: string | null;
 }
 
-type WeddingTab = "stats" | "budget" | "gifts";
+type WeddingTab = "stats" | "budget" | "gifts" | "checklist";
 
 const Dashboard = () => {
   const { user, signOut, loading: authLoading } = useAuth();
@@ -30,7 +31,7 @@ const Dashboard = () => {
   const [creating, setCreating] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<WeddingTab>("stats");
-  const { hasPurchase, loading: purchaseLoading, isOwner } = usePurchase();
+  const { hasPurchase, loading: purchaseLoading, isOwner, isCompleto } = usePurchase();
   const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
   const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -104,10 +105,11 @@ const Dashboard = () => {
     );
   }
 
-  const tabs: { id: WeddingTab; label: string; icon: React.ReactNode }[] = [
+  const tabs: { id: WeddingTab; label: string; icon: React.ReactNode; requiresCompleto?: boolean }[] = [
     { id: "stats", label: "Resumen", icon: <BarChart3 className="w-4 h-4" /> },
-    { id: "budget", label: "Presupuesto", icon: <Wallet className="w-4 h-4" /> },
-    { id: "gifts", label: "Regalos", icon: <Gift className="w-4 h-4" /> },
+    { id: "checklist", label: "Checklist", icon: <ListChecks className="w-4 h-4" />, requiresCompleto: true },
+    { id: "budget", label: "Presupuesto", icon: <Wallet className="w-4 h-4" />, requiresCompleto: true },
+    { id: "gifts", label: "Regalos", icon: <Gift className="w-4 h-4" />, requiresCompleto: true },
   ];
 
   return (
@@ -268,8 +270,23 @@ const Dashboard = () => {
                             </div>
                           </>
                         )}
-                        {activeTab === "budget" && <WeddingBudget weddingId={w.id} />}
-                        {activeTab === "gifts" && <WeddingGifts weddingId={w.id} />}
+                        {activeTab === "budget" && isCompleto && <WeddingBudget weddingId={w.id} />}
+                        {activeTab === "gifts" && isCompleto && <WeddingGifts weddingId={w.id} />}
+                        {activeTab === "checklist" && isCompleto && <WeddingChecklist weddingId={w.id} />}
+                        {(activeTab === "budget" || activeTab === "gifts" || activeTab === "checklist") && !isCompleto && (
+                          <div className="text-center py-10">
+                            <Lock className="w-10 h-10 text-muted-foreground mx-auto mb-3 opacity-40" />
+                            <p className="text-foreground font-medium mb-1">Funcionalidad exclusiva del plan Completo</p>
+                            <p className="text-muted-foreground text-sm mb-4">Gestiona presupuesto, regalos y checklist de tu boda.</p>
+                            <button
+                              onClick={() => handleBuy("completo_one_time")}
+                              disabled={checkoutLoading}
+                              className="px-5 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+                            >
+                              Actualizar a Completo · 65€
+                            </button>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>

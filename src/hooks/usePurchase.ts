@@ -9,6 +9,7 @@ interface PurchaseInfo {
   productId: string | null;
   loading: boolean;
   isOwner: boolean;
+  isCompleto: boolean;
 }
 
 export function usePurchase(): PurchaseInfo {
@@ -52,5 +53,6 @@ export function usePurchase(): PurchaseInfo {
     fetchPurchase();
   }, [user, isOwner]);
 
-  return { hasPurchase, productId, loading, isOwner };
+  const isCompleto = isOwner || (productId || "").toLowerCase().includes("completo");
+  return { hasPurchase, productId, loading, isOwner, isCompleto };
 }

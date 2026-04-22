@@ -456,6 +456,50 @@ export type Database = {
           },
         ]
       }
+      wedding_checklist: {
+        Row: {
+          category: string
+          created_at: string
+          due_date: string | null
+          id: string
+          is_done: boolean
+          notes: string
+          sort_order: number
+          title: string
+          wedding_id: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          is_done?: boolean
+          notes?: string
+          sort_order?: number
+          title?: string
+          wedding_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          is_done?: boolean
+          notes?: string
+          sort_order?: number
+          title?: string
+          wedding_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wedding_checklist_wedding_id_fkey"
+            columns: ["wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       wedding_gifts: {
         Row: {
           created_at: string

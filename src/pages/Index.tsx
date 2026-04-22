@@ -410,7 +410,7 @@ const Index = () => {
                 <ul className="space-y-2.5 sm:space-y-3 mb-6 sm:mb-8 flex-1">
                   {[
                     "Todo lo del plan Básico",
-                    "4 temas visuales disponibles",
+                    "7 temas visuales disponibles",
                     "Playlist colaborativa con votos",
                     "Muro de fotos en vivo",
                     "Plan de mesas inteligente",
@@ -419,7 +419,9 @@ const Index = () => {
                     "Lista de regalos / cuenta bancaria",
                     "Vuestra historia de amor",
                     "Compartir por WhatsApp",
-                    "Mantenimiento y ajustes incluidos",
+                    "📊 Gestor de presupuesto completo",
+                    "🎁 Control de regalos y agradecimientos",
+                    "✅ Checklist de tareas de boda",
                     "Soporte 24 horas",
                     "Borrador de la web en 24h",
                   ].map((item) => (
