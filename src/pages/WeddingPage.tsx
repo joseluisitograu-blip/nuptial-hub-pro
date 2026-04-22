@@ -170,6 +170,24 @@ const sections = [
   { id: "compartir", label: "Compartir", icon: Share2 },
 ];
 
+const DemoOverlay = ({ title, description }: { title: string; description: string }) => (
+  <div className="py-16 sm:py-20 bg-card/50">
+    <div className="max-w-md mx-auto text-center px-6">
+      <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+        <Heart className="w-7 h-7 text-primary" />
+      </div>
+      <h3 className="font-heading text-2xl text-foreground mb-2">{title}</h3>
+      <p className="text-muted-foreground font-light mb-6">{description}</p>
+      <a
+        href="/auth"
+        className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity text-sm"
+      >
+        Crea tu boda · Desde 35€
+      </a>
+    </div>
+  </div>
+);
+
 const WeddingPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const { user } = useAuth();
@@ -186,6 +204,7 @@ const WeddingPage = () => {
   const [editMode, setEditMode] = useState(false);
   const [edits, setEdits] = useState<Partial<WeddingData>>({});
   const isOwner = !!(user && wedding && wedding.user_id === user.id);
+  const isDemo = slug?.startsWith("demo-") ?? false;
 
   useEffect(() => {
     if (!slug) return;
@@ -322,8 +341,8 @@ const WeddingPage = () => {
 
   return (
     <div className="min-h-screen bg-background" style={themeVars as React.CSSProperties}>
-      {/* Edit toolbar for owner */}
-      {isOwner && (
+      {/* Edit toolbar for owner — never on demos */}
+      {isOwner && !isDemo && (
         <WeddingEditToolbar
           editMode={editMode}
           setEditMode={setEditMode}
@@ -334,6 +353,13 @@ const WeddingPage = () => {
           onSave={handleSave}
           hasChanges={Object.keys(edits).length > 0}
         />
+      )}
+
+      {/* Demo banner */}
+      {isDemo && (
+        <div className="sticky top-0 z-[60] bg-primary text-primary-foreground text-center py-2 px-4 text-sm font-medium">
+          ✨ Esto es una demo · <a href="/auth" className="underline font-semibold hover:opacity-80">Crea la tuya desde 35€</a>
+        </div>
       )}
 
       {/* Sticky nav with transition */}
@@ -487,7 +513,11 @@ const WeddingPage = () => {
         {/* RSVP */}
         <section id="rsvp" ref={setRef("rsvp")} className="scroll-mt-14">
           <AnimatedSection>
-            <WeddingRsvp weddingId={wedding.id} whatsappNumber={wedding.whatsapp_number} partner1={p1} partner2={p2} />
+            {isDemo ? (
+              <DemoOverlay title="RSVP Online" description="Tus invitados confirman asistencia, acompañantes y notas dietéticas." />
+            ) : (
+              <WeddingRsvp weddingId={wedding.id} whatsappNumber={wedding.whatsapp_number} partner1={p1} partner2={p2} />
+            )}
           </AnimatedSection>
         </section>
 
@@ -522,21 +552,33 @@ const WeddingPage = () => {
         {/* Playlist */}
         <section id="playlist" ref={setRef("playlist")} className="scroll-mt-14">
           <AnimatedSection>
-            <WeddingPlaylist weddingId={wedding.id} />
+            {isDemo ? (
+              <DemoOverlay title="Playlist Colaborativa" description="Los invitados sugieren canciones y votan sus favoritas para la fiesta." />
+            ) : (
+              <WeddingPlaylist weddingId={wedding.id} />
+            )}
           </AnimatedSection>
         </section>
 
         {/* Fotos */}
         <section id="fotos" ref={setRef("fotos")} className="scroll-mt-14">
           <AnimatedSection>
-            <WeddingPhotos weddingId={wedding.id} />
+            {isDemo ? (
+              <DemoOverlay title="Muro de Fotos" description="Los invitados comparten sus mejores fotos del día en un álbum colaborativo." />
+            ) : (
+              <WeddingPhotos weddingId={wedding.id} />
+            )}
           </AnimatedSection>
         </section>
 
         {/* Firmas */}
         <section id="firmas" ref={setRef("firmas")} className="scroll-mt-14">
           <AnimatedSection>
-            <WeddingGuestbook weddingId={wedding.id} />
+            {isDemo ? (
+              <DemoOverlay title="Libro de Firmas" description="Mensajes y notas de voz de tus invitados para guardar para siempre." />
+            ) : (
+              <WeddingGuestbook weddingId={wedding.id} />
+            )}
           </AnimatedSection>
         </section>
 
