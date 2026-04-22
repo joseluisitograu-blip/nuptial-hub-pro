@@ -188,7 +188,7 @@ const DemoOverlay = ({ title, description }: { title: string; description: strin
   </div>
 );
 
-
+const WeddingPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const { user } = useAuth();
   const [wedding, setWedding] = useState<WeddingData | null>(null);
