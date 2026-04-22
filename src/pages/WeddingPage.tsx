@@ -495,7 +495,11 @@ const WeddingPage = () => {
         {/* RSVP */}
         <section id="rsvp" ref={setRef("rsvp")} className="scroll-mt-14">
           <AnimatedSection>
-            <WeddingRsvp weddingId={wedding.id} whatsappNumber={wedding.whatsapp_number} partner1={p1} partner2={p2} />
+            {isDemo ? (
+              <DemoOverlay title="RSVP Online" description="Tus invitados confirman asistencia, acompañantes y notas dietéticas." />
+            ) : (
+              <WeddingRsvp weddingId={wedding.id} whatsappNumber={wedding.whatsapp_number} partner1={p1} partner2={p2} />
+            )}
           </AnimatedSection>
         </section>
 
@@ -530,21 +534,33 @@ const WeddingPage = () => {
         {/* Playlist */}
         <section id="playlist" ref={setRef("playlist")} className="scroll-mt-14">
           <AnimatedSection>
-            <WeddingPlaylist weddingId={wedding.id} />
+            {isDemo ? (
+              <DemoOverlay title="Playlist Colaborativa" description="Los invitados sugieren canciones y votan sus favoritas para la fiesta." />
+            ) : (
+              <WeddingPlaylist weddingId={wedding.id} />
+            )}
           </AnimatedSection>
         </section>
 
         {/* Fotos */}
         <section id="fotos" ref={setRef("fotos")} className="scroll-mt-14">
           <AnimatedSection>
-            <WeddingPhotos weddingId={wedding.id} />
+            {isDemo ? (
+              <DemoOverlay title="Muro de Fotos" description="Los invitados comparten sus mejores fotos del día en un álbum colaborativo." />
+            ) : (
+              <WeddingPhotos weddingId={wedding.id} />
+            )}
           </AnimatedSection>
         </section>
 
         {/* Firmas */}
         <section id="firmas" ref={setRef("firmas")} className="scroll-mt-14">
           <AnimatedSection>
-            <WeddingGuestbook weddingId={wedding.id} />
+            {isDemo ? (
+              <DemoOverlay title="Libro de Firmas" description="Mensajes y notas de voz de tus invitados para guardar para siempre." />
+            ) : (
+              <WeddingGuestbook weddingId={wedding.id} />
+            )}
           </AnimatedSection>
         </section>
 
