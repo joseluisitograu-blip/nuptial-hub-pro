@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Plus, ExternalLink, LogOut, Heart, MessageCircle, ChevronDown, ChevronUp, Lock, Mail } from "lucide-react";
@@ -8,6 +8,7 @@ import ExportRsvps from "@/components/dashboard/ExportRsvps";
 import DashboardMessages from "@/components/dashboard/DashboardMessages";
 import { usePurchase } from "@/hooks/usePurchase";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
+import { useToast } from "@/hooks/use-toast";
 
 interface Wedding {
   id: string;
@@ -26,6 +27,17 @@ const Dashboard = () => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const { hasPurchase, loading: purchaseLoading, isOwner } = usePurchase();
   const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
+  const { toast } = useToast();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Checkout success feedback
+  useEffect(() => {
+    if (searchParams.get("checkout") === "success") {
+      toast({ title: "¡Pago completado!", description: "Ya puedes crear tu boda." });
+      searchParams.delete("checkout");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/auth");
