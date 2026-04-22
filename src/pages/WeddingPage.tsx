@@ -411,8 +411,8 @@ const WeddingPage = () => {
 
   return (
     <div className="min-h-screen bg-background" style={themeVars as React.CSSProperties}>
-      {/* Intro animation — skip for demos and owners */}
-      {showIntro && !isDemo && !isOwner && (
+      {/* Intro animation — skip for owners editing */}
+      {showIntro && !isOwner && (
         <WeddingIntro
           partner1={p1}
           partner2={p2}
