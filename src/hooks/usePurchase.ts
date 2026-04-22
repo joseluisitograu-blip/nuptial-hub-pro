@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 
-const OWNER_EMAIL = "joseluisitograu@gmail.com";
-
 interface PurchaseInfo {
   hasPurchase: boolean;
   productId: string | null;
@@ -17,8 +15,7 @@ export function usePurchase(): PurchaseInfo {
   const [hasPurchase, setHasPurchase] = useState(false);
   const [productId, setProductId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-
-  const isOwner = user?.email === OWNER_EMAIL;
+  const [isOwner, setIsOwner] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -26,16 +23,26 @@ export function usePurchase(): PurchaseInfo {
       return;
     }
 
-    if (isOwner) {
-      setHasPurchase(true);
-      setLoading(false);
-      return;
-    }
-
     const clientToken = import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN || "";
     const environment = clientToken.startsWith("test_") ? "sandbox" : "live";
 
-    const fetchPurchase = async () => {
+    const fetchData = async () => {
+      // Check admin role server-side
+      const { data: roles } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("role", "admin");
+
+      const adminRole = roles && roles.length > 0;
+      setIsOwner(adminRole);
+
+      if (adminRole) {
+        setHasPurchase(true);
+        setLoading(false);
+        return;
+      }
+
       const { data } = await supabase
         .from("purchases")
         .select("product_id")
@@ -50,8 +57,8 @@ export function usePurchase(): PurchaseInfo {
       setLoading(false);
     };
 
-    fetchPurchase();
-  }, [user, isOwner]);
+    fetchData();
+  }, [user]);
 
   const isCompleto = isOwner || (productId || "").toLowerCase().includes("completo");
   return { hasPurchase, productId, loading, isOwner, isCompleto };
