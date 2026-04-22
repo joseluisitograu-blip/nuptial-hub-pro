@@ -402,8 +402,8 @@ const EditWedding = () => {
             <Field label="Nombre 1" value={form.partner1_name} onChange={(v) => update("partner1_name", v)} placeholder="María" />
             <Field label="Nombre 2" value={form.partner2_name} onChange={(v) => update("partner2_name", v)} placeholder="Carlos" />
           </div>
-          <Field label="URL personalizada" value={form.slug} onChange={(v) => update("slug", v)} placeholder="maria-y-carlos" />
-          <Field label="Fecha de la boda" value={form.wedding_date} onChange={(v) => update("wedding_date", v)} type="date" />
+            <Field label="URL personalizada" value={form.slug} onChange={(v) => update("slug", v.toLowerCase().replace(/[^a-z0-9-]/g, "-").replace(/-+/g, "-"))} placeholder="maria-y-carlos" />
+            <p className="text-xs text-muted-foreground -mt-2">Solo letras, números y guiones. Tu web estará en: /w/{form.slug}</p>
         </section>
 
         {/* Story */}
