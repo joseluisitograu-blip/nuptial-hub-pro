@@ -210,11 +210,9 @@ const WeddingPage = () => {
     if (!slug) return;
     const fetchWedding = async () => {
       const { data } = await supabase
-        .from("weddings")
-        .select("*")
-        .eq("slug", slug)
-        .single();
-      setWedding(data as WeddingData | null);
+        .rpc("get_wedding_by_slug", { p_slug: slug });
+      const row = Array.isArray(data) ? data[0] : data;
+      setWedding(row as WeddingData | null);
       setLoading(false);
     };
     fetchWedding();
