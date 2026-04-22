@@ -268,6 +268,7 @@ const WeddingPage = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [heroLoaded, setHeroLoaded] = useState(false);
   const [navVisible, setNavVisible] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const isScrollingRef = useRef(false);
 
