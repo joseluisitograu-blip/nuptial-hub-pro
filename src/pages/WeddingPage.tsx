@@ -186,6 +186,7 @@ const WeddingPage = () => {
   const [editMode, setEditMode] = useState(false);
   const [edits, setEdits] = useState<Partial<WeddingData>>({});
   const isOwner = !!(user && wedding && wedding.user_id === user.id);
+  const isDemo = slug?.startsWith("demo-") ?? false;
 
   useEffect(() => {
     if (!slug) return;
