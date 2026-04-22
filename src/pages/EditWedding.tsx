@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Save, ExternalLink, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Save, ExternalLink, Plus, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 
 const inputClass =
@@ -126,6 +126,7 @@ const EditWedding = () => {
     menu_desserts: "",
     theme_preset: "elegant",
     whatsapp_number: "",
+    hero_image_url: "",
   });
 
   useEffect(() => {
@@ -164,6 +165,7 @@ const EditWedding = () => {
           menu_desserts: wedding.menu_desserts || "",
           theme_preset: wedding.theme_preset || "elegant",
           whatsapp_number: (wedding as any).whatsapp_number || "",
+          hero_image_url: wedding.hero_image_url || "",
         });
       }
       setStories((storyData as StoryItem[]) || []);
@@ -212,6 +214,7 @@ const EditWedding = () => {
         menu_desserts: form.menu_desserts,
         theme_preset: form.theme_preset,
         whatsapp_number: form.whatsapp_number,
+        hero_image_url: form.hero_image_url,
       } as any)
       .eq("id", id!);
 
