@@ -201,7 +201,15 @@ const WeddingPage = () => {
     fetchWedding();
   }, [slug]);
 
-  // Intersection observer for active section tracking
+  // Dynamic page title for SEO and browser tab
+  useEffect(() => {
+    if (!wedding) return;
+    const p1 = wedding.partner1_name || "Nombre";
+    const p2 = wedding.partner2_name || "Nombre";
+    document.title = `Boda de ${p1} & ${p2} — Click Tu Boda`;
+    return () => { document.title = "Click Tu Boda"; };
+  }, [wedding]);
+
   useEffect(() => {
     if (!wedding) return;
     const observer = new IntersectionObserver(
