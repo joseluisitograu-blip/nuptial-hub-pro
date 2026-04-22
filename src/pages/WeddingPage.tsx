@@ -411,6 +411,15 @@ const WeddingPage = () => {
 
   return (
     <div className="min-h-screen bg-background" style={themeVars as React.CSSProperties}>
+      {/* Intro animation — skip for demos and owners */}
+      {showIntro && !isDemo && !isOwner && (
+        <WeddingIntro
+          partner1={p1}
+          partner2={p2}
+          weddingDate={wedding.wedding_date}
+          onComplete={() => setShowIntro(false)}
+        />
+      )}
       {/* Edit toolbar for owner — never on demos */}
       {isOwner && !isDemo && (
         <WeddingEditToolbar
