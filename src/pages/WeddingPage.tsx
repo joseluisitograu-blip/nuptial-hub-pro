@@ -116,6 +116,7 @@ const sections = [
   { id: "agenda", label: "Agenda", icon: Clock },
   { id: "lugar", label: "Lugar", icon: MapPin },
   { id: "mapa", label: "Mapa", icon: Navigation },
+  { id: "rsvp", label: "RSVP", icon: Mail },
   { id: "menu", label: "Menú", icon: UtensilsCrossed },
   { id: "alojamiento", label: "Alojamiento", icon: Hotel },
   { id: "mesas", label: "Mesas", icon: Users },
@@ -124,7 +125,6 @@ const sections = [
   { id: "fotos", label: "Fotos", icon: Camera },
   { id: "firmas", label: "Firmas", icon: BookOpen },
   { id: "faq", label: "FAQ", icon: HelpCircle },
-  { id: "rsvp", label: "RSVP", icon: Mail },
   { id: "compartir", label: "Compartir", icon: Share2 },
 ];
 
