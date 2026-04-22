@@ -17,6 +17,7 @@ import WeddingSeating from "@/components/wedding/WeddingSeating";
 import WeddingAgenda from "@/components/wedding/WeddingAgenda";
 import WeddingFaq from "@/components/wedding/WeddingFaq";
 import WeddingMap from "@/components/wedding/WeddingMap";
+import WeddingCalendar from "@/components/wedding/WeddingCalendar";
 import AnimatedSection from "@/components/wedding/AnimatedSection";
 import { LangProvider, LangToggle, useLang } from "@/contexts/LangContext";
 import {
