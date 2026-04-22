@@ -43,17 +43,7 @@ const WeddingAgenda = ({ weddingId }: { weddingId: string }) => {
 
   if (loading) return <div className="py-24 text-center text-muted-foreground">Cargando...</div>;
 
-  if (items.length === 0) {
-    return (
-      <div className="py-24 bg-secondary">
-        <div className="container max-w-md text-center">
-          <Clock className="w-8 h-8 text-muted-foreground mx-auto mb-4" />
-          <h2 className="font-heading text-4xl text-foreground mb-3">Agenda del día</h2>
-          <p className="text-muted-foreground font-light">Próximamente...</p>
-        </div>
-      </div>
-    );
-  }
+  if (items.length === 0) return null;
 
   return (
     <div className="py-24 bg-secondary">
