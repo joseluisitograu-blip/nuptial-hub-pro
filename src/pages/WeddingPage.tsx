@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import heroImage from "@/assets/hero-wedding.jpg";
+import heroImage from "@/assets/hero-wedding.webp";
 import WeddingCountdown from "@/components/wedding/WeddingCountdown";
 import WeddingVenue from "@/components/wedding/WeddingVenue";
 import WeddingGift from "@/components/wedding/WeddingGift";
