@@ -323,8 +323,8 @@ const WeddingPage = () => {
 
   return (
     <div className="min-h-screen bg-background" style={themeVars as React.CSSProperties}>
-      {/* Edit toolbar for owner */}
-      {isOwner && (
+      {/* Edit toolbar for owner — never on demos */}
+      {isOwner && !isDemo && (
         <WeddingEditToolbar
           editMode={editMode}
           setEditMode={setEditMode}
@@ -335,6 +335,13 @@ const WeddingPage = () => {
           onSave={handleSave}
           hasChanges={Object.keys(edits).length > 0}
         />
+      )}
+
+      {/* Demo banner */}
+      {isDemo && (
+        <div className="sticky top-0 z-[60] bg-primary text-primary-foreground text-center py-2 px-4 text-sm font-medium">
+          ✨ Esto es una demo · <a href="/auth" className="underline font-semibold hover:opacity-80">Crea la tuya desde 35€</a>
+        </div>
       )}
 
       {/* Sticky nav with transition */}
