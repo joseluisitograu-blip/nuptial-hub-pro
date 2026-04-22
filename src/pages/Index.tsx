@@ -221,23 +221,23 @@ const Index = () => {
       </section>
 
       {/* Social proof bar */}
-      <section className="py-8 bg-card border-b border-border">
-        <div className="container max-w-4xl flex flex-wrap items-center justify-center gap-10 sm:gap-16 text-center">
+      <section className="py-6 sm:py-8 bg-card border-b border-border">
+        <div className="container max-w-4xl grid grid-cols-2 sm:flex sm:flex-wrap items-center justify-center gap-6 sm:gap-10 md:gap-16 text-center px-6">
           <div ref={stat1.ref}>
-            <p className="font-heading text-3xl text-foreground">{stat1.count}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">Temas visuales</p>
+            <p className="font-heading text-2xl sm:text-3xl text-foreground">{stat1.count}</p>
+            <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5">Temas visuales</p>
           </div>
           <div ref={stat2.ref}>
-            <p className="font-heading text-3xl text-foreground">{stat2.count}+</p>
-            <p className="text-xs text-muted-foreground mt-0.5">Secciones</p>
+            <p className="font-heading text-2xl sm:text-3xl text-foreground">{stat2.count}+</p>
+            <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5">Secciones</p>
           </div>
           <div>
-            <p className="font-heading text-3xl text-foreground">QR</p>
-            <p className="text-xs text-muted-foreground mt-0.5">Incluido</p>
+            <p className="font-heading text-2xl sm:text-3xl text-foreground">QR</p>
+            <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5">Incluido</p>
           </div>
           <div ref={stat3.ref}>
-            <p className="font-heading text-3xl text-foreground">{stat3.count}%</p>
-            <p className="text-xs text-muted-foreground mt-0.5">Personalizable</p>
+            <p className="font-heading text-2xl sm:text-3xl text-foreground">{stat3.count}%</p>
+            <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5">Personalizable</p>
           </div>
         </div>
       </section>

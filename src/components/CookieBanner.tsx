@@ -27,29 +27,28 @@ const CookieBanner = () => {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-50 p-4 animate-fade-in">
+    <div className="fixed bottom-0 inset-x-0 z-50 p-3 sm:p-4 animate-fade-in">
       <div className="container max-w-2xl">
-        <div className="bg-card border border-border rounded-2xl shadow-xl p-6">
-          <div className="flex items-start gap-3">
-            <Cookie className="w-6 h-6 text-primary mt-0.5 shrink-0" />
-            <div className="flex-1 space-y-3">
-              <p className="text-sm text-foreground leading-relaxed">
-                Usamos cookies propias y de terceros para mejorar tu experiencia y analizar el tráfico.
-                Puedes aceptar todas o solo las esenciales.{" "}
+        <div className="bg-card border border-border rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6">
+          <div className="flex items-start gap-2.5 sm:gap-3">
+            <Cookie className="w-5 h-5 sm:w-6 sm:h-6 text-primary mt-0.5 shrink-0" />
+            <div className="flex-1 space-y-2.5 sm:space-y-3">
+              <p className="text-xs sm:text-sm text-foreground leading-relaxed">
+                Usamos cookies para mejorar tu experiencia y analizar el tráfico.{" "}
                 <Link to="/privacidad" className="underline text-primary hover:opacity-80">
                   Política de privacidad
                 </Link>
               </p>
 
               {showDetails && (
-                <div className="text-xs text-muted-foreground space-y-2 border-t border-border pt-3">
+                <div className="text-[11px] sm:text-xs text-muted-foreground space-y-1.5 sm:space-y-2 border-t border-border pt-2.5 sm:pt-3">
                   <p>
                     <strong className="text-foreground">Esenciales:</strong> Necesarias para el
-                    funcionamiento del sitio (sesión, preferencias). No se pueden desactivar.
+                    funcionamiento del sitio (sesión, preferencias).
                   </p>
                   <p>
                     <strong className="text-foreground">Analíticas:</strong> Nos ayudan a entender cómo
-                    usas la web para mejorarla (Google Analytics).
+                    usas la web para mejorarla.
                   </p>
                 </div>
               )}
@@ -57,21 +56,21 @@ const CookieBanner = () => {
               <div className="flex flex-wrap items-center gap-2">
                 <button
                   onClick={() => accept("all")}
-                  className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+                  className="px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-primary text-primary-foreground text-xs sm:text-sm font-medium hover:opacity-90 transition-opacity"
                 >
                   Aceptar todas
                 </button>
                 <button
                   onClick={() => accept("essential")}
-                  className="px-4 py-2 rounded-lg border border-border text-foreground text-sm font-medium hover:bg-secondary transition-colors"
+                  className="px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-lg border border-border text-foreground text-xs sm:text-sm font-medium hover:bg-secondary transition-colors"
                 >
                   Solo esenciales
                 </button>
                 <button
                   onClick={() => setShowDetails(!showDetails)}
-                  className="text-xs text-muted-foreground underline hover:text-foreground transition-colors"
+                  className="text-[11px] sm:text-xs text-muted-foreground underline hover:text-foreground transition-colors"
                 >
-                  {showDetails ? "Ocultar detalles" : "Más información"}
+                  {showDetails ? "Ocultar" : "Más info"}
                 </button>
               </div>
             </div>
