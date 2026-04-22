@@ -15,17 +15,17 @@ const features = [
   { icon: Clock, title: "Agenda del día", desc: "Timeline visual del evento: ceremonia → cóctel → banquete → fiesta." },
   { icon: BookHeart, title: "Vuestra historia", desc: "Línea de tiempo con los hitos de amor de la pareja." },
   { icon: Gift, title: "Lista de regalos", desc: "Cuenta bancaria con sistema de revelado elegante para los invitados." },
-  { icon: HelpCircle, title: "FAQ inteligente", desc: "Preguntas frecuentes: parking, niños, dress code, alojamiento..." },
+  { icon: HelpCircle, title: "FAQ inteligente", desc: "Preguntas frecuentes: parking, niños, código de vestimenta, alojamiento..." },
   { icon: Share2, title: "QR & WhatsApp", desc: "Comparte con un QR imprimible o directamente por WhatsApp." },
-  { icon: Sparkles, title: "4 temas visuales", desc: "Elegant, Romantic, Rustic y Modern. Cada boda con su personalidad." },
-  { icon: Users, title: "Sitting plan", desc: "Asigna invitados a mesas. Visible solo un día antes de la boda." },
+  { icon: Sparkles, title: "4 temas visuales", desc: "Elegante, Romántico, Rústico y Moderno. Cada boda con su personalidad." },
+  { icon: Users, title: "Plan de mesas", desc: "Asigna invitados a mesas. Visible solo un día antes de la boda." },
 ];
 
 const demos = [
-  { slug: "demo-elegant", theme: "Elegant", couple: "Sofía & Daniel", color: "hsl(33, 30%, 40%)", gradient: "from-amber-800/20 to-amber-600/10" },
-  { slug: "demo-romantic", theme: "Romantic", couple: "Isabella & Marco", color: "hsl(340, 45%, 55%)", gradient: "from-pink-600/20 to-rose-400/10" },
-  { slug: "demo-rustic", theme: "Rustic", couple: "Elena & Pablo", color: "hsl(25, 50%, 32%)", gradient: "from-orange-900/20 to-orange-700/10" },
-  { slug: "demo-modern", theme: "Modern", couple: "Martina & Álex", color: "hsl(220, 25%, 18%)", gradient: "from-slate-800/20 to-slate-600/10" },
+  { slug: "demo-elegant", theme: "Elegante", couple: "Sofía & Daniel", color: "hsl(33, 30%, 40%)", gradient: "from-amber-800/20 to-amber-600/10" },
+  { slug: "demo-romantic", theme: "Romántico", couple: "Isabella & Marco", color: "hsl(340, 45%, 55%)", gradient: "from-pink-600/20 to-rose-400/10" },
+  { slug: "demo-rustic", theme: "Rústico", couple: "Elena & Pablo", color: "hsl(25, 50%, 32%)", gradient: "from-orange-900/20 to-orange-700/10" },
+  { slug: "demo-modern", theme: "Moderno", couple: "Martina & Álex", color: "hsl(220, 25%, 18%)", gradient: "from-slate-800/20 to-slate-600/10" },
 ];
 
 const testimonials = [
@@ -413,7 +413,7 @@ const Index = () => {
                     "4 temas visuales disponibles",
                     "Playlist colaborativa con votos",
                     "Muro de fotos en vivo",
-                    "Sitting plan inteligente",
+                    "Plan de mesas inteligente",
                     "Agenda del día completa",
                     "FAQ + Mapa interactivo",
                     "Lista de regalos / cuenta bancaria",
@@ -455,7 +455,7 @@ const Index = () => {
                     "RSVP online",
                     "Código QR para invitaciones",
                     "Información de ceremonia y recepción",
-                    "Countdown del gran día",
+                    "Cuenta atrás del gran día",
                     "Borrador de la web en 24h",
                   ].map((item) => (
                     <li key={item} className="flex items-start gap-2 sm:gap-2.5 text-sm text-foreground">
@@ -477,7 +477,7 @@ const Index = () => {
             {/* Plan Wedding Planner */}
             <RevealSection delay={200} className="sm:order-3">
               <div className="bg-card border border-border rounded-xl p-6 sm:p-7 flex flex-col h-full hover:shadow-lg transition-all duration-300">
-                <h3 className="font-heading text-2xl text-foreground mb-1">Wedding Planner</h3>
+                <h3 className="font-heading text-2xl text-foreground mb-1">Organizador</h3>
                 <div className="mb-3 sm:mb-4">
                   <span className="font-heading text-2xl sm:text-3xl text-foreground">A medida</span>
                 </div>

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { Heart } from "lucide-react";
+import { Heart, ArrowLeft } from "lucide-react";
 
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -34,6 +34,9 @@ const Auth = () => {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <div className="w-full max-w-md">
+        <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8">
+          <ArrowLeft className="w-4 h-4" /> Volver al inicio
+        </Link>
         <div className="text-center mb-10">
           <Heart className="w-8 h-8 text-sand-accent mx-auto mb-4" />
           <h1 className="font-heading text-4xl text-foreground mb-2">
