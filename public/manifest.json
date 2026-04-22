@@ -1,0 +1,21 @@
+{
+  "name": "Click Tu Boda",
+  "short_name": "ClickTuBoda",
+  "description": "Crea la web de tu boda en minutos con RSVP, playlist, fotos y más.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fffaf5",
+  "theme_color": "#7c3aed",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
