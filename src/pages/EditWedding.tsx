@@ -102,6 +102,7 @@ const EditWedding = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingHero, setUploadingHero] = useState(false);
   const [stories, setStories] = useState<StoryItem[]>([]);
   const [accommodations, setAccommodations] = useState<AccommodationItem[]>([]);
   const [agendaItems, setAgendaItems] = useState<AgendaItem[]>([]);
