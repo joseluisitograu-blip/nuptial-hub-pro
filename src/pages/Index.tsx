@@ -102,6 +102,14 @@ const Index = () => {
   const [heroLoaded, setHeroLoaded] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const [contactSubject, setContactSubject] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 60);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleBuy = (priceId: string) => {
     openCheckout({
@@ -115,12 +123,57 @@ const Index = () => {
   const stat2 = useCounter(15);
   const stat3 = useCounter(100);
 
+  const navLinks = [
+    { href: "#features", label: "Funcionalidades" },
+    { href: "#demos", label: "Demos" },
+    { href: "#pricing", label: "Precios" },
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       <PaymentTestModeBanner />
 
+      {/* Sticky Navbar */}
+      <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? "bg-background/95 backdrop-blur-md shadow-sm border-b border-border" : "bg-transparent"}`}>
+        <div className="container max-w-5xl flex items-center justify-between h-14 sm:h-16 px-4 sm:px-6">
+          <Link to="/" className="flex items-center gap-2">
+            <Heart className={`w-5 h-5 transition-colors ${scrolled ? "text-primary" : "text-primary-foreground"}`} />
+            <span className={`font-heading text-lg sm:text-xl transition-colors ${scrolled ? "text-foreground" : "text-primary-foreground"}`}>Click Tu Boda</span>
+          </Link>
+          <div className="hidden md:flex items-center gap-6">
+            {navLinks.map((l) => (
+              <a key={l.href} href={l.href} className={`text-sm font-light transition-colors ${scrolled ? "text-muted-foreground hover:text-foreground" : "text-primary-foreground/70 hover:text-primary-foreground"}`}>
+                {l.label}
+              </a>
+            ))}
+            <Link to="/auth" className={`text-sm font-medium px-5 py-2 rounded-lg transition-all ${scrolled ? "bg-primary text-primary-foreground hover:opacity-90" : "bg-primary-foreground/20 text-primary-foreground backdrop-blur-sm hover:bg-primary-foreground/30"}`}>
+              Crear mi boda
+            </Link>
+          </div>
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden p-2">
+            {mobileMenuOpen
+              ? <X className={`w-5 h-5 ${scrolled ? "text-foreground" : "text-primary-foreground"}`} />
+              : <Menu className={`w-5 h-5 ${scrolled ? "text-foreground" : "text-primary-foreground"}`} />
+            }
+          </button>
+        </div>
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-background/95 backdrop-blur-md border-b border-border px-6 pb-4 space-y-3">
+            {navLinks.map((l) => (
+              <a key={l.href} href={l.href} onClick={() => setMobileMenuOpen(false)} className="block text-sm text-muted-foreground hover:text-foreground transition-colors py-1">
+                {l.label}
+              </a>
+            ))}
+            <Link to="/auth" onClick={() => setMobileMenuOpen(false)} className="block text-center text-sm font-medium px-5 py-2.5 rounded-lg bg-primary text-primary-foreground">
+              Crear mi boda
+            </Link>
+          </div>
+        )}
+      </nav>
+
       {/* Hero */}
-      <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <img
             src={heroImage}
@@ -130,28 +183,28 @@ const Index = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-foreground/30 via-foreground/50 to-foreground/70" />
         </div>
-        <div className={`relative z-10 text-center px-6 max-w-3xl transition-all duration-1000 delay-500 ${heroLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 mb-8">
+        <div className={`relative z-10 text-center px-5 sm:px-6 max-w-3xl transition-all duration-1000 delay-500 ${heroLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 mb-6 sm:mb-8">
             <Sparkles className="w-3.5 h-3.5 text-primary-foreground/80" />
-            <span className="text-primary-foreground/80 text-xs tracking-wider uppercase font-light">La web de bodas más bonita</span>
+            <span className="text-primary-foreground/80 text-[11px] sm:text-xs tracking-wider uppercase font-light">La web de bodas más bonita</span>
           </div>
-          <h1 className="font-heading text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-primary-foreground mb-6 leading-[0.95]">
+          <h1 className="font-heading text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl text-primary-foreground mb-4 sm:mb-6 leading-[0.95]">
             Tu boda merece<br />algo único
           </h1>
-          <p className="text-primary-foreground/80 text-lg md:text-xl font-light mb-10 max-w-xl mx-auto leading-relaxed">
+          <p className="text-primary-foreground/80 text-base sm:text-lg md:text-xl font-light mb-8 sm:mb-10 max-w-xl mx-auto leading-relaxed">
             Crea una experiencia digital inmersiva para tus invitados. Playlist, fotos, RSVP, mapa, agenda y mucho más.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
             <Link
               to="/auth"
-              className="group px-8 py-4 rounded-xl bg-primary-foreground text-foreground font-medium text-lg hover:shadow-xl hover:shadow-primary-foreground/20 hover:-translate-y-0.5 transition-all duration-300"
+              className="group px-7 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-primary-foreground text-foreground font-medium text-base sm:text-lg hover:shadow-xl hover:shadow-primary-foreground/20 hover:-translate-y-0.5 transition-all duration-300"
             >
               Crear mi boda
               <ArrowRight className="w-4 h-4 inline ml-2 group-hover:translate-x-1 transition-transform" />
             </Link>
             <a
               href="#demos"
-              className="group px-8 py-4 rounded-xl border-2 border-primary-foreground/30 text-primary-foreground font-light text-lg hover:bg-primary-foreground/10 hover:border-primary-foreground/50 transition-all duration-300"
+              className="group px-7 sm:px-8 py-3.5 sm:py-4 rounded-xl border-2 border-primary-foreground/30 text-primary-foreground font-light text-base sm:text-lg hover:bg-primary-foreground/10 hover:border-primary-foreground/50 transition-all duration-300"
             >
               <Play className="w-4 h-4 inline mr-2" />
               Ver demos en vivo
@@ -159,8 +212,8 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+        {/* Scroll indicator - hidden on very small screens */}
+        <div className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 z-10 hidden sm:block">
           <div className="w-6 h-10 rounded-full border-2 border-primary-foreground/30 flex items-start justify-center p-1.5">
             <div className="w-1 h-2.5 rounded-full bg-primary-foreground/60 animate-bounce" />
           </div>
