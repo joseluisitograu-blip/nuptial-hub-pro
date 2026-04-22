@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Plus, ExternalLink, LogOut, Heart, MessageCircle, ChevronDown, ChevronUp, Lock, Mail } from "lucide-react";
+import { Plus, ExternalLink, LogOut, Heart, MessageCircle, ChevronDown, ChevronUp, Lock, Mail, BarChart3, Gift, Wallet } from "lucide-react";
 import WeddingStats from "@/components/dashboard/WeddingStats";
 import ExportRsvps from "@/components/dashboard/ExportRsvps";
 import DashboardMessages from "@/components/dashboard/DashboardMessages";
+import WeddingBudget from "@/components/dashboard/WeddingBudget";
+import WeddingGifts from "@/components/dashboard/WeddingGifts";
 import { usePurchase } from "@/hooks/usePurchase";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { useToast } from "@/hooks/use-toast";
@@ -18,6 +20,8 @@ interface Wedding {
   wedding_date: string | null;
 }
 
+type WeddingTab = "stats" | "budget" | "gifts";
+
 const Dashboard = () => {
   const { user, signOut, loading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -25,12 +29,12 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<WeddingTab>("stats");
   const { hasPurchase, loading: purchaseLoading, isOwner } = usePurchase();
   const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
   const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Checkout success feedback
   useEffect(() => {
     if (searchParams.get("checkout") === "success") {
       toast({ title: "¡Pago completado!", description: "Ya puedes crear tu boda." });
@@ -50,7 +54,6 @@ const Dashboard = () => {
         .from("weddings")
         .select("id, slug, partner1_name, partner2_name, wedding_date")
         .eq("user_id", user.id);
-      // Filter out abandoned weddings with no names and no date
       const valid = (data || []).filter(
         (w) => w.partner1_name || w.partner2_name || w.wedding_date
       );
@@ -84,6 +87,15 @@ const Dashboard = () => {
     });
   };
 
+  const handleToggleExpand = (id: string) => {
+    if (expandedId === id) {
+      setExpandedId(null);
+    } else {
+      setExpandedId(id);
+      setActiveTab("stats");
+    }
+  };
+
   if (authLoading || loading || purchaseLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -91,6 +103,12 @@ const Dashboard = () => {
       </div>
     );
   }
+
+  const tabs: { id: WeddingTab; label: string; icon: React.ReactNode }[] = [
+    { id: "stats", label: "Resumen", icon: <BarChart3 className="w-4 h-4" /> },
+    { id: "budget", label: "Presupuesto", icon: <Wallet className="w-4 h-4" /> },
+    { id: "gifts", label: "Regalos", icon: <Gift className="w-4 h-4" /> },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -190,9 +208,9 @@ const Dashboard = () => {
                       </div>
                       <div className="flex items-center gap-2">
                         <button
-                          onClick={() => setExpandedId(isExpanded ? null : w.id)}
+                          onClick={() => handleToggleExpand(w.id)}
                           className="p-2 rounded-md hover:bg-secondary transition-colors text-muted-foreground"
-                          title="Ver estadísticas"
+                          title="Ver gestión"
                         >
                           {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                         </button>
@@ -223,12 +241,36 @@ const Dashboard = () => {
                       </div>
                     </div>
                     {isExpanded && (
-                      <>
-                        <WeddingStats weddingId={w.id} />
-                        <div className="mt-3 flex justify-end">
-                          <ExportRsvps weddingId={w.id} />
+                      <div className="mt-4">
+                        {/* Tab navigation */}
+                        <div className="flex gap-1 border-b border-border mb-4">
+                          {tabs.map((tab) => (
+                            <button
+                              key={tab.id}
+                              onClick={() => setActiveTab(tab.id)}
+                              className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
+                                activeTab === tab.id
+                                  ? "border-primary text-primary"
+                                  : "border-transparent text-muted-foreground hover:text-foreground"
+                              }`}
+                            >
+                              {tab.icon} {tab.label}
+                            </button>
+                          ))}
                         </div>
-                      </>
+
+                        {/* Tab content */}
+                        {activeTab === "stats" && (
+                          <>
+                            <WeddingStats weddingId={w.id} />
+                            <div className="mt-3 flex justify-end">
+                              <ExportRsvps weddingId={w.id} />
+                            </div>
+                          </>
+                        )}
+                        {activeTab === "budget" && <WeddingBudget weddingId={w.id} />}
+                        {activeTab === "gifts" && <WeddingGifts weddingId={w.id} />}
+                      </div>
                     )}
                   </div>
                 );
@@ -237,7 +279,6 @@ const Dashboard = () => {
           </>
         )}
 
-        {/* Messages section - only for owner */}
         {isOwner && (
           <div className="mt-12">
             <div className="flex items-center gap-2 mb-6">

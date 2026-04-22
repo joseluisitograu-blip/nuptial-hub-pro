@@ -400,6 +400,106 @@ export type Database = {
           },
         ]
       }
+      wedding_budget_items: {
+        Row: {
+          actual_cost: number
+          category: string
+          created_at: string
+          description: string
+          estimated_cost: number
+          id: string
+          is_paid: boolean
+          notes: string
+          payment_date: string | null
+          sort_order: number
+          updated_at: string
+          vendor_name: string
+          wedding_id: string
+        }
+        Insert: {
+          actual_cost?: number
+          category?: string
+          created_at?: string
+          description?: string
+          estimated_cost?: number
+          id?: string
+          is_paid?: boolean
+          notes?: string
+          payment_date?: string | null
+          sort_order?: number
+          updated_at?: string
+          vendor_name?: string
+          wedding_id: string
+        }
+        Update: {
+          actual_cost?: number
+          category?: string
+          created_at?: string
+          description?: string
+          estimated_cost?: number
+          id?: string
+          is_paid?: boolean
+          notes?: string
+          payment_date?: string | null
+          sort_order?: number
+          updated_at?: string
+          vendor_name?: string
+          wedding_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wedding_budget_items_wedding_id_fkey"
+            columns: ["wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wedding_gifts: {
+        Row: {
+          created_at: string
+          description: string
+          estimated_value: number
+          gift_type: string
+          guest_name: string
+          id: string
+          notes: string
+          thank_you_sent: boolean
+          wedding_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          estimated_value?: number
+          gift_type?: string
+          guest_name?: string
+          id?: string
+          notes?: string
+          thank_you_sent?: boolean
+          wedding_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          estimated_value?: number
+          gift_type?: string
+          guest_name?: string
+          id?: string
+          notes?: string
+          thank_you_sent?: boolean
+          wedding_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wedding_gifts_wedding_id_fkey"
+            columns: ["wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       wedding_photos: {
         Row: {
           caption: string | null
