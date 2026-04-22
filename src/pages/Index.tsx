@@ -316,32 +316,32 @@ const Index = () => {
       </section>
 
       {/* How it works */}
-      <section className="py-24 bg-secondary">
-        <div className="container max-w-3xl">
+      <section className="py-16 sm:py-24 bg-secondary">
+        <div className="container max-w-3xl px-5 sm:px-8">
           <RevealSection>
-            <div className="text-center mb-16">
-              <span className="inline-block text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4 font-light">Cómo funciona</span>
-              <h2 className="font-heading text-4xl md:text-5xl text-foreground mb-3">
+            <div className="text-center mb-10 sm:mb-16">
+              <span className="inline-block text-xs uppercase tracking-[0.3em] text-muted-foreground mb-3 sm:mb-4 font-light">Cómo funciona</span>
+              <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl text-foreground mb-2 sm:mb-3">
                 Así de fácil
               </h2>
-              <p className="text-muted-foreground font-light text-lg">
+              <p className="text-muted-foreground font-light text-base sm:text-lg">
                 En 3 pasos tienes tu web de boda lista
               </p>
             </div>
           </RevealSection>
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {[
               { step: "1", title: "Regístrate", desc: "Crea tu cuenta en segundos y accede al panel de control." },
               { step: "2", title: "Personaliza tu boda", desc: "Elige un tema, añade los datos, sube fotos y configura cada sección." },
               { step: "3", title: "Comparte con un QR", desc: "Genera un código QR o envía el enlace por WhatsApp. ¡Listo!" },
             ].map((s, i) => (
               <RevealSection key={s.step} delay={i * 150}>
-                <div className="flex gap-5 items-start bg-card border border-border rounded-xl p-6 hover:shadow-md transition-all duration-300">
-                  <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center flex-shrink-0 font-heading text-xl shadow-md">
+                <div className="flex gap-4 sm:gap-5 items-start bg-card border border-border rounded-xl p-5 sm:p-6 hover:shadow-md transition-all duration-300">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center flex-shrink-0 font-heading text-lg sm:text-xl shadow-md">
                     {s.step}
                   </div>
                   <div>
-                    <h3 className="font-heading text-lg text-foreground mb-1">{s.title}</h3>
+                    <h3 className="font-heading text-base sm:text-lg text-foreground mb-0.5 sm:mb-1">{s.title}</h3>
                     <p className="text-muted-foreground font-light text-sm">{s.desc}</p>
                   </div>
                 </div>
@@ -352,24 +352,24 @@ const Index = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-24 bg-background">
-        <div className="container max-w-4xl">
+      <section className="py-16 sm:py-24 bg-background">
+        <div className="container max-w-4xl px-5 sm:px-8">
           <RevealSection>
-            <div className="text-center mb-16">
-              <span className="inline-block text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4 font-light">Testimonios</span>
-              <h2 className="font-heading text-4xl md:text-5xl text-foreground mb-3">
+            <div className="text-center mb-10 sm:mb-16">
+              <span className="inline-block text-xs uppercase tracking-[0.3em] text-muted-foreground mb-3 sm:mb-4 font-light">Testimonios</span>
+              <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl text-foreground mb-2 sm:mb-3">
                 Lo que dicen las parejas
               </h2>
             </div>
           </RevealSection>
-          <div className="grid sm:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
             {testimonials.map((t, i) => (
               <RevealSection key={t.name} delay={i * 120}>
-                <div className="bg-card border border-border rounded-xl p-6 hover:shadow-md transition-all duration-300 h-full flex flex-col">
-                  <div className="flex gap-1 mb-4">
-                    {[1,2,3,4,5].map((s) => <Star key={s} className="w-4 h-4 text-primary fill-primary" />)}
+                <div className="bg-card border border-border rounded-xl p-5 sm:p-6 hover:shadow-md transition-all duration-300 h-full flex flex-col">
+                  <div className="flex gap-1 mb-3 sm:mb-4">
+                    {[1,2,3,4,5].map((s) => <Star key={s} className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary fill-primary" />)}
                   </div>
-                  <p className="text-foreground/80 text-sm font-light leading-relaxed mb-4 flex-1">"{t.text}"</p>
+                  <p className="text-foreground/80 text-sm font-light leading-relaxed mb-3 sm:mb-4 flex-1">"{t.text}"</p>
                   <p className="text-sm font-medium text-foreground">{t.name}</p>
                 </div>
               </RevealSection>
@@ -379,68 +379,35 @@ const Index = () => {
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="py-24 bg-secondary">
-        <div className="container max-w-5xl">
+      <section id="pricing" className="py-16 sm:py-24 bg-secondary">
+        <div className="container max-w-5xl px-5 sm:px-8">
           <RevealSection>
-            <div className="text-center mb-16">
-              <span className="inline-block text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4 font-light">Precios</span>
-              <h2 className="font-heading text-4xl md:text-5xl text-foreground mb-3">
+            <div className="text-center mb-10 sm:mb-16">
+              <span className="inline-block text-xs uppercase tracking-[0.3em] text-muted-foreground mb-3 sm:mb-4 font-light">Precios</span>
+              <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl text-foreground mb-2 sm:mb-3">
                 Nuestros planes
               </h2>
-              <p className="text-muted-foreground font-light text-lg">
+              <p className="text-muted-foreground font-light text-base sm:text-lg">
                 Elige el que mejor se adapte a tu día especial
               </p>
             </div>
           </RevealSection>
-          <div className="grid sm:grid-cols-3 gap-6">
-            {/* Plan Básico */}
-            <RevealSection delay={0}>
-              <div className="bg-card border border-border rounded-xl p-7 flex flex-col h-full hover:shadow-lg transition-all duration-300">
-                <h3 className="font-heading text-2xl text-foreground mb-1">Básico</h3>
-                <div className="mb-4">
-                  <span className="font-heading text-4xl text-foreground">35€</span>
-                  <span className="text-muted-foreground text-sm ml-1">/ boda</span>
-                </div>
-                <p className="text-muted-foreground text-sm font-light mb-6">Ideal para parejas que quieren algo sencillo y bonito.</p>
-                <ul className="space-y-3 mb-8 flex-1">
-                  {[
-                    "Página web personalizada",
-                    "1 tema visual a elegir",
-                    "RSVP online",
-                    "Código QR para invitaciones",
-                    "Información de ceremonia y recepción",
-                    "Countdown del gran día",
-                    "Borrador de la web en 24h",
-                  ].map((item) => (
-                    <li key={item} className="flex items-start gap-2.5 text-sm text-foreground">
-                      <CheckCircle className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                <button
-                  onClick={() => handleBuy("basico_one_time")}
-                  disabled={loading}
-                  className="block w-full text-center px-6 py-3 rounded-xl border-2 border-primary text-primary font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-300 disabled:opacity-50"
-                >
-                  {loading ? "Cargando..." : "Empezar"}
-                </button>
-              </div>
-            </RevealSection>
 
-            {/* Plan Completo */}
-            <RevealSection delay={150}>
-              <div className="bg-card border-2 border-primary rounded-xl p-7 flex flex-col relative shadow-lg hover:shadow-xl transition-all duration-300 h-full">
+          {/* Mobile: stack with Completo first */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6">
+            {/* Plan Completo - on mobile appears first via order */}
+            <RevealSection delay={0} className="sm:order-2 order-first">
+              <div className="bg-card border-2 border-primary rounded-xl p-6 sm:p-7 flex flex-col relative shadow-lg hover:shadow-xl transition-all duration-300 h-full">
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-medium px-4 py-1 rounded-full shadow-md">
                   Más popular
                 </div>
                 <h3 className="font-heading text-2xl text-foreground mb-1">Completo</h3>
-                <div className="mb-4">
-                  <span className="font-heading text-4xl text-foreground">65€</span>
+                <div className="mb-3 sm:mb-4">
+                  <span className="font-heading text-3xl sm:text-4xl text-foreground">65€</span>
                   <span className="text-muted-foreground text-sm ml-1">/ boda</span>
                 </div>
-                <p className="text-muted-foreground text-sm font-light mb-6">Todo incluido para una experiencia inolvidable.</p>
-                <ul className="space-y-3 mb-8 flex-1">
+                <p className="text-muted-foreground text-sm font-light mb-5 sm:mb-6">Todo incluido para una experiencia inolvidable.</p>
+                <ul className="space-y-2.5 sm:space-y-3 mb-6 sm:mb-8 flex-1">
                   {[
                     "Todo lo del plan Básico",
                     "4 temas visuales disponibles",
@@ -456,7 +423,7 @@ const Index = () => {
                     "Soporte 24 horas",
                     "Borrador de la web en 24h",
                   ].map((item) => (
-                    <li key={item} className="flex items-start gap-2.5 text-sm text-foreground">
+                    <li key={item} className="flex items-start gap-2 sm:gap-2.5 text-sm text-foreground">
                       <CheckCircle className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
                       {item}
                     </li>
@@ -472,15 +439,50 @@ const Index = () => {
               </div>
             </RevealSection>
 
-            {/* Plan Wedding Planner */}
-            <RevealSection delay={300}>
-              <div className="bg-card border border-border rounded-xl p-7 flex flex-col h-full hover:shadow-lg transition-all duration-300">
-                <h3 className="font-heading text-2xl text-foreground mb-1">Wedding Planner</h3>
-                <div className="mb-4">
-                  <span className="font-heading text-3xl text-foreground">A medida</span>
+            {/* Plan Básico */}
+            <RevealSection delay={100} className="sm:order-1">
+              <div className="bg-card border border-border rounded-xl p-6 sm:p-7 flex flex-col h-full hover:shadow-lg transition-all duration-300">
+                <h3 className="font-heading text-2xl text-foreground mb-1">Básico</h3>
+                <div className="mb-3 sm:mb-4">
+                  <span className="font-heading text-3xl sm:text-4xl text-foreground">35€</span>
+                  <span className="text-muted-foreground text-sm ml-1">/ boda</span>
                 </div>
-                <p className="text-muted-foreground text-sm font-light mb-6">Para profesionales que gestionan múltiples bodas.</p>
-                <ul className="space-y-3 mb-8 flex-1">
+                <p className="text-muted-foreground text-sm font-light mb-5 sm:mb-6">Ideal para parejas que quieren algo sencillo y bonito.</p>
+                <ul className="space-y-2.5 sm:space-y-3 mb-6 sm:mb-8 flex-1">
+                  {[
+                    "Página web personalizada",
+                    "1 tema visual a elegir",
+                    "RSVP online",
+                    "Código QR para invitaciones",
+                    "Información de ceremonia y recepción",
+                    "Countdown del gran día",
+                    "Borrador de la web en 24h",
+                  ].map((item) => (
+                    <li key={item} className="flex items-start gap-2 sm:gap-2.5 text-sm text-foreground">
+                      <CheckCircle className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={() => handleBuy("basico_one_time")}
+                  disabled={loading}
+                  className="block w-full text-center px-6 py-3 rounded-xl border-2 border-primary text-primary font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-300 disabled:opacity-50"
+                >
+                  {loading ? "Cargando..." : "Empezar"}
+                </button>
+              </div>
+            </RevealSection>
+
+            {/* Plan Wedding Planner */}
+            <RevealSection delay={200} className="sm:order-3">
+              <div className="bg-card border border-border rounded-xl p-6 sm:p-7 flex flex-col h-full hover:shadow-lg transition-all duration-300">
+                <h3 className="font-heading text-2xl text-foreground mb-1">Wedding Planner</h3>
+                <div className="mb-3 sm:mb-4">
+                  <span className="font-heading text-2xl sm:text-3xl text-foreground">A medida</span>
+                </div>
+                <p className="text-muted-foreground text-sm font-light mb-5 sm:mb-6">Para profesionales que gestionan múltiples bodas.</p>
+                <ul className="space-y-2.5 sm:space-y-3 mb-6 sm:mb-8 flex-1">
                   {[
                     "Todo lo del plan Completo",
                     "Dashboard multi-boda",
@@ -493,7 +495,7 @@ const Index = () => {
                     "Borrador de cada web en 24h",
                     "Precios especiales por volumen",
                   ].map((item) => (
-                    <li key={item} className="flex items-start gap-2.5 text-sm text-foreground">
+                    <li key={item} className="flex items-start gap-2 sm:gap-2.5 text-sm text-foreground">
                       <CheckCircle className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
                       {item}
                     </li>
@@ -512,23 +514,23 @@ const Index = () => {
       </section>
 
       {/* Final CTA */}
-      <section className="py-28 bg-background text-center relative overflow-hidden">
+      <section className="py-20 sm:py-28 bg-background text-center relative overflow-hidden">
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-primary blur-3xl" />
           <div className="absolute bottom-1/4 right-1/4 w-48 h-48 rounded-full bg-accent blur-3xl" />
         </div>
         <RevealSection>
-          <div className="container max-w-2xl relative z-10">
-            <Heart className="w-8 h-8 text-primary mx-auto mb-6 opacity-60" />
-            <h2 className="font-heading text-4xl md:text-5xl text-foreground mb-4">
+          <div className="container max-w-2xl relative z-10 px-5 sm:px-8">
+            <Heart className="w-7 h-7 sm:w-8 sm:h-8 text-primary mx-auto mb-5 sm:mb-6 opacity-60" />
+            <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl text-foreground mb-3 sm:mb-4">
               ¿Listos para el gran día?
             </h2>
-            <p className="text-muted-foreground font-light text-lg mb-10">
+            <p className="text-muted-foreground font-light text-base sm:text-lg mb-8 sm:mb-10">
               Cread vuestra página de boda en minutos. Desde 35€.
             </p>
             <Link
               to="/auth"
-              className="group inline-flex items-center gap-2 px-10 py-4 rounded-xl bg-primary text-primary-foreground font-medium text-lg hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-0.5 transition-all duration-300"
+              className="group inline-flex items-center gap-2 px-8 sm:px-10 py-3.5 sm:py-4 rounded-xl bg-primary text-primary-foreground font-medium text-base sm:text-lg hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-0.5 transition-all duration-300"
             >
               Crear mi boda
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -538,10 +540,10 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 border-t border-border">
-        <div className="container max-w-4xl flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-muted-foreground text-sm font-light">
-            © {new Date().getFullYear()} Click Tu Boda. Hecho con <Heart className="w-3.5 h-3.5 inline text-primary" /> en España.
+      <footer className="py-6 sm:py-8 border-t border-border">
+        <div className="container max-w-4xl flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 px-5 sm:px-8">
+          <p className="text-muted-foreground text-xs sm:text-sm font-light">
+            © {new Date().getFullYear()} Click Tu Boda. Hecho con <Heart className="w-3 h-3 sm:w-3.5 sm:h-3.5 inline text-primary" /> en España.
           </p>
           <div className="flex gap-4 text-xs text-muted-foreground">
             <Link to="/privacidad" className="hover:text-foreground transition-colors">Privacidad</Link>
