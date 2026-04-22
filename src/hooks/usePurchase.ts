@@ -9,6 +9,7 @@ interface PurchaseInfo {
   productId: string | null;
   loading: boolean;
   isOwner: boolean;
+  isCompleto: boolean;
 }
 
 export function usePurchase(): PurchaseInfo {
