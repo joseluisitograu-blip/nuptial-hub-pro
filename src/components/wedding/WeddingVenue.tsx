@@ -13,6 +13,8 @@ interface Props {
 }
 
 const WeddingVenue = ({ wedding }: Props) => {
+  if (!wedding.ceremony_venue && !wedding.reception_venue) return null;
+
   return (
     <div className="py-24 bg-background">
       <div className="container max-w-5xl">
@@ -59,12 +61,6 @@ const WeddingVenue = ({ wedding }: Props) => {
           )}
         </div>
 
-        {wedding.dress_code && (
-          <div className="text-center">
-            <p className="text-muted-foreground text-sm uppercase tracking-widest mb-1">Código de vestimenta</p>
-            <p className="font-heading text-xl text-foreground">{wedding.dress_code}</p>
-          </div>
-        )}
       </div>
     </div>
   );

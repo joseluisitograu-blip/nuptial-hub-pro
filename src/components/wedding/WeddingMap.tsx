@@ -8,6 +8,8 @@ interface Props {
 }
 
 const WeddingMap = ({ ceremonyVenue, ceremonyAddress, receptionVenue, receptionAddress }: Props) => {
+  if (!ceremonyVenue && !receptionVenue) return null;
+
   const ceremonyQuery = encodeURIComponent(`${ceremonyVenue}, ${ceremonyAddress}`);
   const receptionQuery = encodeURIComponent(`${receptionVenue}, ${receptionAddress}`);
 

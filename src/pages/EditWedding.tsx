@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Save, ExternalLink, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Save, ExternalLink, Plus, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 
 const inputClass =
@@ -102,6 +102,7 @@ const EditWedding = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingHero, setUploadingHero] = useState(false);
   const [stories, setStories] = useState<StoryItem[]>([]);
   const [accommodations, setAccommodations] = useState<AccommodationItem[]>([]);
   const [agendaItems, setAgendaItems] = useState<AgendaItem[]>([]);
@@ -126,6 +127,7 @@ const EditWedding = () => {
     menu_desserts: "",
     theme_preset: "elegant",
     whatsapp_number: "",
+    hero_image_url: "",
   });
 
   useEffect(() => {
@@ -164,6 +166,7 @@ const EditWedding = () => {
           menu_desserts: wedding.menu_desserts || "",
           theme_preset: wedding.theme_preset || "elegant",
           whatsapp_number: (wedding as any).whatsapp_number || "",
+          hero_image_url: wedding.hero_image_url || "",
         });
       }
       setStories((storyData as StoryItem[]) || []);
@@ -212,6 +215,7 @@ const EditWedding = () => {
         menu_desserts: form.menu_desserts,
         theme_preset: form.theme_preset,
         whatsapp_number: form.whatsapp_number,
+        hero_image_url: form.hero_image_url,
       } as any)
       .eq("id", id!);
 
@@ -306,6 +310,24 @@ const EditWedding = () => {
   };
 
   const update = (key: string, value: string) => setForm((f) => ({ ...f, [key]: value }));
+
+  const handleHeroUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !id) return;
+    setUploadingHero(true);
+    const ext = file.name.split(".").pop();
+    const path = `${id}/hero.${ext}`;
+    const { error: uploadError } = await supabase.storage.from("wedding-photos").upload(path, file, { upsert: true });
+    if (uploadError) {
+      toast.error("Error al subir la imagen");
+      setUploadingHero(false);
+      return;
+    }
+    const { data: urlData } = supabase.storage.from("wedding-photos").getPublicUrl(path);
+    update("hero_image_url", urlData.publicUrl);
+    setUploadingHero(false);
+    toast.success("Imagen subida");
+  };
 
   const addStory = () =>
     setStories([...stories, { title: "", description: "", story_date: "", sort_order: stories.length }]);
@@ -402,8 +424,25 @@ const EditWedding = () => {
             <Field label="Nombre 1" value={form.partner1_name} onChange={(v) => update("partner1_name", v)} placeholder="María" />
             <Field label="Nombre 2" value={form.partner2_name} onChange={(v) => update("partner2_name", v)} placeholder="Carlos" />
           </div>
-          <Field label="URL personalizada" value={form.slug} onChange={(v) => update("slug", v)} placeholder="maria-y-carlos" />
-          <Field label="Fecha de la boda" value={form.wedding_date} onChange={(v) => update("wedding_date", v)} type="date" />
+            <Field label="URL personalizada" value={form.slug} onChange={(v) => update("slug", v.toLowerCase().replace(/[^a-z0-9-]/g, "-").replace(/-+/g, "-"))} placeholder="maria-y-carlos" />
+            <p className="text-xs text-muted-foreground -mt-2">Solo letras, números y guiones. Tu web estará en: /w/{form.slug}</p>
+           <Field label="Fecha de la boda" value={form.wedding_date} onChange={(v) => update("wedding_date", v)} type="date" />
+
+          {/* Hero image */}
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-1.5">Imagen principal</label>
+            <div className="flex items-center gap-4">
+              {form.hero_image_url && (
+                <img src={form.hero_image_url} alt="Hero" className="w-20 h-14 object-cover rounded-lg border border-border" />
+              )}
+              <label className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-border bg-card text-sm cursor-pointer hover:bg-secondary transition-colors ${uploadingHero ? "opacity-50 pointer-events-none" : ""}`}>
+                <Upload className="w-4 h-4" />
+                {uploadingHero ? "Subiendo..." : form.hero_image_url ? "Cambiar imagen" : "Subir imagen"}
+                <input type="file" accept="image/*" onChange={handleHeroUpload} className="hidden" />
+              </label>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">Se mostrará como fondo del hero de tu web.</p>
+          </div>
         </section>
 
         {/* Story */}
