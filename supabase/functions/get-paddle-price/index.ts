@@ -9,20 +9,45 @@ const responseHeaders = {
   },
 };
 
+const ALLOWED_PRICE_IDS = new Set([
+  "basico_one_time",
+  "completo_one_time",
+]);
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, responseHeaders);
   }
 
-  const { priceId, environment } = await req.json();
-  if (!priceId) {
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return new Response(JSON.stringify({ error: "Invalid JSON body" }), {
+      status: 400,
+      ...responseHeaders,
+    });
+  }
+
+  const { priceId, environment } = body;
+
+  if (!priceId || typeof priceId !== "string" || priceId.length > 100) {
     return new Response(JSON.stringify({ error: "priceId required" }), {
       status: 400,
       ...responseHeaders,
     });
   }
 
-  const response = await gatewayFetch(environment as PaddleEnv, `/prices?external_id=${encodeURIComponent(priceId)}`);
+  if (!ALLOWED_PRICE_IDS.has(priceId)) {
+    return new Response(JSON.stringify({ error: "Invalid priceId" }), {
+      status: 400,
+      ...responseHeaders,
+    });
+  }
+
+  const env = (environment === "live" ? "live" : "sandbox") as PaddleEnv;
+
+  const response = await gatewayFetch(env, `/prices?external_id=${encodeURIComponent(priceId)}`);
   const data = await response.json();
 
   if (!data.data?.length) {
