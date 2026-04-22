@@ -309,6 +309,16 @@ const WeddingPage = () => {
               <p className="font-heading text-lg sm:text-xl text-foreground">{wedding.dress_code}</p>
             </div>
           )}
+
+          {weddingDate && (
+            <WeddingCalendar
+              weddingDate={wedding.wedding_date!}
+              partner1={wedding.partner1_name}
+              partner2={wedding.partner2_name}
+              ceremonyVenue={wedding.ceremony_venue}
+              ceremonyAddress={wedding.ceremony_address}
+            />
+          )}
         </section>
 
         {/* Historia */}
