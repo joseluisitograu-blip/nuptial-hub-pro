@@ -170,7 +170,25 @@ const sections = [
   { id: "compartir", label: "Compartir", icon: Share2 },
 ];
 
-const WeddingPage = () => {
+const DemoOverlay = ({ title, description }: { title: string; description: string }) => (
+  <div className="py-16 sm:py-20 bg-card/50">
+    <div className="max-w-md mx-auto text-center px-6">
+      <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+        <Heart className="w-7 h-7 text-primary" />
+      </div>
+      <h3 className="font-heading text-2xl text-foreground mb-2">{title}</h3>
+      <p className="text-muted-foreground font-light mb-6">{description}</p>
+      <a
+        href="/auth"
+        className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity text-sm"
+      >
+        Crea tu boda · Desde 35€
+      </a>
+    </div>
+  </div>
+);
+
+
   const { slug } = useParams<{ slug: string }>();
   const { user } = useAuth();
   const [wedding, setWedding] = useState<WeddingData | null>(null);
