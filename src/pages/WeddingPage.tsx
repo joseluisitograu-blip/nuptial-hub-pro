@@ -434,6 +434,13 @@ const WeddingPage = () => {
           </AnimatedSection>
         </section>
 
+        {/* RSVP */}
+        <section id="rsvp" ref={setRef("rsvp")} className="scroll-mt-14">
+          <AnimatedSection>
+            <WeddingRsvp weddingId={wedding.id} whatsappNumber={wedding.whatsapp_number} partner1={p1} partner2={p2} />
+          </AnimatedSection>
+        </section>
+
         {/* Menú */}
         <section id="menu" ref={setRef("menu")} className="scroll-mt-14">
           <AnimatedSection>
@@ -487,13 +494,6 @@ const WeddingPage = () => {
         <section id="faq" ref={setRef("faq")} className="scroll-mt-14">
           <AnimatedSection>
             <WeddingFaq weddingId={wedding.id} />
-          </AnimatedSection>
-        </section>
-
-        {/* RSVP */}
-        <section id="rsvp" ref={setRef("rsvp")} className="scroll-mt-14">
-          <AnimatedSection>
-            <WeddingRsvp weddingId={wedding.id} whatsappNumber={wedding.whatsapp_number} partner1={p1} partner2={p2} />
           </AnimatedSection>
         </section>
 
