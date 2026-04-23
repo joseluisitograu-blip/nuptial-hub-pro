@@ -23,6 +23,8 @@ import AnimatedSection from "@/components/wedding/AnimatedSection";
 import WeddingEditToolbar from "@/components/wedding/WeddingEditToolbar";
 import EditableText from "@/components/wedding/EditableText";
 import WeddingIntro from "@/components/wedding/WeddingIntro";
+import WeddingSaveTheDate from "@/components/wedding/WeddingSaveTheDate";
+import WeddingDayMode from "@/components/wedding/WeddingDayMode";
 import { LangProvider, LangToggle, useLang } from "@/contexts/LangContext";
 import {
   Heart, MapPin, Gift, Music, Camera, Mail, BookHeart, UtensilsCrossed, Hotel, BookOpen, Share2, Users, Clock, HelpCircle, Navigation, ChevronUp,
