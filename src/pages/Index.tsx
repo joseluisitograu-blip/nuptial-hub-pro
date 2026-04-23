@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState, useCallback } from "react";
-import { Heart, Sparkles, Users, Music, Camera, MapPin, Clock, HelpCircle, BookHeart, Gift, Share2, Star, ArrowRight, CheckCircle, Play, Menu, X, Wallet, ListChecks, PieChart, Shield, Zap, RefreshCcw } from "lucide-react";
+import { Heart, Sparkles, Users, Music, Camera, MapPin, Clock, HelpCircle, BookHeart, Gift, Share2, ArrowRight, CheckCircle, Play, Menu, X, Wallet, ListChecks, PieChart, Shield, Zap, RefreshCcw } from "lucide-react";
 import heroImage from "@/assets/hero-wedding.webp";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
@@ -28,37 +28,6 @@ const demos = [
   { slug: "demo-modern", theme: "Moderno", couple: "Martina & Álex", color: "hsl(220, 25%, 18%)", gradient: "from-slate-800/20 to-slate-600/10" },
 ];
 
-
-/* ---- Animated counter hook ---- */
-const useCounter = (target: number, duration = 1500) => {
-  const [count, setCount] = useState(0);
-  const ref = useRef<HTMLDivElement>(null);
-  const started = useRef(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !started.current) {
-          started.current = true;
-          const start = performance.now();
-          const step = (now: number) => {
-            const progress = Math.min((now - start) / duration, 1);
-            setCount(Math.floor(progress * target));
-            if (progress < 1) requestAnimationFrame(step);
-          };
-          requestAnimationFrame(step);
-        }
-      },
-      { threshold: 0.5 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [target, duration]);
-
-  return { ref, count };
-};
 
 /* ---- Scroll reveal hook ---- */
 const useReveal = () => {
@@ -113,10 +82,6 @@ const Index = () => {
     });
   };
 
-  const stat1 = useCounter(7);
-  const stat2 = useCounter(15);
-  const stat3 = useCounter(100);
-  const stat4 = useCounter(30);
 
   const navLinks = [
     { href: "#features", label: "Funcionalidades" },
