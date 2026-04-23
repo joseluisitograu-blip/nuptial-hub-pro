@@ -23,6 +23,8 @@ import AnimatedSection from "@/components/wedding/AnimatedSection";
 import WeddingEditToolbar from "@/components/wedding/WeddingEditToolbar";
 import EditableText from "@/components/wedding/EditableText";
 import WeddingIntro from "@/components/wedding/WeddingIntro";
+import WeddingSaveTheDate from "@/components/wedding/WeddingSaveTheDate";
+import WeddingDayMode from "@/components/wedding/WeddingDayMode";
 import { LangProvider, LangToggle, useLang } from "@/contexts/LangContext";
 import {
   Heart, MapPin, Gift, Music, Camera, Mail, BookHeart, UtensilsCrossed, Hotel, BookOpen, Share2, Users, Clock, HelpCircle, Navigation, ChevronUp,
@@ -674,6 +676,19 @@ const WeddingPage = () => {
             <WeddingShare slug={wedding.slug} partner1={p1} partner2={p2} />
           </AnimatedSection>
         </section>
+
+        {/* Save the Date — downloadable invitation */}
+        <section className="scroll-mt-14">
+          <AnimatedSection>
+            <WeddingSaveTheDate
+              partner1={p1}
+              partner2={p2}
+              weddingDate={wedding.wedding_date}
+              ceremonyVenue={wedding.ceremony_venue}
+              heroImageUrl={wedding.hero_image_url}
+            />
+          </AnimatedSection>
+        </section>
       </main>
 
       {/* Footer */}
@@ -686,6 +701,16 @@ const WeddingPage = () => {
           <p className="text-muted-foreground text-sm font-light mt-1">{formattedDate}</p>
         )}
       </footer>
+
+      {/* Day Mode — floating bar on wedding day */}
+      {wedding.wedding_date && !isOwner && !isDemo && (
+        <WeddingDayMode
+          weddingId={wedding.id}
+          weddingDate={wedding.wedding_date}
+          ceremonyAddress={wedding.ceremony_address}
+          receptionAddress={wedding.reception_address}
+        />
+      )}
 
       {/* Scroll to top */}
       <button
