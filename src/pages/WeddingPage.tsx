@@ -702,6 +702,16 @@ const WeddingPage = () => {
         )}
       </footer>
 
+      {/* Day Mode — floating bar on wedding day */}
+      {wedding.wedding_date && !isOwner && !isDemo && (
+        <WeddingDayMode
+          weddingId={wedding.id}
+          weddingDate={wedding.wedding_date}
+          ceremonyAddress={wedding.ceremony_address}
+          receptionAddress={wedding.reception_address}
+        />
+      )}
+
       {/* Scroll to top */}
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
