@@ -35,8 +35,8 @@ const CookieBanner = () => {
             <div className="flex-1 space-y-2.5 sm:space-y-3">
               <p className="text-xs sm:text-sm text-foreground leading-relaxed">
                 Usamos cookies para mejorar tu experiencia y analizar el tráfico.{" "}
-                <Link to="/privacidad" className="underline text-primary hover:opacity-80">
-                  Política de privacidad
+                <Link to="/cookies" className="underline text-primary hover:opacity-80">
+                  Política de cookies
                 </Link>
               </p>
 
