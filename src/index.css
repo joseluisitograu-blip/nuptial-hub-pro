@@ -39,6 +39,7 @@
     --sand-dark: 33 25% 60%;
     --sand-accent: 30 25% 33%;
     --gold: 36 40% 55%;
+    --gold-light: 38 50% 75%;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -69,4 +70,80 @@
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection color */
+::selection {
+  background: hsl(33 30% 40% / 0.2);
+  color: hsl(30 25% 15%);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+/* Gradient text utility */
+.text-gradient {
+  background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--gold)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glass card */
+.glass-card {
+  background: hsl(var(--card) / 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Shimmer effect for CTAs */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.btn-shimmer {
+  background-size: 200% auto;
+  background-image: linear-gradient(
+    90deg,
+    hsl(var(--primary)) 0%,
+    hsl(var(--gold)) 50%,
+    hsl(var(--primary)) 100%
+  );
+  animation: shimmer 3s linear infinite;
+}
+
+/* Floating animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Pulse glow */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0.3); }
+  50% { box-shadow: 0 0 20px 4px hsl(var(--primary) / 0.15); }
+}
+.animate-pulse-glow {
+  animation: pulse-glow 2.5s ease-in-out infinite;
 }
