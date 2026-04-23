@@ -676,6 +676,19 @@ const WeddingPage = () => {
             <WeddingShare slug={wedding.slug} partner1={p1} partner2={p2} />
           </AnimatedSection>
         </section>
+
+        {/* Save the Date — downloadable invitation */}
+        <section className="scroll-mt-14">
+          <AnimatedSection>
+            <WeddingSaveTheDate
+              partner1={p1}
+              partner2={p2}
+              weddingDate={wedding.wedding_date}
+              ceremonyVenue={wedding.ceremony_venue}
+              heroImageUrl={wedding.hero_image_url}
+            />
+          </AnimatedSection>
+        </section>
       </main>
 
       {/* Footer */}
