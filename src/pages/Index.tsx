@@ -654,6 +654,7 @@ const Index = () => {
             <Link to="/privacidad" className="hover:text-foreground transition-colors">Privacidad</Link>
             <Link to="/terminos" className="hover:text-foreground transition-colors">Términos</Link>
             <Link to="/reembolso" className="hover:text-foreground transition-colors">Reembolso</Link>
+            <Link to="/cookies" className="hover:text-foreground transition-colors">Cookies</Link>
           </div>
         </div>
       </footer>

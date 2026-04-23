@@ -18,7 +18,7 @@ const Refund = () => {
           <p><strong>Última actualización:</strong> {new Date().toLocaleDateString("es-ES")}</p>
 
           <h2 className="font-heading text-xl text-foreground mt-8">Garantía de satisfacción de 30 días</h2>
-          <p>Ofrecemos una garantía de devolución de 30 días. Si no estás satisfecho con tu compra, puedes solicitar un reembolso completo dentro de los 30 días siguientes a la fecha del pedido.</p>
+          <p>Ofrecemos una garantía de devolución de 30 días. Si no estás satisfecho con tu compra, puedes solicitar un reembolso completo dentro de los 30 días naturales siguientes a la fecha original del pedido, sin necesidad de justificación.</p>
 
           <h2 className="font-heading text-xl text-foreground mt-8">Cómo solicitar un reembolso</h2>
           <p>Los reembolsos son procesados por nuestro proveedor de pagos, <strong>Paddle</strong>. Para solicitar un reembolso:</p>

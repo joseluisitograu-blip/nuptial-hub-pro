@@ -12,6 +12,7 @@ import WeddingPage from "./pages/WeddingPage.tsx";
 import Privacy from "./pages/Privacy.tsx";
 import Terms from "./pages/Terms.tsx";
 import Refund from "./pages/Refund.tsx";
+import Cookies from "./pages/Cookies.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import CookieBanner from "./components/CookieBanner";
 
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/privacidad" element={<Privacy />} />
             <Route path="/terminos" element={<Terms />} />
             <Route path="/reembolso" element={<Refund />} />
+            <Route path="/cookies" element={<Cookies />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <CookieBanner />
