@@ -28,14 +28,6 @@ const demos = [
   { slug: "demo-modern", theme: "Moderno", couple: "Martina & Álex", color: "hsl(220, 25%, 18%)", gradient: "from-slate-800/20 to-slate-600/10" },
 ];
 
-const testimonials = [
-  { name: "Ana & Luis", role: "Boda en Mallorca", text: "Nuestros invitados no paraban de decir lo bonita que era la página. ¡Y la playlist fue un éxito total!" },
-  { name: "Marta López", role: "Wedding Planner", text: "Lo uso con todas mis parejas. Es rapidísimo de configurar y el resultado es espectacular." },
-  { name: "Carlos & Elena", role: "Boda en Asturias", text: "El QR en las invitaciones de papel fue el toque perfecto. Moderno pero con encanto." },
-  { name: "Laura & Javier", role: "Boda en Sevilla", text: "El muro de fotos en vivo fue una sorpresa genial. Todos los invitados subían fotos durante la fiesta." },
-  { name: "Raquel & Dani", role: "Boda en Barcelona", text: "Probamos otras plataformas pero ninguna se acercaba en diseño. Click Tu Boda es otra liga." },
-  { name: "Sara, Fotógrafa", role: "Profesional", text: "Lo recomiendo a todas mis parejas. La galería de fotos y el diseño hacen que mi trabajo brille aún más." },
-];
 
 /* ---- Animated counter hook ---- */
 const useCounter = (target: number, duration = 1500) => {
@@ -229,27 +221,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Social proof bar */}
-      <section className="py-6 sm:py-8 bg-card border-b border-border">
-        <div className="container max-w-4xl grid grid-cols-2 sm:grid-cols-4 items-center justify-center gap-6 sm:gap-10 text-center px-6">
-          <div ref={stat1.ref}>
-            <p className="font-heading text-2xl sm:text-3xl text-foreground">{stat1.count}</p>
-            <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5">Temas visuales</p>
-          </div>
-          <div ref={stat2.ref}>
-            <p className="font-heading text-2xl sm:text-3xl text-foreground">{stat2.count}+</p>
-            <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5">Secciones</p>
-          </div>
-          <div ref={stat4.ref}>
-            <p className="font-heading text-2xl sm:text-3xl text-foreground">{stat4.count} días</p>
-            <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5">Garantía</p>
-          </div>
-          <div ref={stat3.ref}>
-            <p className="font-heading text-2xl sm:text-3xl text-foreground">{stat3.count}%</p>
-            <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5">Personalizable</p>
-          </div>
-        </div>
-      </section>
 
       {/* Features */}
       <section id="features" className="py-16 sm:py-24 bg-secondary">
@@ -360,38 +331,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-16 sm:py-24 bg-background overflow-hidden">
-        <div className="container max-w-5xl px-5 sm:px-8">
-          <RevealSection>
-            <div className="text-center mb-10 sm:mb-16">
-              <span className="inline-block text-xs uppercase tracking-[0.3em] text-primary mb-3 sm:mb-4 font-medium">Testimonios</span>
-              <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl text-foreground mb-3 sm:mb-4">
-                Lo que dicen las parejas
-              </h2>
-              <p className="text-muted-foreground font-light text-base sm:text-lg">
-                Más de 100 parejas ya han creado su web de boda con nosotros
-              </p>
-            </div>
-          </RevealSection>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-            {testimonials.map((t, i) => (
-              <RevealSection key={t.name} delay={i % 3 * 100}>
-                <div className="bg-card border border-border rounded-xl p-5 sm:p-6 hover:shadow-md transition-all duration-300 h-full flex flex-col group">
-                  <div className="flex gap-0.5 mb-3 sm:mb-4">
-                    {[1,2,3,4,5].map((s) => <Star key={s} className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gold fill-gold" />)}
-                  </div>
-                  <p className="text-foreground/80 text-sm font-light leading-relaxed mb-4 flex-1 italic">"{t.text}"</p>
-                  <div>
-                    <p className="text-sm font-medium text-foreground">{t.name}</p>
-                    <p className="text-xs text-muted-foreground">{t.role}</p>
-                  </div>
-                </div>
-              </RevealSection>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Management Features — Completo exclusive */}
       <section className="py-16 sm:py-24 bg-card">
