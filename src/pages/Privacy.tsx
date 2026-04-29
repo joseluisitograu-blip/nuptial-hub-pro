@@ -12,11 +12,11 @@ const Privacy = () => (
         <p><strong>Última actualización:</strong> {new Date().toLocaleDateString("es-ES")}</p>
 
         <h2 className="font-heading text-xl text-foreground mt-8">1. Responsable del tratamiento</h2>
-        <p>José Luis Grau Perales (en adelante, "Click Tu Boda") es el responsable del tratamiento (controlador de datos) de los datos personales recogidos a través del sitio web clicktuboda.com y sus subdominios.</p>
+        <p>José Luis Grau Perales (en adelante, "BodasFacil") es el responsable del tratamiento (controlador de datos) de los datos personales recogidos a través del sitio web bodasfacil.com y sus subdominios.</p>
         <ul className="list-disc pl-6 space-y-1">
           <li><strong>Denominación:</strong> José Luis Grau Perales.</li>
-          <li><strong>Email de contacto:</strong> <a href="mailto:joseluisitograu@gmail.com" className="text-primary hover:underline">joseluisitograu@gmail.com</a></li>
-          <li><strong>Sitio web:</strong> <a href="https://clicktuboda.com" className="text-primary hover:underline">clicktuboda.com</a></li>
+          <li><strong>Email de contacto:</strong> <a href="mailto:soporte@bodasfacil.com" className="text-primary hover:underline">soporte@bodasfacil.com</a></li>
+          <li><strong>Sitio web:</strong> <a href="https://bodasfacil.com" className="text-primary hover:underline">bodasfacil.com</a></li>
         </ul>
 
         <h2 className="font-heading text-xl text-foreground mt-8">2. Datos que recogemos</h2>
