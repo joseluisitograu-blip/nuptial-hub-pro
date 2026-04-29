@@ -118,6 +118,4 @@ const Auth = () => {
     </div>
   );
 };
-
-export default Auth;
 export default Auth;
