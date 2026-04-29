@@ -1,6 +1,9 @@
-import { supabase } from "@/integrations/supabase/client";
-
 const clientToken = import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN;
+
+const PRICE_IDS: Record<string, string> = {
+  basico_one_time: import.meta.env.VITE_PADDLE_PRICE_BASICO || "pri_01kqc1gvdwcc2tk0mearpjsw66",
+  completo_one_time: import.meta.env.VITE_PADDLE_PRICE_COMPLETO || "pri_01kqc1d0ayrhfyjtgc0rdg6qez",
+};
 
 declare global {
   interface Window {
@@ -12,17 +15,14 @@ let paddleInitialized = false;
 
 export async function initializePaddle() {
   if (paddleInitialized) return;
-
   if (!clientToken) {
     throw new Error("VITE_PAYMENTS_CLIENT_TOKEN is not set");
   }
-
   return new Promise<void>((resolve, reject) => {
     const script = document.createElement("script");
     script.src = "https://cdn.paddle.com/paddle/v2/paddle.js";
     script.onload = () => {
-      const environment = clientToken.startsWith("test_") ? "sandbox" : "production";
-      window.Paddle.Environment.set(environment);
+      window.Paddle.Environment.set("production");
       window.Paddle.Initialize({ token: clientToken });
       paddleInitialized = true;
       resolve();
@@ -33,12 +33,9 @@ export async function initializePaddle() {
 }
 
 export async function getPaddlePriceId(priceId: string): Promise<string> {
-  const environment = clientToken.startsWith("test_") ? "sandbox" : "live";
-  const { data, error } = await supabase.functions.invoke("get-paddle-price", {
-    body: { priceId, environment },
-  });
-  if (error || !data?.paddleId) {
-    throw new Error(`Failed to resolve price: ${priceId}`);
+  const resolved = PRICE_IDS[priceId];
+  if (!resolved) {
+    throw new Error(`Price ID not found: ${priceId}`);
   }
-  return data.paddleId;
+  return resolved;
 }
