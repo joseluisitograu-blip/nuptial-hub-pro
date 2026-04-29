@@ -1,9 +1,8 @@
 import { Link } from "react-router-dom";
-import { useEffect, useRef, useState, useCallback } from "react";
-import { Heart, Sparkles, Users, Music, Camera, MapPin, Clock, HelpCircle, BookHeart, Gift, Share2, ArrowRight, CheckCircle, Play, Menu, X, Wallet, ListChecks, PieChart, Shield, Zap, RefreshCcw } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Heart, Sparkles, Users, Music, Camera, MapPin, Clock, HelpCircle, BookHeart, Gift, Share2, ArrowRight, CheckCircle, Play, Menu, X, Wallet, ListChecks, Shield, Zap, RefreshCcw } from "lucide-react";
 import heroImage from "@/assets/hero-wedding.webp";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
-import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import ContactModal from "@/components/ContactModal";
 
 const features = [
@@ -17,7 +16,7 @@ const features = [
   { icon: Gift, title: "Lista de regalos", desc: "Cuenta bancaria con revelado elegante para los invitados." },
   { icon: HelpCircle, title: "FAQ inteligente", desc: "Parking, niños, código de vestimenta, alojamiento... todo resuelto." },
   { icon: Share2, title: "QR & WhatsApp", desc: "Comparte con un QR imprimible o directamente por WhatsApp." },
-  { icon: Sparkles, title: "7 temas visuales", desc: "Elegante, Romántico, Rústico, Moderno, Jardín, Bohemio y Minimal." },
+  { icon: Sparkles, title: "12 temas visuales", desc: "Elegante, Romántico, Rústico, Moderno, Jardín, Bohemio, Minimal y más." },
   { icon: Users, title: "Plan de mesas", desc: "Asigna invitados a mesas. Visible solo un día antes de la boda." },
 ];
 
@@ -28,12 +27,9 @@ const demos = [
   { slug: "demo-modern", theme: "Moderno", couple: "Martina & Álex", color: "hsl(220, 25%, 18%)", gradient: "from-slate-800/20 to-slate-600/10" },
 ];
 
-
-/* ---- Scroll reveal hook ---- */
 const useReveal = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
-
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -44,7 +40,6 @@ const useReveal = () => {
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
-
   return { ref, visible };
 };
 
@@ -82,7 +77,6 @@ const Index = () => {
     });
   };
 
-
   const navLinks = [
     { href: "#features", label: "Funcionalidades" },
     { href: "#demos", label: "Demos" },
@@ -91,14 +85,13 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <PaymentTestModeBanner />
 
       {/* Sticky Navbar */}
       <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? "bg-background/95 backdrop-blur-md shadow-sm border-b border-border" : "bg-transparent"}`}>
         <div className="container max-w-5xl flex items-center justify-between h-14 sm:h-16 px-4 sm:px-6">
           <Link to="/" className="flex items-center gap-2 group">
             <Heart className={`w-5 h-5 transition-all duration-300 group-hover:scale-110 ${scrolled ? "text-primary" : "text-primary-foreground"}`} />
-            <span className={`font-heading text-lg sm:text-xl transition-colors duration-300 ${scrolled ? "text-foreground" : "text-primary-foreground"}`}>Bodasfacil</span>
+            <span className={`font-heading text-lg sm:text-xl transition-colors duration-300 ${scrolled ? "text-foreground" : "text-primary-foreground"}`}>BodasFácil</span>
           </Link>
           <div className="hidden md:flex items-center gap-6">
             {navLinks.map((l) => (
@@ -147,7 +140,7 @@ const Index = () => {
         <div className={`relative z-10 text-center px-5 sm:px-6 max-w-3xl transition-all duration-1000 delay-300 ${heroLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
           <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 mb-6 sm:mb-8">
             <Sparkles className="w-3.5 h-3.5 text-primary-foreground/80" />
-            <span className="text-primary-foreground/80 text-[11px] sm:text-xs tracking-wider uppercase font-light">Más de 12 funcionalidades · Desde 35 €</span>
+            <span className="text-primary-foreground/80 text-[11px] sm:text-xs tracking-wider uppercase font-light">Más de 12 funcionalidades · Desde 30€</span>
           </div>
           <h1 className="font-heading text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl text-primary-foreground mb-4 sm:mb-6 leading-[0.95] text-balance">
             Tu boda merece<br />algo único
@@ -171,21 +164,18 @@ const Index = () => {
               Ver demos en vivo
             </a>
           </div>
-          {/* Trust badges under hero CTA */}
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-8 sm:mt-10 text-primary-foreground/60 text-[11px] sm:text-xs">
             <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5" /> Pago seguro</span>
             <span className="flex items-center gap-1.5"><RefreshCcw className="w-3.5 h-3.5" /> 30 días de garantía</span>
             <span className="flex items-center gap-1.5"><Zap className="w-3.5 h-3.5" /> Lista en minutos</span>
           </div>
         </div>
-
         <div className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 z-10 hidden sm:block">
           <div className="w-6 h-10 rounded-full border-2 border-primary-foreground/30 flex items-start justify-center p-1.5">
             <div className="w-1 h-2.5 rounded-full bg-primary-foreground/60 animate-bounce" />
           </div>
         </div>
       </section>
-
 
       {/* Features */}
       <section id="features" className="py-16 sm:py-24 bg-secondary">
@@ -296,8 +286,7 @@ const Index = () => {
         </div>
       </section>
 
-
-      {/* Management Features — Completo exclusive */}
+      {/* Management Features */}
       <section className="py-16 sm:py-24 bg-card">
         <div className="container max-w-5xl px-5 sm:px-8">
           <RevealSection>
@@ -311,7 +300,6 @@ const Index = () => {
               </p>
             </div>
           </RevealSection>
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
             <RevealSection delay={0}>
               <div className="bg-background border border-border rounded-xl p-6 h-full hover:shadow-lg transition-all duration-300 group">
@@ -339,7 +327,6 @@ const Index = () => {
                 </div>
               </div>
             </RevealSection>
-
             <RevealSection delay={120}>
               <div className="bg-background border border-border rounded-xl p-6 h-full hover:shadow-lg transition-all duration-300 group">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/15 transition-colors duration-300">
@@ -360,7 +347,6 @@ const Index = () => {
                 </div>
               </div>
             </RevealSection>
-
             <RevealSection delay={240}>
               <div className="bg-background border border-border rounded-xl p-6 h-full hover:shadow-lg transition-all duration-300 group">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/15 transition-colors duration-300">
@@ -408,8 +394,6 @@ const Index = () => {
               </p>
             </div>
           </RevealSection>
-
-          {/* Guarantee badge */}
           <RevealSection>
             <div className="flex items-center justify-center gap-3 mb-8 sm:mb-10">
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border text-sm text-muted-foreground">
@@ -428,14 +412,14 @@ const Index = () => {
                 </div>
                 <h3 className="font-heading text-2xl text-foreground mb-1">Completo</h3>
                 <div className="mb-3 sm:mb-4">
-                  <span className="font-heading text-3xl sm:text-4xl text-foreground">65€</span>
+                  <span className="font-heading text-3xl sm:text-4xl text-foreground">60€</span>
                   <span className="text-muted-foreground text-sm ml-1">pago único</span>
                 </div>
                 <p className="text-muted-foreground text-sm font-light mb-5 sm:mb-6">Todo incluido para una experiencia inolvidable.</p>
                 <ul className="space-y-2.5 sm:space-y-3 mb-6 sm:mb-8 flex-1">
                   {[
                     "Todo lo del plan Básico",
-                    "7 temas visuales disponibles",
+                    "12 temas visuales disponibles",
                     "Playlist colaborativa con votos",
                     "Muro de fotos en vivo",
                     "Plan de mesas inteligente",
@@ -471,7 +455,7 @@ const Index = () => {
               <div className="bg-card border border-border rounded-xl p-6 sm:p-7 flex flex-col h-full hover:shadow-lg transition-all duration-300">
                 <h3 className="font-heading text-2xl text-foreground mb-1">Básico</h3>
                 <div className="mb-3 sm:mb-4">
-                  <span className="font-heading text-3xl sm:text-4xl text-foreground">35€</span>
+                  <span className="font-heading text-3xl sm:text-4xl text-foreground">30€</span>
                   <span className="text-muted-foreground text-sm ml-1">pago único</span>
                 </div>
                 <p className="text-muted-foreground text-sm font-light mb-5 sm:mb-6">Para parejas que quieren algo sencillo y bonito.</p>
@@ -540,7 +524,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* FAQ Section */}
+      {/* FAQ */}
       <section className="py-16 sm:py-24 bg-background">
         <div className="container max-w-3xl px-5 sm:px-8">
           <RevealSection>
@@ -589,7 +573,7 @@ const Index = () => {
               ¿Listos para el gran día?
             </h2>
             <p className="text-muted-foreground font-light text-base sm:text-lg mb-4">
-              Cread vuestra página de boda en minutos. Desde 35 €, pago único.
+              Cread vuestra página de boda en minutos. Desde 30€, pago único.
             </p>
             <p className="text-muted-foreground/60 text-sm mb-8 sm:mb-10">
               30 días de garantía · Pago seguro con Paddle · Sin suscripciones
@@ -619,7 +603,7 @@ const Index = () => {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
             <div className="flex items-center gap-2">
               <Heart className="w-4 h-4 text-primary" />
-              <span className="font-heading text-foreground">Bodasfacil</span>
+              <span className="font-heading text-foreground">BodasFácil</span>
             </div>
             <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
               <Link to="/privacidad" className="hover:text-foreground transition-colors">Privacidad</Link>
@@ -633,7 +617,7 @@ const Index = () => {
           </div>
           <div className="mt-6 pt-6 border-t border-border text-center">
             <p className="text-muted-foreground text-xs font-light">
-              © {new Date().getFullYear()} Bodasfacil. Hecho con <Heart className="w-3 h-3 inline text-primary" /> en España.
+              © {new Date().getFullYear()} BodasFácil. Hecho con <Heart className="w-3 h-3 inline text-primary" /> en España.
             </p>
           </div>
         </div>
@@ -643,5 +627,7 @@ const Index = () => {
     </div>
   );
 };
+
+export default Index;
 
 export default Index;
