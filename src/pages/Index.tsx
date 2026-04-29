@@ -98,7 +98,7 @@ const Index = () => {
         <div className="container max-w-5xl flex items-center justify-between h-14 sm:h-16 px-4 sm:px-6">
           <Link to="/" className="flex items-center gap-2 group">
             <Heart className={`w-5 h-5 transition-all duration-300 group-hover:scale-110 ${scrolled ? "text-primary" : "text-primary-foreground"}`} />
-            <span className={`font-heading text-lg sm:text-xl transition-colors duration-300 ${scrolled ? "text-foreground" : "text-primary-foreground"}`}>Click Tu Boda</span>
+            <span className={`font-heading text-lg sm:text-xl transition-colors duration-300 ${scrolled ? "text-foreground" : "text-primary-foreground"}`}>Bodasfacil</span>
           </Link>
           <div className="hidden md:flex items-center gap-6">
             {navLinks.map((l) => (
