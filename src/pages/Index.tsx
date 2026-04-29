@@ -619,7 +619,7 @@ const Index = () => {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
             <div className="flex items-center gap-2">
               <Heart className="w-4 h-4 text-primary" />
-              <span className="font-heading text-foreground">Click Tu Boda</span>
+              <span className="font-heading text-foreground">Bodasfacil</span>
             </div>
             <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
               <Link to="/privacidad" className="hover:text-foreground transition-colors">Privacidad</Link>
@@ -633,7 +633,7 @@ const Index = () => {
           </div>
           <div className="mt-6 pt-6 border-t border-border text-center">
             <p className="text-muted-foreground text-xs font-light">
-              © {new Date().getFullYear()} Click Tu Boda. Hecho con <Heart className="w-3 h-3 inline text-primary" /> en España.
+              © {new Date().getFullYear()} Bodasfacil. Hecho con <Heart className="w-3 h-3 inline text-primary" /> en España.
             </p>
           </div>
         </div>
