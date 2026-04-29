@@ -1,53 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
   <url>
-    <loc>https://clicktuboda.com/</loc>
+    <loc>https://bodasfacil.com/</loc>
+    <lastmod>2026-04-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+
   <url>
-    <loc>https://clicktuboda.com/auth</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://clicktuboda.com/w/demo-elegant</loc>
+    <loc>https://bodasfacil.com/auth</loc>
+    <lastmod>2026-04-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+
   <url>
-    <loc>https://clicktuboda.com/w/demo-romantic</loc>
+    <loc>https://bodasfacil.com/w/demo-elegant</loc>
+    <lastmod>2026-04-29</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
+
   <url>
-    <loc>https://clicktuboda.com/w/demo-rustic</loc>
+    <loc>https://bodasfacil.com/w/demo-romantic</loc>
+    <lastmod>2026-04-29</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
+
   <url>
-    <loc>https://clicktuboda.com/w/demo-modern</loc>
+    <loc>https://bodasfacil.com/w/demo-rustic</loc>
+    <lastmod>2026-04-29</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
+
   <url>
-    <loc>https://clicktuboda.com/privacidad</loc>
+    <loc>https://bodasfacil.com/w/demo-modern</loc>
+    <lastmod>2026-04-29</lastmod>
     <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://bodasfacil.com/privacidad</loc>
+    <lastmod>2026-04-29</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
+
   <url>
-    <loc>https://clicktuboda.com/terminos</loc>
-    <changefreq>monthly</changefreq>
+    <loc>https://bodasfacil.com/terminos</loc>
+    <lastmod>2026-04-29</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
+
   <url>
-    <loc>https://clicktuboda.com/reembolso</loc>
-    <changefreq>monthly</changefreq>
+    <loc>https://bodasfacil.com/reembolso</loc>
+    <lastmod>2026-04-29</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
+
   <url>
-    <loc>https://clicktuboda.com/cookies</loc>
-    <changefreq>monthly</changefreq>
+    <loc>https://bodasfacil.com/cookies</loc>
+    <lastmod>2026-04-29</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
+
 </urlset>
