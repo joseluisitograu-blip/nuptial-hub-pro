@@ -12,15 +12,15 @@ const Terms = () => (
         <p><strong>Última actualización:</strong> {new Date().toLocaleDateString("es-ES")}</p>
 
         <h2 className="font-heading text-xl text-foreground mt-8">1. Identificación del prestador</h2>
-        <p>El presente servicio es ofrecido por José Luis Grau Perales (en adelante, "Click Tu Boda"). Al utilizar el servicio, aceptas estos términos y confirmas que estás contratando directamente con Click Tu Boda.</p>
-        <p>Email de contacto: <a href="mailto:joseluisitograu@gmail.com" className="text-primary hover:underline">joseluisitograu@gmail.com</a></p>
+        <p>El presente servicio es ofrecido por José Luis Grau Perales (en adelante, "BodasFacil"). Al utilizar el servicio, aceptas estos términos y confirmas que estás contratando directamente con BodasFacil.</p>
+        <p>Email de contacto: <a href="mailto:soporte@bodasfacil.com" className="text-primary hover:underline">soporte@bodasfacil.com</a></p>
 
         <h2 className="font-heading text-xl text-foreground mt-8">2. Aceptación y autoridad</h2>
         <p>El uso continuado del servicio implica la aceptación plena de estos términos. Si no estás de acuerdo, no utilices el servicio.</p>
         <p>Al aceptar estos términos, declaras que eres mayor de 18 años o que tienes la autoridad legal necesaria para vincularte a estos términos. Si actúas en nombre de una organización, declaras tener autoridad para obligar a dicha organización.</p>
 
         <h2 className="font-heading text-xl text-foreground mt-8">3. Descripción del servicio</h2>
-        <p>Click Tu Boda es una plataforma que permite crear páginas web personalizadas para bodas, incluyendo funcionalidades como:</p>
+        <p>Bodasfacil es una plataforma que permite crear páginas web personalizadas para bodas, incluyendo funcionalidades como:</p>
         <ul className="list-disc pl-6 space-y-1">
           <li>Página de boda con diseño personalizable y múltiples temas visuales.</li>
           <li>RSVP online con gestión de invitados, acompañantes y notas de dieta.</li>
