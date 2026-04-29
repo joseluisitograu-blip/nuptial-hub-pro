@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { Heart, ArrowLeft } from "lucide-react";
 
 const Auth = () => {
@@ -26,6 +27,10 @@ const Auth = () => {
     } else if (!isSignUp) {
       navigate("/dashboard");
     } else {
+      // Enviar email de bienvenida
+      await supabase.functions.invoke("send-welcome-email", {
+        body: { email },
+      });
       setError("¡Cuenta creada! Revisa tu email para confirmar.");
     }
     setLoading(false);
@@ -79,7 +84,7 @@ const Auth = () => {
           </div>
 
           {error && (
-            <p className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg">
+            <p className={`text-sm p-3 rounded-lg ${error.includes("creada") ? "text-primary bg-primary/10" : "text-destructive bg-destructive/10"}`}>
               {error}
             </p>
           )}
@@ -114,4 +119,5 @@ const Auth = () => {
   );
 };
 
+export default Auth;
 export default Auth;
