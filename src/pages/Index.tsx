@@ -77,10 +77,11 @@ const Index = () => {
     });
   };
 
-  const navLinks = [
+const navLinks = [
     { href: "#features", label: "Funcionalidades" },
     { href: "#demos", label: "Demos" },
     { href: "#pricing", label: "Precios" },
+    { href: "/blog", label: "Blog" },
   ];
 
   return (
