@@ -15,7 +15,8 @@ import Refund from "./pages/Refund.tsx";
 import Cookies from "./pages/Cookies.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import CookieBanner from "./components/CookieBanner";
-
+import Blog from "./pages/Blog.tsx";
+import BlogPost from "./pages/BlogPost.tsx";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -26,6 +27,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
+            
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/dashboard" element={<Dashboard />} />
@@ -35,6 +37,8 @@ const App = () => (
             <Route path="/terminos" element={<Terms />} />
             <Route path="/reembolso" element={<Refund />} />
             <Route path="/cookies" element={<Cookies />} />
+            <Route path="/blog" element={<Blog />} />
+<Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <CookieBanner />
