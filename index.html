@@ -7,19 +7,30 @@
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#8a6d3b">
 
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3LGVLK8YP0"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3LGVLK8YP0');
+    </script>
+
     <!-- SEO Principal -->
-    <title>BodasFácil — Crea la web de tu boda en minutos | Desde 35€</title>
-    <meta name="description" content="Crea la web de tu boda en minutos: RSVP online, playlist colaborativa, fotos en vivo, mapa, agenda, QR, plan de mesas y 12 temas visuales. Pago único desde 35€. Sin suscripciones. 30 días de garantía.">
+    <title>BodasFácil — Crea la web de tu boda en minutos | Desde 30€</title>
+    <meta name="description" content="Crea la web de tu boda perfecta en minutos. RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda del día, mapa y 12 temas visuales. Pago único desde 30€. Sin suscripciones.">
     <meta name="author" content="BodasFácil" />
-    <meta name="keywords" content="web de boda, página de boda, invitación digital boda, RSVP boda online, playlist boda, crear web boda, QR boda, web boda España, boda digital, bodasfacil" />
+    <meta name="keywords" content="web de boda, página de boda, invitación digital boda, RSVP boda online, playlist boda, crear web boda, QR boda, web boda España, boda digital, bodasfacil, web boda Valencia, invitaciones boda digitales, plan de mesas boda, presupuesto boda" />
     <link rel="canonical" href="https://bodasfacil.com/" />
     <meta name="robots" content="index, follow" />
+    <meta name="geo.region" content="ES-VC" />
+    <meta name="geo.placename" content="Valencia" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="BodasFácil" />
-    <meta property="og:title" content="BodasFácil — Tu web de boda única desde 35€" />
-    <meta property="og:description" content="Crea una experiencia digital inmersiva para tu boda: RSVP, playlist, fotos en vivo, mapa, agenda y mucho más. Pago único, sin suscripciones." />
+    <meta property="og:title" content="BodasFácil — Crea la web de tu boda perfecta desde 30€" />
+    <meta property="og:description" content="RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda y 12 temas visuales. Pago único, sin suscripciones. La web de boda más completa de España." />
     <meta property="og:image" content="https://bodasfacil.com/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -29,8 +40,8 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@bodasfacil" />
-    <meta name="twitter:title" content="BodasFácil — Tu web de boda única desde 35€" />
-    <meta name="twitter:description" content="Crea una experiencia digital inmersiva para tu boda: RSVP, playlist, fotos en vivo, mapa, agenda y mucho más. Pago único, sin suscripciones." />
+    <meta name="twitter:title" content="BodasFácil — Crea la web de tu boda perfecta desde 30€" />
+    <meta name="twitter:description" content="RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda y 12 temas visuales. Pago único, sin suscripciones." />
     <meta name="twitter:image" content="https://bodasfacil.com/og-image.jpg" />
 
     <!-- JSON-LD: WebApplication -->
@@ -40,14 +51,14 @@
       "@type": "WebApplication",
       "name": "BodasFácil",
       "url": "https://bodasfacil.com",
-      "description": "Crea una experiencia digital inmersiva para tu boda con playlist, fotos, RSVP, mapa, agenda y mucho más. Pago único desde 35€.",
+      "description": "Crea la web de tu boda perfecta en minutos. RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda y 12 temas visuales. Pago único desde 30€.",
       "applicationCategory": "LifestyleApplication",
       "operatingSystem": "Web",
       "inLanguage": "es-ES",
       "offers": {
         "@type": "AggregateOffer",
-        "lowPrice": "35",
-        "highPrice": "65",
+        "lowPrice": "30",
+        "highPrice": "60",
         "priceCurrency": "EUR",
         "offerCount": "2"
       },
@@ -75,9 +86,14 @@
       ],
       "contactPoint": {
         "@type": "ContactPoint",
-        "email": "hola@bodasfacil.com",
+        "email": "soporte@bodasfacil.com",
         "contactType": "customer service",
         "availableLanguage": ["Spanish"]
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "ES",
+        "addressRegion": "Comunidad Valenciana"
       }
     }
     </script>
@@ -88,7 +104,7 @@
       "@context": "https://schema.org",
       "@type": "Product",
       "name": "Web de boda BodasFácil",
-      "description": "Página web personalizada para tu boda con RSVP, playlist colaborativa, muro de fotos, plan de mesas, agenda y mucho más.",
+      "description": "Página web personalizada para tu boda con RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda del día, mapa interactivo y 12 temas visuales.",
       "brand": {
         "@type": "Brand",
         "name": "BodasFácil"
@@ -97,7 +113,7 @@
         {
           "@type": "Offer",
           "name": "Plan Básico",
-          "price": "35",
+          "price": "30",
           "priceCurrency": "EUR",
           "availability": "https://schema.org/InStock",
           "url": "https://bodasfacil.com/#pricing"
@@ -105,7 +121,7 @@
         {
           "@type": "Offer",
           "name": "Plan Completo",
-          "price": "65",
+          "price": "60",
           "priceCurrency": "EUR",
           "availability": "https://schema.org/InStock",
           "url": "https://bodasfacil.com/#pricing"
@@ -122,6 +138,14 @@
       "mainEntity": [
         {
           "@type": "Question",
+          "name": "¿Cuánto cuesta una web de boda en BodasFácil?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "El plan Básico cuesta 30€ y el plan Completo 60€, ambos con pago único sin suscripciones."
+          }
+        },
+        {
+          "@type": "Question",
           "name": "¿Es un pago único o una suscripción?",
           "acceptedAnswer": {
             "@type": "Answer",
@@ -130,7 +154,7 @@
         },
         {
           "@type": "Question",
-          "name": "¿Puedo ver mi web antes de pagar?",
+          "name": "¿Puedo ver mi web de boda antes de pagar?",
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "Sí. Puedes registrarte gratis y explorar todas las demos en vivo. Solo pagas cuando quieras crear tu propia boda."
@@ -138,7 +162,7 @@
         },
         {
           "@type": "Question",
-          "name": "¿Mis invitados necesitan registrarse?",
+          "name": "¿Mis invitados necesitan registrarse para ver la web de boda?",
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "No. Tus invitados acceden directamente con el enlace o QR. No necesitan cuenta ni descargar nada."
@@ -154,19 +178,47 @@
         },
         {
           "@type": "Question",
-          "name": "¿Y si no me convence?",
+          "name": "¿Qué incluye la web de boda de BodasFácil?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Tienes 30 días de garantía de devolución sin preguntas. Solicita tu reembolso y te devolvemos el 100%."
+            "text": "RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda del día, mapa interactivo, lista de regalos, código QR, 12 temas visuales y mucho más."
           }
         },
         {
           "@type": "Question",
-          "name": "¿Cuánto cuesta una web de boda en BodasFácil?",
+          "name": "¿Y si no me convence la web de boda?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "El plan Básico cuesta 35€ y el plan Completo 65€, ambos con pago único sin suscripciones."
+            "text": "Tienes 30 días de garantía de devolución sin preguntas. Solicita tu reembolso y te devolvemos el 100%."
           }
+        }
+      ]
+    }
+    </script>
+
+    <!-- JSON-LD: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Inicio",
+          "item": "https://bodasfacil.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://bodasfacil.com/blog"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Demos",
+          "item": "https://bodasfacil.com/w/demo-elegant"
         }
       ]
     }
@@ -175,14 +227,7 @@
     <!-- Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-3LGVLK8YP0"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-3LGVLK8YP0');
-</script>
+    <link rel="preconnect" href="https://images.unsplash.com" />
   </head>
 
   <body>
