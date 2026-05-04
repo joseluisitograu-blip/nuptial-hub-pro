@@ -1,3 +1,5 @@
+
+
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -49,8 +51,33 @@ const BlogPost = () => {
   useEffect(() => {
     if (post) {
       document.title = `${post.title} — BodasFácil`;
+
+      document.querySelector('meta[name="description"]')?.setAttribute("content", post.description);
+      document.querySelector('link[rel="canonical"]')?.setAttribute("href", `https://bodasfacil.com/blog/${post.slug}`);
+
+      document.querySelector('meta[property="og:title"]')?.setAttribute("content", `${post.title} — BodasFácil`);
+      document.querySelector('meta[property="og:description"]')?.setAttribute("content", post.description);
+      document.querySelector('meta[property="og:url"]')?.setAttribute("content", `https://bodasfacil.com/blog/${post.slug}`);
+      if (post.cover_image) {
+        document.querySelector('meta[property="og:image"]')?.setAttribute("content", post.cover_image);
+        document.querySelector('meta[name="twitter:image"]')?.setAttribute("content", post.cover_image);
+      }
+      document.querySelector('meta[name="twitter:title"]')?.setAttribute("content", `${post.title} — BodasFácil`);
+      document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", post.description);
     }
-    return () => { document.title = "BodasFácil"; };
+
+    return () => {
+      document.title = "BodasFácil — Crea la web de tu boda en minutos | Desde 30€";
+      document.querySelector('meta[name="description"]')?.setAttribute("content", "Crea la web de tu boda perfecta en minutos. RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda del día, mapa y 12 temas visuales. Pago único desde 30€.");
+      document.querySelector('link[rel="canonical"]')?.setAttribute("href", "https://bodasfacil.com/");
+      document.querySelector('meta[property="og:title"]')?.setAttribute("content", "BodasFácil — Crea la web de tu boda perfecta desde 30€");
+      document.querySelector('meta[property="og:description"]')?.setAttribute("content", "RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda y 12 temas visuales. Pago único, sin suscripciones.");
+      document.querySelector('meta[property="og:url"]')?.setAttribute("content", "https://bodasfacil.com/");
+      document.querySelector('meta[property="og:image"]')?.setAttribute("content", "https://bodasfacil.com/og-image.jpg");
+      document.querySelector('meta[name="twitter:title"]')?.setAttribute("content", "BodasFácil — Crea la web de tu boda perfecta desde 30€");
+      document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", "RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda y 12 temas visuales. Pago único, sin suscripciones.");
+      document.querySelector('meta[name="twitter:image"]')?.setAttribute("content", "https://bodasfacil.com/og-image.jpg");
+    };
   }, [post]);
 
   if (loading) {
