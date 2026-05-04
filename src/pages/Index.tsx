@@ -1,9 +1,15 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { Heart, Sparkles, Users, Music, Camera, MapPin, Clock, HelpCircle, BookHeart, Gift, Share2, ArrowRight, CheckCircle, Play, Menu, X, Wallet, ListChecks, Shield, Zap, RefreshCcw } from "lucide-react";
+import { Heart, Sparkles, Users, Music, Camera, MapPin, Clock, HelpCircle, BookHeart, Gift, Share2, ArrowRight, CheckCircle, Play, Menu, X, Wallet, ListChecks, Shield, Zap, RefreshCcw, Star } from "lucide-react";
 import heroImage from "@/assets/hero-wedding.webp";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import ContactModal from "@/components/ContactModal";
+
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+  }
+}
 
 const features = [
   { icon: Heart, title: "Página inmersiva", desc: "Experiencia a pantalla completa con animaciones fluidas, temas visuales y navegación por secciones." },
@@ -27,7 +33,12 @@ const demos = [
   { slug: "demo-modern", theme: "Moderno", couple: "Martina & Álex", color: "hsl(220, 25%, 18%)", gradient: "from-slate-800/20 to-slate-600/10" },
   { slug: "demo-autumn", theme: "Otoñal", couple: "Carmen & Javier", color: "hsl(15, 60%, 40%)", gradient: "from-orange-900/20 to-amber-700/10" },
   { slug: "demo-valencia", theme: "Valenciano", couple: "Lucia & Marcos", color: "hsl(33, 70%, 45%)", gradient: "from-orange-700/20 to-amber-500/10" },
+];
 
+const testimonials = [
+  { name: "Laura & Sergio", location: "Valencia", text: "Nuestros invitados no paraban de decir lo bonita que era la web. El plan de mesas fue un salvavidas." },
+  { name: "Marta & Pau", location: "Barcelona", text: "La playlist colaborativa fue lo mejor. Cada invitado puso su canción y la pista no se vació en toda la noche." },
+  { name: "Ana & Roberto", location: "Madrid", text: "En 20 minutos teníamos todo listo. Ni un solo mensaje de WhatsApp preguntando dónde era la boda." },
 ];
 
 const useReveal = () => {
@@ -74,13 +85,14 @@ const Index = () => {
   }, []);
 
   const handleBuy = (priceId: string) => {
+    window.gtag?.("event", "clic_comprar", { plan: priceId });
     openCheckout({
       priceId,
       successUrl: `${window.location.origin}/dashboard?checkout=success`,
     });
   };
 
-const navLinks = [
+  const navLinks = [
     { href: "#features", label: "Funcionalidades" },
     { href: "#demos", label: "Demos" },
     { href: "#pricing", label: "Precios" },
@@ -103,7 +115,10 @@ const navLinks = [
                 {l.label}
               </a>
             ))}
-            <Link to="/auth" className={`text-sm font-medium px-5 py-2 rounded-lg transition-all duration-300 ${scrolled ? "bg-primary text-primary-foreground hover:opacity-90 shadow-sm" : "bg-primary-foreground/15 text-primary-foreground backdrop-blur-sm hover:bg-primary-foreground/25 border border-primary-foreground/20"}`}>
+            <Link
+              to="/auth"
+              onClick={() => window.gtag?.("event", "clic_crear_boda", { location: "navbar" })}
+              className={`text-sm font-medium px-5 py-2 rounded-lg transition-all duration-300 ${scrolled ? "bg-primary text-primary-foreground hover:opacity-90 shadow-sm" : "bg-primary-foreground/15 text-primary-foreground backdrop-blur-sm hover:bg-primary-foreground/25 border border-primary-foreground/20"}`}>
               Crear mi boda
             </Link>
           </div>
@@ -121,7 +136,11 @@ const navLinks = [
                 {l.label}
               </a>
             ))}
-            <Link to="/auth" onClick={() => setMobileMenuOpen(false)} className="block text-center text-sm font-medium px-5 py-2.5 rounded-lg bg-primary text-primary-foreground">
+            <Link
+              to="/auth"
+              onClick={() => { setMobileMenuOpen(false); window.gtag?.("event", "clic_crear_boda", { location: "navbar_mobile" }); }}
+              className="block text-center text-sm font-medium px-5 py-2.5 rounded-lg bg-primary text-primary-foreground"
+            >
               Crear mi boda
             </Link>
           </div>
@@ -147,28 +166,46 @@ const navLinks = [
             <span className="text-primary-foreground/80 text-[11px] sm:text-xs tracking-wider uppercase font-light">Más de 12 funcionalidades · Desde 30€</span>
           </div>
           <h1 className="font-heading text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl text-primary-foreground mb-4 sm:mb-6 leading-[0.95] text-balance">
-           Crea la web de<br />tu boda perfecta
+            Crea la web de<br />tu boda perfecta
           </h1>
           <p className="text-primary-foreground/85 text-base sm:text-lg md:text-xl font-light mb-8 sm:mb-10 max-w-xl mx-auto leading-relaxed">
-            Crea una experiencia digital inmersiva para tus invitados. RSVP, playlist, fotos en vivo, mapa, agenda y mucho más.
+            RSVP, playlist colaborativa, plan de mesas, fotos en vivo y mucho más. Lista en minutos. Desde 30€, pago único.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
             <Link
               to="/auth"
+              onClick={() => window.gtag?.("event", "clic_crear_boda", { location: "hero" })}
               className="group px-7 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-primary-foreground text-foreground font-medium text-base sm:text-lg hover:shadow-2xl hover:shadow-primary-foreground/25 hover:-translate-y-0.5 transition-all duration-300"
             >
-              Crear mi boda gratis
+              Empezar desde 30€
               <ArrowRight className="w-4 h-4 inline ml-2 group-hover:translate-x-1 transition-transform" />
             </Link>
             <a
               href="#demos"
+              onClick={() => window.gtag?.("event", "clic_ver_demos", { location: "hero" })}
               className="group px-7 sm:px-8 py-3.5 sm:py-4 rounded-xl border-2 border-primary-foreground/30 text-primary-foreground font-light text-base sm:text-lg hover:bg-primary-foreground/10 hover:border-primary-foreground/50 transition-all duration-300"
             >
               <Play className="w-4 h-4 inline mr-2" />
               Ver demos en vivo
             </a>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-8 sm:mt-10 text-primary-foreground/60 text-[11px] sm:text-xs">
+
+          {/* Prueba social */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mt-8 sm:mt-10">
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20">
+              <div className="flex -space-x-1.5">
+                {["🤵", "👰", "💍"].map((e, i) => (
+                  <span key={i} className="w-6 h-6 rounded-full bg-primary-foreground/20 flex items-center justify-center text-xs">{e}</span>
+                ))}
+              </div>
+              <span className="text-primary-foreground/80 text-xs font-light">Más de 50 bodas creadas</span>
+              <div className="flex gap-0.5">
+                {[...Array(5)].map((_, i) => <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />)}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-4 text-primary-foreground/60 text-[11px] sm:text-xs">
             <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5" /> Pago seguro</span>
             <span className="flex items-center gap-1.5"><RefreshCcw className="w-3.5 h-3.5" /> 30 días de garantía</span>
             <span className="flex items-center gap-1.5"><Zap className="w-3.5 h-3.5" /> Lista en minutos</span>
@@ -230,6 +267,7 @@ const navLinks = [
               <RevealSection key={d.slug} delay={i % 2 * 120}>
                 <Link
                   to={`/w/${d.slug}`}
+                  onClick={() => window.gtag?.("event", "clic_demo", { demo: d.slug })}
                   className={`group bg-gradient-to-br ${d.gradient} bg-card border border-border rounded-xl p-5 sm:p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 block`}
                 >
                   <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
@@ -324,7 +362,7 @@ const navLinks = [
                         <span className="font-medium text-foreground">{item.amount}</span>
                       </div>
                       <div className="h-2 bg-secondary rounded-full overflow-hidden mt-1">
-                        <div className="h-full bg-primary rounded-full transition-all duration-500" style={{width: `${item.pct}%`}} />
+                        <div className="h-full bg-primary rounded-full transition-all duration-500" style={{ width: `${item.pct}%` }} />
                       </div>
                     </div>
                   ))}
@@ -374,12 +412,42 @@ const navLinks = [
                   <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
                     <span>Agradecidos: 67%</span>
                     <div className="w-20 h-1.5 bg-secondary rounded-full overflow-hidden">
-                      <div className="h-full bg-primary rounded-full" style={{width: "67%"}} />
+                      <div className="h-full bg-primary rounded-full" style={{ width: "67%" }} />
                     </div>
                   </div>
                 </div>
               </div>
             </RevealSection>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-16 sm:py-24 bg-background">
+        <div className="container max-w-5xl px-5 sm:px-8">
+          <RevealSection>
+            <div className="text-center mb-10 sm:mb-16">
+              <span className="inline-block text-xs uppercase tracking-[0.3em] text-primary mb-3 sm:mb-4 font-medium">Opiniones</span>
+              <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl text-foreground mb-3 sm:mb-4">
+                Lo que dicen las parejas
+              </h2>
+            </div>
+          </RevealSection>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            {testimonials.map((t, i) => (
+              <RevealSection key={t.name} delay={i * 100}>
+                <div className="bg-card border border-border rounded-xl p-6 h-full">
+                  <div className="flex gap-0.5 mb-4">
+                    {[...Array(5)].map((_, j) => <Star key={j} className="w-4 h-4 fill-yellow-400 text-yellow-400" />)}
+                  </div>
+                  <p className="text-foreground/80 font-light text-sm leading-relaxed mb-4">"{t.text}"</p>
+                  <div>
+                    <p className="font-heading text-sm text-foreground">{t.name}</p>
+                    <p className="text-xs text-muted-foreground">{t.location}</p>
+                  </div>
+                </div>
+              </RevealSection>
+            ))}
           </div>
         </div>
       </section>
@@ -585,9 +653,10 @@ const navLinks = [
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
                 to="/auth"
+                onClick={() => window.gtag?.("event", "clic_crear_boda", { location: "final_cta" })}
                 className="group inline-flex items-center justify-center gap-2 px-8 sm:px-10 py-3.5 sm:py-4 rounded-xl bg-primary text-primary-foreground font-medium text-base sm:text-lg hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-0.5 transition-all duration-300"
               >
-                Crear mi boda gratis
+                Empezar desde 30€
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <a
@@ -633,5 +702,3 @@ const navLinks = [
 };
 
 export default Index;
-
-
