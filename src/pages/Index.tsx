@@ -26,6 +26,7 @@ const demos = [
   { slug: "demo-rustic", theme: "Rústico", couple: "Elena & Pablo", color: "hsl(25, 50%, 32%)", gradient: "from-orange-900/20 to-orange-700/10" },
   { slug: "demo-modern", theme: "Moderno", couple: "Martina & Álex", color: "hsl(220, 25%, 18%)", gradient: "from-slate-800/20 to-slate-600/10" },
   { slug: "demo-autumn", theme: "Otoñal", couple: "Carmen & Javier", color: "hsl(15, 60%, 40%)", gradient: "from-orange-900/20 to-amber-700/10" },
+  { slug: "demo-valencia", theme: "Valenciano", couple: "Lucia & Marcos", color: "hsl(33, 70%, 45%)", gradient: "from-orange-700/20 to-amber-500/10" },
 
 ];
 
