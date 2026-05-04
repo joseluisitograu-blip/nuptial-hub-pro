@@ -28,8 +28,22 @@ const Blog = () => {
       setLoading(false);
     };
     fetchPosts();
-    document.title = "Blog — BodasFácil";
-    return () => { document.title = "BodasFácil"; };
+
+    document.title = "Blog de bodas — Consejos e ideas | BodasFácil";
+    document.querySelector('meta[name="description"]')?.setAttribute("content", "Consejos, ideas e inspiración para organizar la boda perfecta. Seating plan, playlist colaborativa, web de boda y mucho más.");
+    document.querySelector('link[rel="canonical"]')?.setAttribute("href", "https://bodasfacil.com/blog");
+    document.querySelector('meta[property="og:title"]')?.setAttribute("content", "Blog de bodas — Consejos e ideas | BodasFácil");
+    document.querySelector('meta[property="og:description"]')?.setAttribute("content", "Consejos, ideas e inspiración para organizar la boda perfecta. Seating plan, playlist colaborativa, web de boda y mucho más.");
+    document.querySelector('meta[property="og:url"]')?.setAttribute("content", "https://bodasfacil.com/blog");
+
+    return () => {
+      document.title = "BodasFácil — Crea la web de tu boda en minutos | Desde 30€";
+      document.querySelector('meta[name="description"]')?.setAttribute("content", "Crea la web de tu boda perfecta en minutos. RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda del día, mapa y 12 temas visuales. Pago único desde 30€.");
+      document.querySelector('link[rel="canonical"]')?.setAttribute("href", "https://bodasfacil.com/");
+      document.querySelector('meta[property="og:title"]')?.setAttribute("content", "BodasFácil — Crea la web de tu boda perfecta desde 30€");
+      document.querySelector('meta[property="og:description"]')?.setAttribute("content", "RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda y 12 temas visuales. Pago único, sin suscripciones.");
+      document.querySelector('meta[property="og:url"]')?.setAttribute("content", "https://bodasfacil.com/");
+    };
   }, []);
 
   if (loading) {
