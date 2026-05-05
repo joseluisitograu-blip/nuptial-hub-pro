@@ -14,6 +14,7 @@ export function usePurchase(): PurchaseInfo {
   const { user } = useAuth();
   const [hasPurchase, setHasPurchase] = useState(false);
   const [productId, setProductId] = useState<string | null>(null);
+  const [plan, setPlan] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [isOwner, setIsOwner] = useState(false);
 
@@ -27,7 +28,7 @@ export function usePurchase(): PurchaseInfo {
     const environment = clientToken.startsWith("test_") ? "sandbox" : "live";
 
     const fetchData = async () => {
-      // Check admin role server-side
+      // Comprobar rol admin
       const { data: roles } = await supabase
         .from("user_roles")
         .select("role")
@@ -43,9 +44,10 @@ export function usePurchase(): PurchaseInfo {
         return;
       }
 
+      // Comprobar compras completadas
       const { data } = await supabase
         .from("purchases")
-        .select("product_id")
+        .select("product_id, plan")
         .eq("user_id", user.id)
         .eq("environment", environment)
         .eq("status", "completed")
@@ -54,12 +56,17 @@ export function usePurchase(): PurchaseInfo {
 
       setHasPurchase(!!data);
       setProductId(data?.product_id ?? null);
+      setPlan(data?.plan ?? null);
       setLoading(false);
     };
 
     fetchData();
   }, [user]);
 
-  const isCompleto = isOwner || (productId || "").toLowerCase().includes("completo");
+  const isCompleto =
+    isOwner ||
+    (productId || "").toLowerCase().includes("completo") ||
+    (plan || "").toLowerCase().includes("completo");
+
   return { hasPurchase, productId, loading, isOwner, isCompleto };
 }
