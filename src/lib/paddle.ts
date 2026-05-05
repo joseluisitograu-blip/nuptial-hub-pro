@@ -2,6 +2,7 @@ declare global {
   interface Window {
     Paddle: any;
     profitwell: any;
+    profitwellSnippetBase: any;
   }
 }
 
@@ -24,11 +25,19 @@ export async function initializePaddle() {
     const script = document.createElement("script");
     script.src = "https://cdn.paddle.com/paddle/v2/paddle.js";
     script.onload = () => {
-      // Fix para error profitwellSnippetBase en sandbox
       if (!window.profitwell) {
         window.profitwell = () => {};
       }
-      window.Paddle.Environment.set(paddleEnv);
+      if (typeof (window.profitwell as any).q === "undefined") {
+        (window.profitwell as any).q = [];
+      }
+      window.profitwellSnippetBase = window.profitwellSnippetBase || "";
+
+      // Solo setear environment en sandbox
+      if (paddleEnv === "sandbox") {
+        window.Paddle.Environment.set("sandbox");
+      }
+
       window.Paddle.Initialize({ token: clientToken });
       paddleInitialized = true;
       resolve();
