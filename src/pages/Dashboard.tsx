@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Plus, ExternalLink, LogOut, Heart, MessageCircle, ChevronDown, ChevronUp, Lock, Mail, BarChart3, Gift, Wallet, ListChecks } from "lucide-react";
+import { Plus, ExternalLink, LogOut, Heart, MessageCircle, ChevronDown, ChevronUp, Lock, Mail, BarChart3, Gift, Wallet, ListChecks, CheckCircle, ArrowRight, Sparkles } from "lucide-react";
 import WeddingStats from "@/components/dashboard/WeddingStats";
 import ExportRsvps from "@/components/dashboard/ExportRsvps";
 import DashboardMessages from "@/components/dashboard/DashboardMessages";
@@ -12,6 +12,12 @@ import WeddingChecklist from "@/components/dashboard/WeddingChecklist";
 import { usePurchase } from "@/hooks/usePurchase";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { useToast } from "@/hooks/use-toast";
+
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+  }
+}
 
 interface Wedding {
   id: string;
@@ -38,7 +44,8 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (searchParams.get("checkout") === "success") {
-      toast({ title: "¡Pago completado!", description: "Ya puedes crear tu boda." });
+      window.gtag?.("event", "compra_completada", {});
+      toast({ title: "¡Pago completado! 🎉", description: "Tu boda ya está activa. ¡Enhorabuena!" });
       searchParams.delete("checkout");
       setSearchParams(searchParams, { replace: true });
     }
@@ -67,6 +74,7 @@ const Dashboard = () => {
   const createWedding = async () => {
     if (!user) return;
     setCreating(true);
+    window.gtag?.("event", "crear_boda_click", {});
     const slug = `boda-${Date.now().toString(36)}`;
     const { data, error } = await supabase
       .from("weddings")
@@ -80,6 +88,7 @@ const Dashboard = () => {
   };
 
   const handleBuy = (priceId: string) => {
+    window.gtag?.("event", "clic_comprar_dashboard", { plan: priceId });
     openCheckout({
       priceId,
       customerEmail: user?.email || undefined,
@@ -117,64 +126,97 @@ const Dashboard = () => {
       <header className="border-b border-border px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Heart className="w-5 h-5 text-primary" />
-          <span className="font-heading text-xl">Mis Bodas</span>
+          <span className="font-heading text-xl">BodasFácil</span>
         </div>
-        <button
-          onClick={signOut}
-          className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm"
-        >
-          <LogOut className="w-4 h-4" /> Salir
-        </button>
+        <div className="flex items-center gap-4">
+          {!hasPurchase && (
+            <button
+              onClick={() => handleBuy("completo_one_time")}
+              disabled={checkoutLoading}
+              className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+            >
+              <Sparkles className="w-4 h-4" /> Publicar mi boda · desde 30€
+            </button>
+          )}
+          <button
+            onClick={signOut}
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm"
+          >
+            <LogOut className="w-4 h-4" /> Salir
+          </button>
+        </div>
       </header>
 
-      <div className="container max-w-4xl py-12">
-        {!hasPurchase ? (
-          <div className="text-center py-20">
-            <Lock className="w-16 h-16 text-muted-foreground mx-auto mb-6 opacity-40" />
-            <h2 className="font-heading text-3xl text-foreground mb-3">
-              Elige tu plan para empezar
-            </h2>
-            <p className="text-muted-foreground font-light mb-8 max-w-md mx-auto">
-              Selecciona un plan y crea la web de vuestra boda en minutos.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+      <div className="container max-w-4xl py-8 sm:py-12 px-4 sm:px-8">
+
+        {/* Banner de upgrade — solo si no ha comprado y tiene bodas creadas */}
+        {!hasPurchase && weddings.length > 0 && (
+          <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 sm:p-6 mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <p className="font-medium text-foreground mb-1">Tu boda está lista 🎉 Solo falta publicarla</p>
+              <p className="text-muted-foreground text-sm font-light">Elige un plan para que tus invitados puedan verla. Pago único, sin suscripciones.</p>
+            </div>
+            <div className="flex gap-3 flex-shrink-0">
               <button
                 onClick={() => handleBuy("basico_one_time")}
                 disabled={checkoutLoading}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border-2 border-primary text-primary font-medium hover:bg-primary hover:text-primary-foreground transition-all"
+                className="px-4 py-2 rounded-lg border-2 border-primary text-primary text-sm font-medium hover:bg-primary hover:text-primary-foreground transition-all whitespace-nowrap"
               >
-                Básico · 35€
+                Básico · 30€
               </button>
               <button
                 onClick={() => handleBuy("completo_one_time")}
                 disabled={checkoutLoading}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity"
+                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity whitespace-nowrap"
               >
-                Completo · 65€
+                Completo · 60€ ⭐
               </button>
             </div>
           </div>
-        ) : weddings.length === 0 ? (
-          <div className="text-center py-20">
-            <Heart className="w-16 h-16 text-muted-foreground mx-auto mb-6 opacity-40" />
-            <h2 className="font-heading text-3xl text-foreground mb-3">
-              Crea tu primera boda
+        )}
+
+        {/* Estado: sin compra y sin bodas — onboarding */}
+        {!hasPurchase && weddings.length === 0 && (
+          <div className="text-center py-12 sm:py-20">
+            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
+              <Heart className="w-8 h-8 text-primary" />
+            </div>
+            <h2 className="font-heading text-2xl sm:text-3xl text-foreground mb-3">
+              Bienvenido a BodasFácil 💍
             </h2>
-            <p className="text-muted-foreground font-light mb-8 max-w-md mx-auto">
-              Diseña una experiencia única e inmersiva para compartir con tus invitados.
+            <p className="text-muted-foreground font-light mb-2 max-w-md mx-auto">
+              Empieza creando vuestra boda. Es gratis explorar y personalizar — solo pagas cuando queráis publicarla.
             </p>
+            <p className="text-muted-foreground/60 text-sm mb-8">Desde 30€, pago único, sin suscripciones.</p>
+
             <button
               onClick={createWedding}
               disabled={creating}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-primary text-primary-foreground font-medium text-lg hover:opacity-90 transition-opacity mb-8"
             >
-              <Plus className="w-4 h-4" /> Crear boda
+              <Plus className="w-5 h-5" /> Crear mi boda gratis
             </button>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-lg mx-auto mt-4">
+              {[
+                "Personaliza el diseño",
+                "Añade tu información",
+                "Publica cuando estés listo",
+              ].map((s, i) => (
+                <div key={s} className="flex items-center gap-2 text-sm text-muted-foreground bg-card border border-border rounded-lg p-3">
+                  <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center flex-shrink-0 font-medium">{i + 1}</span>
+                  {s}
+                </div>
+              ))}
+            </div>
           </div>
-        ) : (
+        )}
+
+        {/* Estado: tiene bodas */}
+        {weddings.length > 0 && (
           <>
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="font-heading text-3xl">Tus bodas</h2>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="font-heading text-2xl sm:text-3xl">Tus bodas</h2>
               <button
                 onClick={createWedding}
                 disabled={creating}
@@ -187,13 +229,10 @@ const Dashboard = () => {
               {weddings.map((w) => {
                 const isExpanded = expandedId === w.id;
                 return (
-                  <div
-                    key={w.id}
-                    className="bg-card border border-border rounded-lg p-6 hover:shadow-md transition-shadow"
-                  >
-                    <div className="flex items-center justify-between">
+                  <div key={w.id} className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-shadow">
+                    <div className="flex items-center justify-between p-5 sm:p-6">
                       <div>
-                        <h3 className="font-heading text-xl">
+                        <h3 className="font-heading text-lg sm:text-xl">
                           {w.partner1_name && w.partner2_name
                             ? `${w.partner1_name} & ${w.partner2_name}`
                             : "Sin nombre aún"}
@@ -207,23 +246,25 @@ const Dashboard = () => {
                               year: "numeric",
                             })}`}
                         </p>
+                        {!hasPurchase && (
+                          <span className="inline-flex items-center gap-1 text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-full px-2 py-0.5 mt-1">
+                            <Lock className="w-3 h-3" /> Sin publicar
+                          </span>
+                        )}
                       </div>
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleToggleExpand(w.id)}
                           className="p-2 rounded-md hover:bg-secondary transition-colors text-muted-foreground"
-                          title="Ver gestión"
                         >
                           {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                         </button>
                         <a
-                          href={`https://wa.me/?text=${encodeURIComponent(
-                            `¡Hola! Os recordamos que nuestra boda se acerca. 💍 Toda la info aquí: ${window.location.origin}/w/${w.slug}`
-                          )}`}
+                          href={`https://wa.me/?text=${encodeURIComponent(`¡Hola! Os recordamos que nuestra boda se acerca. 💍 Toda la info aquí: ${window.location.origin}/w/${w.slug}`)}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="p-2 rounded-md hover:bg-secondary transition-colors text-primary"
-                          title="Enviar recordatorio por WhatsApp"
+                          title="Compartir por WhatsApp"
                         >
                           <MessageCircle className="w-4 h-4" />
                         </a>
@@ -242,9 +283,9 @@ const Dashboard = () => {
                         </Link>
                       </div>
                     </div>
+
                     {isExpanded && (
-                      <div className="mt-4">
-                        {/* Tab navigation */}
+                      <div className="border-t border-border px-5 sm:px-6 pt-4 pb-5">
                         <div className="flex gap-1 border-b border-border mb-4">
                           {tabs.map((tab) => (
                             <button
@@ -261,7 +302,6 @@ const Dashboard = () => {
                           ))}
                         </div>
 
-                        {/* Tab content */}
                         {activeTab === "stats" && (
                           <>
                             <WeddingStats weddingId={w.id} />
@@ -276,14 +316,14 @@ const Dashboard = () => {
                         {(activeTab === "budget" || activeTab === "gifts" || activeTab === "checklist") && !isCompleto && (
                           <div className="text-center py-10">
                             <Lock className="w-10 h-10 text-muted-foreground mx-auto mb-3 opacity-40" />
-                            <p className="text-foreground font-medium mb-1">Funcionalidad exclusiva del plan Completo</p>
+                            <p className="text-foreground font-medium mb-1">Exclusivo del plan Completo</p>
                             <p className="text-muted-foreground text-sm mb-4">Gestiona presupuesto, regalos y checklist de tu boda.</p>
                             <button
                               onClick={() => handleBuy("completo_one_time")}
                               disabled={checkoutLoading}
                               className="px-5 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
                             >
-                              Actualizar a Completo · 65€
+                              Actualizar a Completo · 60€
                             </button>
                           </div>
                         )}
