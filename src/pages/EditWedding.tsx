@@ -2,8 +2,16 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Save, ExternalLink, Plus, Trash2, Upload } from "lucide-react";
+import { ArrowLeft, Save, ExternalLink, Plus, Trash2, Upload, Sparkles, Lock } from "lucide-react";
 import { toast } from "sonner";
+import { usePurchase } from "@/hooks/usePurchase";
+import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
+
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+  }
+}
 
 const inputClass =
   "w-full min-w-0 px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring font-light box-border";
@@ -94,7 +102,7 @@ interface SeatingTableItem {
   table_name: string;
   capacity: number;
   sort_order: number;
-  guests: string[]; // guest names
+  guests: string[];
 }
 
 interface FaqItem {
@@ -108,6 +116,8 @@ const EditWedding = () => {
   const { id } = useParams<{ id: string }>();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const { hasPurchase, isCompleto } = usePurchase();
+  const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadingHero, setUploadingHero] = useState(false);
@@ -182,7 +192,6 @@ const EditWedding = () => {
       setAgendaItems((agendaData as AgendaItem[]) || []);
       setFaqItems((faqData as FaqItem[]) || []);
 
-      // Build seating tables with guest names
       const tables = (tablesData || []) as any[];
       const assigns = (assignData || []) as any[];
       setSeatingTables(tables.map((t) => ({
@@ -200,8 +209,8 @@ const EditWedding = () => {
 
   const handleSave = async () => {
     setSaving(true);
+    window.gtag?.("event", "guardar_boda", {});
 
-    // Save wedding
     const { error } = await supabase
       .from("weddings")
       .update({
@@ -227,94 +236,64 @@ const EditWedding = () => {
       } as any)
       .eq("id", id!);
 
-    // Save stories: delete all and re-insert
     await supabase.from("wedding_stories").delete().eq("wedding_id", id!);
     if (stories.length > 0) {
       await supabase.from("wedding_stories").insert(
-        stories.map((s, i) => ({
-          wedding_id: id!,
-          title: s.title,
-          description: s.description,
-          story_date: s.story_date,
-          sort_order: i,
-        }))
+        stories.map((s, i) => ({ wedding_id: id!, title: s.title, description: s.description, story_date: s.story_date, sort_order: i }))
       );
     }
 
-    // Save accommodations: delete all and re-insert
     await supabase.from("accommodations").delete().eq("wedding_id", id!);
     if (accommodations.length > 0) {
       await supabase.from("accommodations").insert(
-        accommodations.map((a, i) => ({
-          wedding_id: id!,
-          name: a.name,
-          address: a.address,
-          phone: a.phone,
-          website: a.website,
-          notes: a.notes,
-          sort_order: i,
-        }))
+        accommodations.map((a, i) => ({ wedding_id: id!, name: a.name, address: a.address, phone: a.phone, website: a.website, notes: a.notes, sort_order: i }))
       );
     }
 
-    // Save agenda items
     await supabase.from("agenda_items").delete().eq("wedding_id", id!);
     if (agendaItems.length > 0) {
       await supabase.from("agenda_items").insert(
-        agendaItems.map((a, i) => ({
-          wedding_id: id!,
-          title: a.title,
-          start_time: a.start_time,
-          end_time: a.end_time,
-          location: a.location,
-          description: a.description,
-          icon: a.icon,
-          sort_order: i,
-        }))
+        agendaItems.map((a, i) => ({ wedding_id: id!, title: a.title, start_time: a.start_time, end_time: a.end_time, location: a.location, description: a.description, icon: a.icon, sort_order: i }))
       );
     }
 
-    // Save seating: delete assignments first, then tables, then re-insert
     await supabase.from("seating_assignments").delete().eq("wedding_id", id!);
     await supabase.from("seating_tables").delete().eq("wedding_id", id!);
     for (let i = 0; i < seatingTables.length; i++) {
       const t = seatingTables[i];
       const { data: tableData } = await supabase.from("seating_tables").insert({
-        wedding_id: id!,
-        table_name: t.table_name,
-        capacity: t.capacity,
-        sort_order: i,
+        wedding_id: id!, table_name: t.table_name, capacity: t.capacity, sort_order: i,
       }).select("id").single();
       if (tableData && t.guests.length > 0) {
         await supabase.from("seating_assignments").insert(
-          t.guests.filter(g => g.trim()).map(g => ({
-            wedding_id: id!,
-            table_id: tableData.id,
-            guest_name: g.trim(),
-          }))
+          t.guests.filter(g => g.trim()).map(g => ({ wedding_id: id!, table_id: tableData.id, guest_name: g.trim() }))
         );
       }
     }
 
-    // Save FAQs
     await supabase.from("faqs").delete().eq("wedding_id", id!);
     if (faqItems.length > 0) {
       await supabase.from("faqs").insert(
-        faqItems.map((f, i) => ({
-          wedding_id: id!,
-          question: f.question,
-          answer: f.answer,
-          sort_order: i,
-        }))
+        faqItems.map((f, i) => ({ wedding_id: id!, question: f.question, answer: f.answer, sort_order: i }))
       );
     }
 
     if (error) {
       toast.error("Error al guardar");
     } else {
-      toast.success("¡Guardado!");
+      toast.success("¡Cambios guardados!");
     }
     setSaving(false);
+  };
+
+  const handleBuy = (priceId: string) => {
+    window.gtag?.("event", "clic_publicar_editor", { plan: priceId });
+    openCheckout({
+      priceId,
+      customerEmail: user?.email || undefined,
+      customData: { userId: user?.id || "" },
+      successUrl: `${window.location.origin}/dashboard?checkout=success`,
+    });
   };
 
   const update = (key: string, value: string) => setForm((f) => ({ ...f, [key]: value }));
@@ -337,34 +316,29 @@ const EditWedding = () => {
     toast.success("Imagen subida");
   };
 
-  const addStory = () =>
-    setStories([...stories, { title: "", description: "", story_date: "", sort_order: stories.length }]);
+  const addStory = () => setStories([...stories, { title: "", description: "", story_date: "", sort_order: stories.length }]);
   const removeStory = (i: number) => setStories(stories.filter((_, idx) => idx !== i));
   const updateStory = (i: number, key: keyof StoryItem, val: string) =>
     setStories(stories.map((s, idx) => (idx === i ? { ...s, [key]: val } : s)));
 
-  const addAccommodation = () =>
-    setAccommodations([...accommodations, { name: "", address: "", phone: "", website: "", notes: "", sort_order: accommodations.length }]);
+  const addAccommodation = () => setAccommodations([...accommodations, { name: "", address: "", phone: "", website: "", notes: "", sort_order: accommodations.length }]);
   const removeAccommodation = (i: number) => setAccommodations(accommodations.filter((_, idx) => idx !== i));
   const updateAccommodation = (i: number, key: keyof AccommodationItem, val: string) =>
     setAccommodations(accommodations.map((a, idx) => (idx === i ? { ...a, [key]: val } : a)));
 
-  const addAgendaItem = () =>
-    setAgendaItems([...agendaItems, { title: "", start_time: "", end_time: "", location: "", description: "", icon: "clock", sort_order: agendaItems.length }]);
+  const addAgendaItem = () => setAgendaItems([...agendaItems, { title: "", start_time: "", end_time: "", location: "", description: "", icon: "clock", sort_order: agendaItems.length }]);
   const removeAgendaItem = (i: number) => setAgendaItems(agendaItems.filter((_, idx) => idx !== i));
   const updateAgendaItem = (i: number, key: keyof AgendaItem, val: string) =>
     setAgendaItems(agendaItems.map((a, idx) => (idx === i ? { ...a, [key]: val } : a)));
 
-  const addSeatingTable = () =>
-    setSeatingTables([...seatingTables, { table_name: "", capacity: 8, sort_order: seatingTables.length, guests: [] }]);
+  const addSeatingTable = () => setSeatingTables([...seatingTables, { table_name: "", capacity: 8, sort_order: seatingTables.length, guests: [] }]);
   const removeSeatingTable = (i: number) => setSeatingTables(seatingTables.filter((_, idx) => idx !== i));
   const updateSeatingTable = (i: number, key: string, val: any) =>
     setSeatingTables(seatingTables.map((t, idx) => (idx === i ? { ...t, [key]: val } : t)));
   const updateSeatingGuests = (i: number, val: string) =>
     setSeatingTables(seatingTables.map((t, idx) => (idx === i ? { ...t, guests: val.split("\n") } : t)));
 
-  const addFaqItem = () =>
-    setFaqItems([...faqItems, { question: "", answer: "", sort_order: faqItems.length }]);
+  const addFaqItem = () => setFaqItems([...faqItems, { question: "", answer: "", sort_order: faqItems.length }]);
   const removeFaqItem = (i: number) => setFaqItems(faqItems.filter((_, idx) => idx !== i));
   const updateFaqItem = (i: number, key: keyof FaqItem, val: string) =>
     setFaqItems(faqItems.map((f, idx) => (idx === i ? { ...f, [key]: val } : f)));
@@ -387,6 +361,15 @@ const EditWedding = () => {
           <span className="font-heading text-xl truncate">Editar boda</span>
         </div>
         <div className="flex items-center gap-2 shrink-0">
+          {!hasPurchase && (
+            <button
+              onClick={() => handleBuy("completo_one_time")}
+              disabled={checkoutLoading}
+              className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+            >
+              <Sparkles className="w-3.5 h-3.5" /> Publicar · desde 30€
+            </button>
+          )}
           <Link
             to={`/w/${form.slug}`}
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-secondary text-secondary-foreground text-sm hover:opacity-90 transition-opacity"
@@ -404,6 +387,33 @@ const EditWedding = () => {
       </header>
 
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10 space-y-10">
+
+        {/* Banner publicar — solo si no ha comprado */}
+        {!hasPurchase && (
+          <div className="bg-primary/5 border border-primary/20 rounded-xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <p className="font-medium text-foreground text-sm mb-0.5">Estás personalizando tu boda 🎉</p>
+              <p className="text-muted-foreground text-xs font-light">Cuando estés listo, publícala para que tus invitados puedan verla. Pago único, sin suscripciones.</p>
+            </div>
+            <div className="flex gap-2 flex-shrink-0">
+              <button
+                onClick={() => handleBuy("basico_one_time")}
+                disabled={checkoutLoading}
+                className="px-3 py-2 rounded-lg border-2 border-primary text-primary text-xs font-medium hover:bg-primary hover:text-primary-foreground transition-all whitespace-nowrap"
+              >
+                Básico · 30€
+              </button>
+              <button
+                onClick={() => handleBuy("completo_one_time")}
+                disabled={checkoutLoading}
+                className="px-3 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:opacity-90 transition-opacity whitespace-nowrap"
+              >
+                Completo · 60€ ⭐
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Theme */}
         <section className="space-y-4">
           <h2 className="font-heading text-2xl border-b border-border pb-2">Tema visual</h2>
@@ -413,9 +423,7 @@ const EditWedding = () => {
                 key={t.id}
                 onClick={() => update("theme_preset", t.id)}
                 className={`p-4 rounded-xl border-2 transition-all text-center ${
-                  form.theme_preset === t.id
-                    ? "border-primary shadow-md"
-                    : "border-border hover:border-muted-foreground"
+                  form.theme_preset === t.id ? "border-primary shadow-md" : "border-border hover:border-muted-foreground"
                 }`}
               >
                 <div className={`w-8 h-8 rounded-full ${t.colors} mx-auto mb-2`} />
@@ -432,11 +440,10 @@ const EditWedding = () => {
             <Field label="Nombre 1" value={form.partner1_name} onChange={(v) => update("partner1_name", v)} placeholder="María" />
             <Field label="Nombre 2" value={form.partner2_name} onChange={(v) => update("partner2_name", v)} placeholder="Carlos" />
           </div>
-            <Field label="URL personalizada" value={form.slug} onChange={(v) => update("slug", v.toLowerCase().replace(/[^a-z0-9-]/g, "-").replace(/-+/g, "-"))} placeholder="maria-y-carlos" />
-            <p className="text-xs text-muted-foreground -mt-2">Solo letras, números y guiones. Tu web estará en: /w/{form.slug}</p>
-           <Field label="Fecha de la boda" value={form.wedding_date} onChange={(v) => update("wedding_date", v)} type="date" />
+          <Field label="URL personalizada" value={form.slug} onChange={(v) => update("slug", v.toLowerCase().replace(/[^a-z0-9-]/g, "-").replace(/-+/g, "-"))} placeholder="maria-y-carlos" />
+          <p className="text-xs text-muted-foreground -mt-2">Solo letras, números y guiones. Tu web estará en: /w/{form.slug}</p>
+          <Field label="Fecha de la boda" value={form.wedding_date} onChange={(v) => update("wedding_date", v)} type="date" />
 
-          {/* Hero image */}
           <div>
             <label className="block text-sm font-medium text-foreground mb-1.5">Imagen principal</label>
             <div className="flex items-center gap-4">
@@ -465,9 +472,7 @@ const EditWedding = () => {
             <div key={i} className="bg-card border border-border rounded-lg p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-xs text-muted-foreground">Hito {i + 1}</span>
-                <button onClick={() => removeStory(i)} className="text-destructive hover:opacity-80">
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                <button onClick={() => removeStory(i)} className="text-destructive hover:opacity-80"><Trash2 className="w-4 h-4" /></button>
               </div>
               <input value={s.title} onChange={(e) => updateStory(i, "title", e.target.value)} className={inputClass} placeholder="Título (ej: Nos conocimos)" />
               <input value={s.story_date} onChange={(e) => updateStory(i, "story_date", e.target.value)} className={inputClass} placeholder="Fecha (ej: Junio 2020)" />
@@ -512,9 +517,7 @@ const EditWedding = () => {
             <div key={i} className="bg-card border border-border rounded-lg p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-xs text-muted-foreground">Alojamiento {i + 1}</span>
-                <button onClick={() => removeAccommodation(i)} className="text-destructive hover:opacity-80">
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                <button onClick={() => removeAccommodation(i)} className="text-destructive hover:opacity-80"><Trash2 className="w-4 h-4" /></button>
               </div>
               <input value={a.name} onChange={(e) => updateAccommodation(i, "name", e.target.value)} className={inputClass} placeholder="Nombre del hotel" />
               <input value={a.address} onChange={(e) => updateAccommodation(i, "address", e.target.value)} className={inputClass} placeholder="Dirección" />
@@ -545,6 +548,7 @@ const EditWedding = () => {
           <p className="text-xs text-muted-foreground">Los invitados podrán confirmar asistencia directamente por WhatsApp a este número.</p>
         </section>
 
+        {/* Agenda */}
         <section className="space-y-4">
           <div className="flex items-center justify-between border-b border-border pb-2">
             <h2 className="font-heading text-2xl">Agenda del día</h2>
@@ -556,9 +560,7 @@ const EditWedding = () => {
             <div key={i} className="bg-card border border-border rounded-lg p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-xs text-muted-foreground">Evento {i + 1}</span>
-                <button onClick={() => removeAgendaItem(i)} className="text-destructive hover:opacity-80">
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                <button onClick={() => removeAgendaItem(i)} className="text-destructive hover:opacity-80"><Trash2 className="w-4 h-4" /></button>
               </div>
               <input value={a.title} onChange={(e) => updateAgendaItem(i, "title", e.target.value)} className={inputClass} placeholder="Título (ej: Ceremonia)" />
               <div className="grid grid-cols-2 gap-3">
@@ -581,7 +583,7 @@ const EditWedding = () => {
           ))}
         </section>
 
-        {/* Seating / Mesas */}
+        {/* Seating */}
         <section className="space-y-4">
           <div className="flex items-center justify-between border-b border-border pb-2">
             <h2 className="font-heading text-2xl">Mesas</h2>
@@ -594,9 +596,7 @@ const EditWedding = () => {
             <div key={i} className="bg-card border border-border rounded-lg p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-xs text-muted-foreground">Mesa {i + 1}</span>
-                <button onClick={() => removeSeatingTable(i)} className="text-destructive hover:opacity-80">
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                <button onClick={() => removeSeatingTable(i)} className="text-destructive hover:opacity-80"><Trash2 className="w-4 h-4" /></button>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <input value={t.table_name} onChange={(e) => updateSeatingTable(i, "table_name", e.target.value)} className={inputClass} placeholder="Nombre (Mesa 1, Mesa Nupcial...)" />
@@ -625,15 +625,44 @@ const EditWedding = () => {
             <div key={i} className="bg-card border border-border rounded-lg p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-xs text-muted-foreground">Pregunta {i + 1}</span>
-                <button onClick={() => removeFaqItem(i)} className="text-destructive hover:opacity-80">
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                <button onClick={() => removeFaqItem(i)} className="text-destructive hover:opacity-80"><Trash2 className="w-4 h-4" /></button>
               </div>
               <input value={f.question} onChange={(e) => updateFaqItem(i, "question", e.target.value)} className={inputClass} placeholder="¿Hay parking?" />
               <textarea value={f.answer} onChange={(e) => updateFaqItem(i, "answer", e.target.value)} className={`${inputClass} resize-none`} rows={2} placeholder="Sí, hay parking gratuito..." />
             </div>
           ))}
         </section>
+
+        {/* CTA final publicar — solo si no ha comprado */}
+        {!hasPurchase && (
+          <div className="bg-primary/5 border border-primary/20 rounded-xl p-6 text-center">
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+              <Sparkles className="w-6 h-6 text-primary" />
+            </div>
+            <h3 className="font-heading text-xl text-foreground mb-2">¿Lista para compartirla?</h3>
+            <p className="text-muted-foreground text-sm font-light mb-6 max-w-sm mx-auto">
+              Tu boda ya está personalizada. Publícala para que tus invitados puedan verla. Pago único, sin suscripciones, 30 días de garantía.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                onClick={() => handleBuy("basico_one_time")}
+                disabled={checkoutLoading}
+                className="px-6 py-3 rounded-lg border-2 border-primary text-primary font-medium hover:bg-primary hover:text-primary-foreground transition-all"
+              >
+                Plan Básico · 30€
+              </button>
+              <button
+                onClick={() => handleBuy("completo_one_time")}
+                disabled={checkoutLoading}
+                className="px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity"
+              >
+                Plan Completo · 60€ ⭐
+              </button>
+            </div>
+            <p className="text-xs text-muted-foreground mt-4">30 días de garantía de devolución</p>
+          </div>
+        )}
+
       </div>
     </div>
   );
