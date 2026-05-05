@@ -9,7 +9,7 @@ interface Props {
 
 const WeddingShare = ({ slug, partner1, partner2 }: Props) => {
   const [showQR, setShowQR] = useState(false);
-  const publishedOrigin = "https://clicktuboda.com";
+  const publishedOrigin = window.location.origin;
   const url = `${publishedOrigin}/w/${slug}`;
   const text = encodeURIComponent(`¡${partner1} y ${partner2} se casan! 💍 Confirma tu asistencia aquí:`);
   const whatsappUrl = `https://wa.me/?text=${text}%20${encodeURIComponent(url)}`;
