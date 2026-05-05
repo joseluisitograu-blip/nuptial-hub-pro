@@ -512,13 +512,12 @@ const Index = () => {
                     </li>
                   ))}
                 </ul>
-                <button
-                  onClick={() => handleBuy("completo_one_time")}
-                  disabled={loading}
-                  className="block w-full text-center px-6 py-3.5 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-all duration-300 disabled:opacity-50 shadow-md hover:shadow-lg"
-                >
-                  {loading ? "Cargando..." : "Elegir Completo →"}
-                </button>
+                <Link
+  to="/auth"
+  className="block w-full text-center px-6 py-3.5 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-all duration-300 shadow-md hover:shadow-lg"
+>
+  Elegir Completo →
+</Link>
               </div>
             </RevealSection>
 
@@ -547,13 +546,12 @@ const Index = () => {
                     </li>
                   ))}
                 </ul>
-                <button
-                  onClick={() => handleBuy("basico_one_time")}
-                  disabled={loading}
-                  className="block w-full text-center px-6 py-3.5 rounded-xl border-2 border-primary text-primary font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-300 disabled:opacity-50"
-                >
-                  {loading ? "Cargando..." : "Empezar →"}
-                </button>
+                <Link
+  to="/auth"
+  className="block w-full text-center px-6 py-3.5 rounded-xl border-2 border-primary text-primary font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+>
+  Empezar →
+</Link>
               </div>
             </RevealSection>
 
