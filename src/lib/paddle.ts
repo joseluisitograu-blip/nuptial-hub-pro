@@ -1,4 +1,5 @@
 const clientToken = import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN;
+const paddleEnv = import.meta.env.VITE_PADDLE_ENV || "sandbox";
 
 const PRICE_IDS: Record<string, string> = {
   basico_one_time: import.meta.env.VITE_PADDLE_PRICE_BASICO || "pri_01kqc1gvdwcc2tk0mearpjsw66",
@@ -22,7 +23,7 @@ export async function initializePaddle() {
     const script = document.createElement("script");
     script.src = "https://cdn.paddle.com/paddle/v2/paddle.js";
     script.onload = () => {
-      window.Paddle.Environment.set("production");
+      window.Paddle.Environment.set(paddleEnv);
       window.Paddle.Initialize({ token: clientToken });
       paddleInitialized = true;
       resolve();
