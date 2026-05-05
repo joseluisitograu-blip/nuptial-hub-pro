@@ -349,14 +349,7 @@ const WeddingPage = () => {
     return themeStyles[preset] || themeStyles.elegant;
   }, [wedding, edits.theme_preset]);
 
-  const handlePublish = () => {
-    openCheckout({
-      priceId: "completo_one_time",
-      customerEmail: user?.email || undefined,
-      customData: { userId: user?.id || "" },
-      successUrl: `${window.location.origin}/dashboard?checkout=success`,
-    });
-  };
+
 
   if (loading) {
     return (
@@ -421,10 +414,16 @@ const WeddingPage = () => {
         <div className="sticky top-0 z-[60] bg-amber-500 text-white py-2.5 px-4 text-sm font-medium flex items-center justify-center gap-3 flex-wrap">
           <span>👁️ Modo preview — tus invitados no pueden ver esto aún</span>
           <button
-            onClick={handlePublish}
+            onClick={() => openCheckout({ priceId: "basico_one_time", customerEmail: user?.email || undefined, customData: { userId: user?.id || "" }, successUrl: `${window.location.origin}/dashboard?checkout=success` })}
             className="bg-white text-amber-600 text-xs font-semibold px-3 py-1 rounded-full hover:opacity-90 transition-opacity whitespace-nowrap"
           >
-            Publicar desde 30€ →
+            Básico · 30€
+          </button>
+          <button
+            onClick={() => openCheckout({ priceId: "completo_one_time", customerEmail: user?.email || undefined, customData: { userId: user?.id || "" }, successUrl: `${window.location.origin}/dashboard?checkout=success` })}
+            className="bg-amber-700 text-white text-xs font-semibold px-3 py-1 rounded-full hover:opacity-90 transition-opacity whitespace-nowrap"
+          >
+            Completo · 60€ ⭐
           </button>
         </div>
       )}
@@ -581,12 +580,20 @@ const WeddingPage = () => {
               <p className="text-amber-700 font-light text-sm mb-6">
                 Publícala para que tus invitados puedan verla. Desde 30€, pago único, sin suscripciones y con 30 días de garantía.
               </p>
-              <button
-                onClick={handlePublish}
-                className="px-8 py-3.5 rounded-xl bg-amber-500 text-white font-medium hover:opacity-90 transition-opacity"
-              >
-                Publicar mi boda · desde 30€ →
-              </button>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <button
+                  onClick={() => openCheckout({ priceId: "basico_one_time", customerEmail: user?.email || undefined, customData: { userId: user?.id || "" }, successUrl: `${window.location.origin}/dashboard?checkout=success` })}
+                  className="px-6 py-3.5 rounded-xl border-2 border-amber-500 text-amber-700 font-medium hover:bg-amber-500 hover:text-white transition-all"
+                >
+                  Plan Básico · 30€
+                </button>
+                <button
+                  onClick={() => openCheckout({ priceId: "completo_one_time", customerEmail: user?.email || undefined, customData: { userId: user?.id || "" }, successUrl: `${window.location.origin}/dashboard?checkout=success` })}
+                  className="px-6 py-3.5 rounded-xl bg-amber-500 text-white font-medium hover:opacity-90 transition-opacity"
+                >
+                  Plan Completo · 60€ ⭐
+                </button>
+              </div>
               <p className="text-xs text-amber-600 mt-3">30 días de garantía de devolución</p>
             </div>
           </section>
