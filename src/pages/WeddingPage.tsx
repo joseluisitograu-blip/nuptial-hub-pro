@@ -2,6 +2,8 @@ import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { usePurchase } from "@/hooks/usePurchase";
+import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import heroImage from "@/assets/hero-wedding.webp";
 import WeddingCountdown from "@/components/wedding/WeddingCountdown";
 import WeddingVenue from "@/components/wedding/WeddingVenue";
@@ -246,6 +248,8 @@ const sections = [
 const WeddingPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const { user } = useAuth();
+  const { hasPurchase } = usePurchase();
+  const { openCheckout } = usePaddleCheckout();
   const [wedding, setWedding] = useState<WeddingData | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeSection, setActiveSection] = useState("inicio");
@@ -260,6 +264,7 @@ const WeddingPage = () => {
   const [edits, setEdits] = useState<Partial<WeddingData>>({});
   const isOwner = !!(user && wedding && wedding.user_id === user.id);
   const isDemo = slug?.startsWith("demo-") ?? false;
+  const isPreview = isOwner && !hasPurchase && !isDemo;
 
   useEffect(() => {
     if (!slug) return;
@@ -344,6 +349,15 @@ const WeddingPage = () => {
     return themeStyles[preset] || themeStyles.elegant;
   }, [wedding, edits.theme_preset]);
 
+  const handlePublish = () => {
+    openCheckout({
+      priceId: "completo_one_time",
+      customerEmail: user?.email || undefined,
+      customData: { userId: user?.id || "" },
+      successUrl: `${window.location.origin}/dashboard?checkout=success`,
+    });
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -395,13 +409,27 @@ const WeddingPage = () => {
         />
       )}
 
+      {/* Banner demo */}
       {isDemo && (
         <div className="sticky top-0 z-[60] bg-primary text-primary-foreground text-center py-2 px-4 text-sm font-medium">
           ✨ Esto es una demo · <a href="/auth" className="underline font-semibold hover:opacity-80">Crea la tuya desde 30€</a>
         </div>
       )}
 
-      <nav className={`sticky ${editMode ? "top-[52px]" : "top-0"} z-50 border-b border-border transition-all duration-500 ${navVisible ? "bg-background/95 backdrop-blur-md shadow-sm" : "bg-background/60 backdrop-blur-sm"}`}>
+      {/* Banner preview — solo propietario sin pago */}
+      {isPreview && (
+        <div className="sticky top-0 z-[60] bg-amber-500 text-white py-2.5 px-4 text-sm font-medium flex items-center justify-center gap-3 flex-wrap">
+          <span>👁️ Modo preview — tus invitados no pueden ver esto aún</span>
+          <button
+            onClick={handlePublish}
+            className="bg-white text-amber-600 text-xs font-semibold px-3 py-1 rounded-full hover:opacity-90 transition-opacity whitespace-nowrap"
+          >
+            Publicar desde 30€ →
+          </button>
+        </div>
+      )}
+
+      <nav className={`sticky ${editMode ? "top-[52px]" : isPreview || isDemo ? "top-[44px]" : "top-0"} z-50 border-b border-border transition-all duration-500 ${navVisible ? "bg-background/95 backdrop-blur-md shadow-sm" : "bg-background/60 backdrop-blur-sm"}`}>
         <div className="max-w-5xl mx-auto px-2">
           <div className="flex items-center gap-0.5 overflow-x-auto scrollbar-hide py-2">
             {sections.map((s) => {
@@ -543,6 +571,26 @@ const WeddingPage = () => {
             <WeddingSaveTheDate partner1={p1} partner2={p2} weddingDate={wedding.wedding_date} ceremonyVenue={wedding.ceremony_venue} heroImageUrl={wedding.hero_image_url} />
           </AnimatedSection>
         </section>
+
+        {/* CTA final publicar en modo preview */}
+        {isPreview && (
+          <section className="py-16 bg-amber-50 border-t border-amber-200 text-center px-4">
+            <div className="max-w-md mx-auto">
+              <div className="text-4xl mb-4">🎉</div>
+              <h3 className="font-heading text-2xl text-amber-900 mb-2">¡Tu boda está lista!</h3>
+              <p className="text-amber-700 font-light text-sm mb-6">
+                Publícala para que tus invitados puedan verla. Desde 30€, pago único, sin suscripciones y con 30 días de garantía.
+              </p>
+              <button
+                onClick={handlePublish}
+                className="px-8 py-3.5 rounded-xl bg-amber-500 text-white font-medium hover:opacity-90 transition-opacity"
+              >
+                Publicar mi boda · desde 30€ →
+              </button>
+              <p className="text-xs text-amber-600 mt-3">30 días de garantía de devolución</p>
+            </div>
+          </section>
+        )}
       </main>
 
       <footer className="py-10 bg-card border-t border-border text-center">
@@ -582,4 +630,3 @@ const WeddingPageWrapper = () => (
 );
 
 export default WeddingPageWrapper;
-
