@@ -149,17 +149,20 @@ const Index = () => {
 
       {/* Hero */}
       <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src={heroImage}
-            alt="Pareja celebrando su boda al aire libre con decoración elegante"
-            className={`w-full h-full object-cover transition-all duration-[2s] ${heroLoaded ? "scale-100 opacity-100" : "scale-110 opacity-0"}`}
-            onLoad={() => setHeroLoaded(true)}
-            loading="eager"
-            fetchPriority="high"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-foreground/20 via-foreground/45 to-foreground/75" />
-        </div>
+      <div className="absolute inset-0">
+  <video
+    autoPlay
+    muted
+    loop
+    playsInline
+    className="w-full h-full object-cover"
+    onCanPlay={() => setHeroLoaded(true)}
+  >
+    <source src="/hero-demo.mp4" type="video/mp4" />
+    <img src={heroImage} alt="BodasFácil demo" className="w-full h-full object-cover" />
+  </video>
+  <div className="absolute inset-0 bg-gradient-to-b from-foreground/20 via-foreground/45 to-foreground/75" />
+</div>
         <div className={`relative z-10 text-center px-5 sm:px-6 max-w-3xl transition-all duration-1000 delay-300 ${heroLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
           <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 mb-6 sm:mb-8">
             <Sparkles className="w-3.5 h-3.5 text-primary-foreground/80" />
