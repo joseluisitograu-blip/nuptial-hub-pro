@@ -1,6 +1,7 @@
+
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Plus, Trash2, Check, X, TrendingUp, TrendingDown, DollarSign, PieChart } from "lucide-react";
+import { Plus, Trash2, Check, TrendingUp, TrendingDown, DollarSign, PieChart, Download, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
 interface BudgetItem {
@@ -57,6 +58,7 @@ export default function WeddingBudget({ weddingId }: { weddingId: string }) {
   const [items, setItems] = useState<BudgetItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [budgetLimit, setBudgetLimit] = useState<number>(0);
   const [form, setForm] = useState<Partial<BudgetItem>>({
     category: "venue",
     vendor_name: "",
@@ -72,14 +74,12 @@ export default function WeddingBudget({ weddingId }: { weddingId: string }) {
       .from("wedding_budget_items")
       .select("*")
       .eq("wedding_id", weddingId)
-      .order("created_at", { ascending: true });
+      .order("category", { ascending: true });
     setItems((data as any[]) || []);
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchItems();
-  }, [weddingId]);
+  useEffect(() => { fetchItems(); }, [weddingId]);
 
   const addItem = async () => {
     if (!form.description && !form.vendor_name) {
@@ -114,6 +114,7 @@ export default function WeddingBudget({ weddingId }: { weddingId: string }) {
 
   const deleteItem = async (id: string) => {
     await supabase.from("wedding_budget_items").delete().eq("id", id);
+    toast.success("Partida eliminada");
     fetchItems();
   };
 
@@ -122,12 +123,28 @@ export default function WeddingBudget({ weddingId }: { weddingId: string }) {
     fetchItems();
   };
 
+  const exportCSV = () => {
+    const headers = ["Categoría", "Proveedor", "Descripción", "Estimado", "Real", "Pagado"];
+    const rows = items.map((i) => {
+      const cat = CATEGORIES.find((c) => c.id === i.category);
+      return [cat?.label || i.category, i.vendor_name, i.description, i.estimated_cost, i.actual_cost, i.is_paid ? "Sí" : "No"];
+    });
+    const csv = [headers, ...rows].map((r) => r.join(";")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "presupuesto-boda.csv";
+    a.click();
+  };
+
   const stats = useMemo(() => {
     const totalEstimated = items.reduce((s, i) => s + Number(i.estimated_cost), 0);
     const totalActual = items.reduce((s, i) => s + Number(i.actual_cost), 0);
     const totalPaid = items.filter((i) => i.is_paid).reduce((s, i) => s + Number(i.actual_cost || i.estimated_cost), 0);
-    const totalPending = totalActual - totalPaid;
     const diff = totalEstimated - totalActual;
+    const paidPct = totalActual > 0 ? (totalPaid / totalActual) * 100 : 0;
+    const overBudget = budgetLimit > 0 && totalActual > budgetLimit;
 
     const byCategory: Record<string, { estimated: number; actual: number }> = {};
     items.forEach((i) => {
@@ -136,10 +153,9 @@ export default function WeddingBudget({ weddingId }: { weddingId: string }) {
       byCategory[i.category].actual += Number(i.actual_cost);
     });
 
-    return { totalEstimated, totalActual, totalPaid, totalPending, diff, byCategory };
-  }, [items]);
+    return { totalEstimated, totalActual, totalPaid, diff, paidPct, overBudget, byCategory };
+  }, [items, budgetLimit]);
 
-  // Simple pie chart via SVG
   const pieData = useMemo(() => {
     const entries = Object.entries(stats.byCategory)
       .filter(([, v]) => v.actual > 0)
@@ -159,12 +175,46 @@ export default function WeddingBudget({ weddingId }: { weddingId: string }) {
 
   const catLabel = (id: string) => CATEGORIES.find((c) => c.id === id);
 
+  // Agrupar items por categoría
+  const grouped = useMemo(() => {
+    const map: Record<string, BudgetItem[]> = {};
+    items.forEach((i) => {
+      if (!map[i.category]) map[i.category] = [];
+      map[i.category].push(i);
+    });
+    return map;
+  }, [items]);
+
   return (
     <div className="space-y-6">
+      {/* Presupuesto límite */}
+      <div className="flex items-center gap-3 bg-card border border-border rounded-lg p-3">
+        <span className="text-sm text-muted-foreground whitespace-nowrap">Presupuesto total:</span>
+        <input
+          type="number"
+          value={budgetLimit || ""}
+          onChange={(e) => setBudgetLimit(parseFloat(e.target.value) || 0)}
+          placeholder="Ej: 20000"
+          className="flex-1 px-3 py-1.5 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+        />
+        <span className="text-sm text-muted-foreground">€</span>
+        <button onClick={exportCSV} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border text-muted-foreground hover:text-foreground text-sm transition-colors">
+          <Download className="w-3.5 h-3.5" /> Exportar
+        </button>
+      </div>
+
+      {/* Alerta sobrepresupuesto */}
+      {stats.overBudget && (
+        <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-lg p-3 text-red-600 text-sm">
+          <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+          <span>Has superado el presupuesto en <strong>{fmt(stats.totalActual - budgetLimit)}</strong></span>
+        </div>
+      )}
+
       {/* Summary cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <SummaryCard icon={<DollarSign className="w-4 h-4" />} label="Presupuesto" value={fmt(stats.totalEstimated)} />
-        <SummaryCard icon={<TrendingUp className="w-4 h-4" />} label="Coste real" value={fmt(stats.totalActual)} accent={stats.totalActual > stats.totalEstimated ? "over" : "under"} />
+        <SummaryCard icon={<DollarSign className="w-4 h-4" />} label="Estimado" value={fmt(stats.totalEstimated)} />
+        <SummaryCard icon={<TrendingUp className="w-4 h-4" />} label="Coste real" value={fmt(stats.totalActual)} accent={stats.totalActual > stats.totalEstimated ? "over" : undefined} />
         <SummaryCard icon={<Check className="w-4 h-4" />} label="Pagado" value={fmt(stats.totalPaid)} />
         <SummaryCard
           icon={stats.diff >= 0 ? <TrendingDown className="w-4 h-4" /> : <TrendingUp className="w-4 h-4" />}
@@ -174,7 +224,20 @@ export default function WeddingBudget({ weddingId }: { weddingId: string }) {
         />
       </div>
 
-      {/* Pie chart + category breakdown */}
+      {/* Barra de progreso de pagos */}
+      {stats.totalActual > 0 && (
+        <div className="bg-card border border-border rounded-lg p-3">
+          <div className="flex justify-between text-xs text-muted-foreground mb-1.5">
+            <span>Pagado</span>
+            <span>{stats.paidPct.toFixed(0)}% — {fmt(stats.totalPaid)} de {fmt(stats.totalActual)}</span>
+          </div>
+          <div className="h-2.5 bg-secondary rounded-full overflow-hidden">
+            <div className="h-full bg-primary rounded-full transition-all duration-500" style={{ width: `${stats.paidPct}%` }} />
+          </div>
+        </div>
+      )}
+
+      {/* Pie chart */}
       {pieData.length > 0 && (
         <div className="bg-card border border-border rounded-lg p-4">
           <h4 className="text-sm font-medium text-foreground mb-3 flex items-center gap-2">
@@ -186,14 +249,7 @@ export default function WeddingBudget({ weddingId }: { weddingId: string }) {
                 const r = 15.9155;
                 const circumference = 2 * Math.PI * r;
                 return (
-                  <circle
-                    key={i}
-                    cx="18"
-                    cy="18"
-                    r={r}
-                    fill="none"
-                    stroke={d.color}
-                    strokeWidth="3.5"
+                  <circle key={i} cx="18" cy="18" r={r} fill="none" stroke={d.color} strokeWidth="3.5"
                     strokeDasharray={`${d.pct * circumference} ${circumference}`}
                     strokeDashoffset={`${-d.start * circumference}`}
                     className="transition-all duration-500"
@@ -217,57 +273,64 @@ export default function WeddingBudget({ weddingId }: { weddingId: string }) {
         </div>
       )}
 
-      {/* Items list */}
-      <div className="space-y-2">
-        {items.map((item) => {
-          const cat = catLabel(item.category);
-          const overBudget = Number(item.actual_cost) > Number(item.estimated_cost) && Number(item.estimated_cost) > 0;
-          return (
-            <div key={item.id} className="bg-card border border-border rounded-lg p-3 flex flex-col sm:flex-row sm:items-center gap-2">
-              <button
-                onClick={() => togglePaid(item)}
-                className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
-                  item.is_paid ? "bg-primary border-primary text-primary-foreground" : "border-border hover:border-primary"
-                }`}
-              >
-                {item.is_paid && <Check className="w-3 h-3" />}
-              </button>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm">{cat?.emoji}</span>
-                  <span className={`text-sm font-medium ${item.is_paid ? "line-through text-muted-foreground" : "text-foreground"}`}>
-                    {item.vendor_name || item.description}
-                  </span>
-                  <span className="text-xs text-muted-foreground hidden sm:inline">{cat?.label}</span>
-                </div>
-                {item.vendor_name && item.description && (
-                  <p className="text-xs text-muted-foreground mt-0.5 truncate">{item.description}</p>
-                )}
-              </div>
-              <div className="flex items-center gap-3 text-sm">
-                <div className="text-right">
-                  <div className="text-xs text-muted-foreground">Estimado</div>
-                  <div className="font-light">{fmt(Number(item.estimated_cost))}</div>
-                </div>
-                <div className="text-right">
-                  <div className="text-xs text-muted-foreground">Real</div>
-                  <input
-                    type="number"
-                    value={Number(item.actual_cost)}
-                    onChange={(e) => updateActualCost(item.id!, parseFloat(e.target.value) || 0)}
-                    className={`w-20 text-right bg-transparent border-b font-medium focus:outline-none ${
-                      overBudget ? "text-red-500 border-red-300" : "text-foreground border-border"
-                    }`}
-                  />
-                </div>
-                <button onClick={() => deleteItem(item.id!)} className="p-1 text-muted-foreground hover:text-red-500 transition-colors">
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              </div>
+      {/* Items agrupados por categoría */}
+      {Object.entries(grouped).map(([cat, catItems]) => {
+        const info = catLabel(cat);
+        const catTotal = catItems.reduce((s, i) => s + Number(i.actual_cost), 0);
+        return (
+          <div key={cat} className="border border-border rounded-lg overflow-hidden">
+            <div className="flex items-center justify-between px-3 py-2 bg-secondary/50">
+              <span className="text-sm font-medium text-foreground">{info?.emoji} {info?.label || cat}</span>
+              <span className="text-xs text-muted-foreground">{fmt(catTotal)}</span>
             </div>
-          );
-        })}
-      </div>
+            <div className="divide-y divide-border">
+              {catItems.map((item) => {
+                const overBudget = Number(item.actual_cost) > Number(item.estimated_cost) && Number(item.estimated_cost) > 0;
+                return (
+                  <div key={item.id} className="bg-card p-3 flex flex-col sm:flex-row sm:items-center gap-2">
+                    <button
+                      onClick={() => togglePaid(item)}
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
+                        item.is_paid ? "bg-primary border-primary text-primary-foreground" : "border-border hover:border-primary"
+                      }`}
+                    >
+                      {item.is_paid && <Check className="w-3 h-3" />}
+                    </button>
+                    <div className="flex-1 min-w-0">
+                      <span className={`text-sm font-medium ${item.is_paid ? "line-through text-muted-foreground" : "text-foreground"}`}>
+                        {item.vendor_name || item.description}
+                      </span>
+                      {item.vendor_name && item.description && (
+                        <p className="text-xs text-muted-foreground mt-0.5 truncate">{item.description}</p>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3 text-sm">
+                      <div className="text-right">
+                        <div className="text-xs text-muted-foreground">Estimado</div>
+                        <div className="font-light">{fmt(Number(item.estimated_cost))}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-xs text-muted-foreground">Real</div>
+                        <input
+                          type="number"
+                          value={Number(item.actual_cost)}
+                          onChange={(e) => updateActualCost(item.id!, parseFloat(e.target.value) || 0)}
+                          className={`w-20 text-right bg-transparent border-b font-medium focus:outline-none ${
+                            overBudget ? "text-red-500 border-red-300" : "text-foreground border-border"
+                          }`}
+                        />
+                      </div>
+                      <button onClick={() => deleteItem(item.id!)} className="p-1 text-muted-foreground hover:text-red-500 transition-colors">
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
 
       {/* Add form */}
       {showForm ? (
@@ -275,69 +338,46 @@ export default function WeddingBudget({ weddingId }: { weddingId: string }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-medium text-muted-foreground mb-1">Categoría</label>
-              <select
-                value={form.category}
-                onChange={(e) => setForm({ ...form, category: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border border-border bg-card text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-              >
-                {CATEGORIES.map((c) => (
-                  <option key={c.id} value={c.id}>{c.emoji} {c.label}</option>
-                ))}
+              <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}
+                className="w-full px-3 py-2 rounded-lg border border-border bg-card text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+                {CATEGORIES.map((c) => <option key={c.id} value={c.id}>{c.emoji} {c.label}</option>)}
               </select>
             </div>
             <div>
               <label className="block text-xs font-medium text-muted-foreground mb-1">Proveedor</label>
-              <input
-                value={form.vendor_name}
-                onChange={(e) => setForm({ ...form, vendor_name: e.target.value })}
+              <input value={form.vendor_name} onChange={(e) => setForm({ ...form, vendor_name: e.target.value })}
                 placeholder="Nombre del proveedor"
-                className="w-full px-3 py-2 rounded-lg border border-border bg-card text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-              />
+                className="w-full px-3 py-2 rounded-lg border border-border bg-card text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
             </div>
             <div>
               <label className="block text-xs font-medium text-muted-foreground mb-1">Descripción</label>
-              <input
-                value={form.description}
-                onChange={(e) => setForm({ ...form, description: e.target.value })}
+              <input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
                 placeholder="Ej: Menú completo con barra libre"
-                className="w-full px-3 py-2 rounded-lg border border-border bg-card text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-              />
+                className="w-full px-3 py-2 rounded-lg border border-border bg-card text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-1">Estimado (€)</label>
-                <input
-                  type="number"
-                  value={form.estimated_cost || ""}
+                <input type="number" value={form.estimated_cost || ""}
                   onChange={(e) => setForm({ ...form, estimated_cost: parseFloat(e.target.value) || 0 })}
-                  className="w-full px-3 py-2 rounded-lg border border-border bg-card text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                />
+                  className="w-full px-3 py-2 rounded-lg border border-border bg-card text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-1">Real (€)</label>
-                <input
-                  type="number"
-                  value={form.actual_cost || ""}
+                <input type="number" value={form.actual_cost || ""}
                   onChange={(e) => setForm({ ...form, actual_cost: parseFloat(e.target.value) || 0 })}
-                  className="w-full px-3 py-2 rounded-lg border border-border bg-card text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                />
+                  className="w-full px-3 py-2 rounded-lg border border-border bg-card text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
               </div>
             </div>
           </div>
           <div className="flex gap-2 justify-end">
-            <button onClick={() => setShowForm(false)} className="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Cancelar
-            </button>
-            <button onClick={addItem} className="px-4 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity">
-              Añadir
-            </button>
+            <button onClick={() => setShowForm(false)} className="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">Cancelar</button>
+            <button onClick={addItem} className="px-4 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity">Añadir</button>
           </div>
         </div>
       ) : (
-        <button
-          onClick={() => setShowForm(true)}
-          className="w-full py-3 border-2 border-dashed border-border rounded-lg text-muted-foreground hover:text-foreground hover:border-primary transition-colors text-sm flex items-center justify-center gap-2"
-        >
+        <button onClick={() => setShowForm(true)}
+          className="w-full py-3 border-2 border-dashed border-border rounded-lg text-muted-foreground hover:text-foreground hover:border-primary transition-colors text-sm flex items-center justify-center gap-2">
           <Plus className="w-4 h-4" /> Añadir partida
         </button>
       )}
@@ -348,9 +388,7 @@ export default function WeddingBudget({ weddingId }: { weddingId: string }) {
 function SummaryCard({ icon, label, value, accent }: { icon: React.ReactNode; label: string; value: string; accent?: "over" | "under" }) {
   return (
     <div className="bg-card border border-border rounded-lg p-3">
-      <div className="flex items-center gap-1.5 text-muted-foreground text-xs mb-1">
-        {icon} {label}
-      </div>
+      <div className="flex items-center gap-1.5 text-muted-foreground text-xs mb-1">{icon} {label}</div>
       <div className={`text-lg font-heading ${accent === "over" ? "text-red-500" : accent === "under" ? "text-green-600" : "text-foreground"}`}>
         {value}
       </div>
