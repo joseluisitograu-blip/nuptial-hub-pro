@@ -10,11 +10,14 @@ interface PurchaseInfo {
   isCompleto: boolean;
 }
 
+const COMPLETO_PRICE_ID =
+  import.meta.env.VITE_PADDLE_PRICE_COMPLETO || "pri_01kqc1d0ayrhfyjtgc0rdg6qez";
+
 export function usePurchase(): PurchaseInfo {
   const { user } = useAuth();
   const [hasPurchase, setHasPurchase] = useState(false);
   const [productId, setProductId] = useState<string | null>(null);
-  const [plan, setPlan] = useState<string | null>(null);
+  const [priceId, setPriceId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [isOwner, setIsOwner] = useState(false);
 
@@ -44,10 +47,10 @@ export function usePurchase(): PurchaseInfo {
         return;
       }
 
-      // Comprobar compras completadas
+      // Comprobar compras completadas — usar price_id para detectar el plan
       const { data } = await supabase
         .from("purchases")
-        .select("product_id, plan")
+        .select("product_id, price_id")
         .eq("user_id", user.id)
         .eq("environment", environment)
         .eq("status", "completed")
@@ -56,17 +59,14 @@ export function usePurchase(): PurchaseInfo {
 
       setHasPurchase(!!data);
       setProductId(data?.product_id ?? null);
-      setPlan(data?.plan ?? null);
+      setPriceId(data?.price_id ?? null);
       setLoading(false);
     };
 
     fetchData();
   }, [user]);
 
-  const isCompleto =
-    isOwner ||
-    (productId || "").toLowerCase().includes("completo") ||
-    (plan || "").toLowerCase().includes("completo");
+  const isCompleto = isOwner || priceId === COMPLETO_PRICE_ID;
 
   return { hasPurchase, productId, loading, isOwner, isCompleto };
 }

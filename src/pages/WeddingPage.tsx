@@ -461,15 +461,15 @@ useEffect(() => {
       {/* Banner preview — solo propietario sin pago */}
       {isPreview && (
         <div className="sticky top-0 z-[60] bg-amber-500 text-white py-2.5 px-4 text-sm font-medium flex items-center justify-center gap-3 flex-wrap">
-          <span>👁️ Modo preview — tus invitados no pueden ver esto aún</span>
+          <span>👁️ Modo preview — publica tu boda para activar todas las funciones</span>
           <button
-            onClick={() => openCheckout({ priceId: "basico_one_time", customerEmail: user?.email || undefined, customData: { userId: user?.id || "" }, successUrl: `${window.location.origin}/dashboard?checkout=success` })}
+            onClick={() => openCheckout({ priceId: "basico_one_time", customerEmail: user?.email || undefined, customData: { userId: user?.id || "" }, successUrl: `${window.location.origin}/dashboard?checkout=success&plan=basico` })}
             className="bg-white text-amber-600 text-xs font-semibold px-3 py-1 rounded-full hover:opacity-90 transition-opacity whitespace-nowrap"
           >
             Básico · 30€
           </button>
           <button
-            onClick={() => openCheckout({ priceId: "completo_one_time", customerEmail: user?.email || undefined, customData: { userId: user?.id || "" }, successUrl: `${window.location.origin}/dashboard?checkout=success` })}
+            onClick={() => openCheckout({ priceId: "completo_one_time", customerEmail: user?.email || undefined, customData: { userId: user?.id || "" }, successUrl: `${window.location.origin}/dashboard?checkout=success&plan=completo` })}
             className="bg-amber-700 text-white text-xs font-semibold px-3 py-1 rounded-full hover:opacity-90 transition-opacity whitespace-nowrap"
           >
             Completo · 60€ ⭐

@@ -53,16 +53,20 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (searchParams.get("checkout") === "success") {
-      // Evento estándar de Google Ads / GA4
+      const plan = searchParams.get("plan") || "completo";
+      const value = plan === "basico" ? 30 : 60;
       window.gtag?.("event", "purchase", {
         transaction_id: `txn_${Date.now()}`,
-        value: 60,
+        value,
         currency: "EUR",
       });
-      window.gtag?.("event", "compra_completada", {});
+      window.gtag?.("event", "compra_completada", { plan });
       toast({ title: "¡Pago completado! 🎉", description: "Tu boda ya está activa. ¡Enhorabuena!" });
       searchParams.delete("checkout");
+      searchParams.delete("plan");
       setSearchParams(searchParams, { replace: true });
+      // Recarga tras 2,5s para que el webhook de Paddle haya llegado y usePurchase refleje el pago
+      setTimeout(() => window.location.reload(), 2500);
     }
   }, [searchParams]);
 
@@ -104,12 +108,13 @@ const Dashboard = () => {
   };
 
   const handleBuy = (priceId: string) => {
-    window.gtag?.("event", "clic_comprar_dashboard", { plan: priceId });
+    const plan = priceId.includes("basico") ? "basico" : "completo";
+    window.gtag?.("event", "clic_comprar_dashboard", { plan });
     openCheckout({
       priceId,
       customerEmail: user?.email || undefined,
       customData: { userId: user?.id || "" },
-      successUrl: `${window.location.origin}/dashboard?checkout=success`,
+      successUrl: `${window.location.origin}/dashboard?checkout=success&plan=${plan}`,
     });
   };
 
