@@ -18,23 +18,45 @@ const Blog = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      const { data } = await supabase
-        .from("blog_posts")
-        .select("id, slug, title, description, cover_image, author, created_at")
-        .eq("published", true)
-        .order("created_at", { ascending: false });
-      setPosts((data as BlogPost[]) || []);
-      setLoading(false);
-    };
-    fetchPosts();
-
     document.title = "Blog de bodas — Consejos e ideas | BodasFácil";
     document.querySelector('meta[name="description"]')?.setAttribute("content", "Consejos, ideas e inspiración para organizar la boda perfecta. Seating plan, playlist colaborativa, web de boda y mucho más.");
     document.querySelector('link[rel="canonical"]')?.setAttribute("href", "https://bodasfacil.com/blog");
     document.querySelector('meta[property="og:title"]')?.setAttribute("content", "Blog de bodas — Consejos e ideas | BodasFácil");
     document.querySelector('meta[property="og:description"]')?.setAttribute("content", "Consejos, ideas e inspiración para organizar la boda perfecta. Seating plan, playlist colaborativa, web de boda y mucho más.");
     document.querySelector('meta[property="og:url"]')?.setAttribute("content", "https://bodasfacil.com/blog");
+
+    const fetchPosts = async () => {
+      const { data } = await supabase
+        .from("blog_posts")
+        .select("id, slug, title, description, cover_image, author, created_at")
+        .eq("published", true)
+        .order("created_at", { ascending: false });
+      const fetched = (data as BlogPost[]) || [];
+      setPosts(fetched);
+      setLoading(false);
+
+      if (fetched.length > 0) {
+        const existingList = document.getElementById("schema-blog-list");
+        if (existingList) existingList.remove();
+        const listSchema = document.createElement("script");
+        listSchema.id = "schema-blog-list";
+        listSchema.type = "application/ld+json";
+        listSchema.text = JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          "name": "Blog de bodas — BodasFácil",
+          "url": "https://bodasfacil.com/blog",
+          "itemListElement": fetched.map((p, i) => ({
+            "@type": "ListItem",
+            "position": i + 1,
+            "url": `https://bodasfacil.com/blog/${p.slug}`,
+            "name": p.title
+          }))
+        });
+        document.head.appendChild(listSchema);
+      }
+    };
+    fetchPosts();
 
     return () => {
       document.title = "BodasFácil — Crea la web de tu boda en minutos | Desde 30€";
@@ -43,6 +65,7 @@ const Blog = () => {
       document.querySelector('meta[property="og:title"]')?.setAttribute("content", "BodasFácil — Crea la web de tu boda perfecta desde 30€");
       document.querySelector('meta[property="og:description"]')?.setAttribute("content", "RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda y 12 temas visuales. Pago único, sin suscripciones.");
       document.querySelector('meta[property="og:url"]')?.setAttribute("content", "https://bodasfacil.com/");
+      document.getElementById("schema-blog-list")?.remove();
     };
   }, []);
 
@@ -107,7 +130,9 @@ const Blog = () => {
                   <div className="flex items-center gap-3 text-xs text-muted-foreground mb-3">
                     <span>{post.author}</span>
                     <span>·</span>
-                    <span>{new Date(post.created_at).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })}</span>
+                    <time dateTime={post.created_at}>
+                      {new Date(post.created_at).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })}
+                    </time>
                   </div>
                   <h2 className="font-heading text-xl sm:text-2xl text-foreground mb-2 group-hover:text-primary transition-colors">
                     {post.title}

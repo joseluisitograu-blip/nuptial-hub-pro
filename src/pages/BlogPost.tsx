@@ -16,12 +16,16 @@ interface Post {
   created_at: string;
 }
 
+const slugifyHeading = (text: string) =>
+  text.toLowerCase().replace(/[^a-z0-9à-ÿ]+/g, "-").replace(/^-|-$/g, "");
+
 const renderMarkdown = (text: string) => {
   return text
-    .replace(/^### (.+)$/gm, '<h3 class="font-heading text-xl text-foreground mt-10 mb-3">$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2 class="font-heading text-2xl text-foreground mt-12 mb-4">$1</h2>')
+    .replace(/^### (.+)$/gm, (_, t) => `<h3 id="${slugifyHeading(t)}" class="font-heading text-xl text-foreground mt-10 mb-3">${t}</h3>`)
+    .replace(/^## (.+)$/gm, (_, t) => `<h2 id="${slugifyHeading(t)}" class="font-heading text-2xl text-foreground mt-12 mb-4">${t}</h2>`)
     .replace(/\*\*(\d+)\. (.+?)\*\*/g, '<strong class="text-foreground">$1. $2</strong>')
     .replace(/\*\*(.+?)\*\*/g, '<strong class="text-foreground">$1</strong>')
+    .replace(/\[(.+?)\]\((https?:\/\/.+?)\)/g, '<a href="$2" class="text-primary hover:underline" rel="noopener noreferrer" target="_blank">$1</a>')
     .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="text-primary hover:underline">$1</a>')
     .replace(/^---$/gm, '<hr class="border-border my-10">')
     .replace(/^(?!<[hHaA]|<s|<hr)(.+)$/gm, '<p class="text-foreground/80 font-light leading-relaxed mb-4">$1</p>')
@@ -82,6 +86,7 @@ const BlogPost = () => {
       const existingSchema = document.getElementById("schema-article");
       if (existingSchema) existingSchema.remove();
 
+      const wordCount = post.content.trim().split(/\s+/).length;
       const schema = document.createElement("script");
       schema.id = "schema-article";
       schema.type = "application/ld+json";
@@ -106,6 +111,7 @@ const BlogPost = () => {
         },
         "datePublished": post.created_at,
         "dateModified": post.created_at,
+        "wordCount": wordCount,
         "mainEntityOfPage": {
           "@type": "WebPage",
           "@id": `https://bodasfacil.com/blog/${post.slug}`
@@ -114,6 +120,24 @@ const BlogPost = () => {
         "inLanguage": "es-ES"
       });
       document.head.appendChild(schema);
+
+      // BreadcrumbList dinámico del post
+      const existingBreadcrumb = document.getElementById("schema-breadcrumb-post");
+      if (existingBreadcrumb) existingBreadcrumb.remove();
+
+      const breadcrumb = document.createElement("script");
+      breadcrumb.id = "schema-breadcrumb-post";
+      breadcrumb.type = "application/ld+json";
+      breadcrumb.text = JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://bodasfacil.com/" },
+          { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://bodasfacil.com/blog" },
+          { "@type": "ListItem", "position": 3, "name": post.title, "item": `https://bodasfacil.com/blog/${post.slug}` }
+        ]
+      });
+      document.head.appendChild(breadcrumb);
     }
 
     return () => {
@@ -130,6 +154,7 @@ const BlogPost = () => {
       document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", "RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda y 12 temas visuales. Pago único, sin suscripciones.");
       document.querySelector('meta[name="twitter:image"]')?.setAttribute("content", "https://bodasfacil.com/og-image.jpg");
       document.getElementById("schema-article")?.remove();
+      document.getElementById("schema-breadcrumb-post")?.remove();
       ["article:published_time", "article:modified_time", "article:author", "article:section"].forEach((p) => {
         document.querySelector(`meta[property="${p}"]`)?.remove();
       });
@@ -145,6 +170,7 @@ const BlogPost = () => {
   }
 
   if (!post) {
+    document.querySelector('meta[name="robots"]')?.setAttribute("content", "noindex, nofollow");
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -180,6 +206,7 @@ const BlogPost = () => {
               src={post.cover_image}
               alt={post.title}
               className="w-full h-full object-cover"
+              fetchPriority="high"
             />
           </div>
         )}
@@ -187,7 +214,9 @@ const BlogPost = () => {
         <div className="flex items-center gap-3 text-xs text-muted-foreground mb-4">
           <span>{post.author}</span>
           <span>·</span>
-          <span>{new Date(post.created_at).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })}</span>
+          <time dateTime={post.created_at}>
+            {new Date(post.created_at).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })}
+          </time>
         </div>
 
         <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl text-foreground mb-4 leading-tight">
