@@ -284,7 +284,56 @@ const WeddingPage = () => {
     document.title = `Boda de ${p1} & ${p2} — BodasFácil`;
     return () => { document.title = "BodasFácil"; };
   }, [wedding]);
+useEffect(() => {
+  if (!wedding) return;
+  const p1 = wedding.partner1_name || "Nombre";
+  const p2 = wedding.partner2_name || "Nombre";
+  const url = `https://bodasfacil.com/w/${wedding.slug}`;
+  const title = isDemo
+    ? `Demo web de boda ${wedding.theme_preset} — BodasFácil`
+    : `Boda de ${p1} & ${p2} — BodasFácil`;
+  const description = isDemo
+    ? `Explora esta demo de web de boda con tema ${wedding.theme_preset}. RSVP online, plan de mesas, playlist colaborativa y mucho más. Crea la tuya desde 30€.`
+    : `Web de boda de ${p1} & ${p2}. Confirma tu asistencia, consulta el menú, el plan de mesas y mucho más.`;
 
+  document.querySelector('meta[name="description"]')?.setAttribute("content", description);
+  document.querySelector('link[rel="canonical"]')?.setAttribute("href", url);
+  document.querySelector('meta[property="og:title"]')?.setAttribute("content", title);
+  document.querySelector('meta[property="og:description"]')?.setAttribute("content", description);
+  document.querySelector('meta[property="og:url"]')?.setAttribute("content", url);
+  if (wedding.hero_image_url) {
+    document.querySelector('meta[property="og:image"]')?.setAttribute("content", wedding.hero_image_url);
+    document.querySelector('meta[name="twitter:image"]')?.setAttribute("content", wedding.hero_image_url);
+  }
+
+  if (isDemo) {
+    const existingSchema = document.getElementById("schema-wedding");
+    if (existingSchema) existingSchema.remove();
+    const schema = document.createElement("script");
+    schema.id = "schema-wedding";
+    schema.type = "application/ld+json";
+    schema.text = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": title,
+      "description": description,
+      "url": url,
+      "image": wedding.hero_image_url || "https://bodasfacil.com/og-image.jpg",
+      "isPartOf": { "@type": "WebSite", "name": "BodasFácil", "url": "https://bodasfacil.com" }
+    });
+    document.head.appendChild(schema);
+  }
+
+  return () => {
+    document.querySelector('meta[name="description"]')?.setAttribute("content", "Crea la web de tu boda perfecta en minutos. RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda del día, mapa y 12 temas visuales. Pago único desde 30€.");
+    document.querySelector('link[rel="canonical"]')?.setAttribute("href", "https://bodasfacil.com/");
+    document.querySelector('meta[property="og:title"]')?.setAttribute("content", "BodasFácil — Crea la web de tu boda perfecta desde 30€");
+    document.querySelector('meta[property="og:description"]')?.setAttribute("content", "RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda y 12 temas visuales. Pago único, sin suscripciones.");
+    document.querySelector('meta[property="og:url"]')?.setAttribute("content", "https://bodasfacil.com/");
+    document.querySelector('meta[property="og:image"]')?.setAttribute("content", "https://bodasfacil.com/og-image.jpg");
+    document.getElementById("schema-wedding")?.remove();
+  };
+}, [wedding, isDemo]);
   useEffect(() => {
     if (!wedding) return;
     const observer = new IntersectionObserver(
