@@ -81,6 +81,48 @@ export default function WeddingBudget({ weddingId }: { weddingId: string }) {
 
   useEffect(() => { fetchItems(); }, [weddingId]);
 
+  const stats = useMemo(() => {
+    const totalEstimated = items.reduce((s, i) => s + Number(i.estimated_cost), 0);
+    const totalActual = items.reduce((s, i) => s + Number(i.actual_cost), 0);
+    const totalPaid = items.filter((i) => i.is_paid).reduce((s, i) => s + Number(i.actual_cost || i.estimated_cost), 0);
+    const diff = totalEstimated - totalActual;
+    const paidPct = totalActual > 0 ? (totalPaid / totalActual) * 100 : 0;
+    const overBudget = budgetLimit > 0 && totalActual > budgetLimit;
+    const byCategory: Record<string, { estimated: number; actual: number }> = {};
+    items.forEach((i) => {
+      if (!byCategory[i.category]) byCategory[i.category] = { estimated: 0, actual: 0 };
+      byCategory[i.category].estimated += Number(i.estimated_cost);
+      byCategory[i.category].actual += Number(i.actual_cost);
+    });
+    return { totalEstimated, totalActual, totalPaid, diff, paidPct, overBudget, byCategory };
+  }, [items, budgetLimit]);
+
+  const pieData = useMemo(() => {
+    const entries = Object.entries(stats.byCategory)
+      .filter(([, v]) => v.actual > 0)
+      .sort((a, b) => b[1].actual - a[1].actual);
+    const total = entries.reduce((s, [, v]) => s + v.actual, 0);
+    if (total === 0) return [];
+    let cumulative = 0;
+    return entries.map(([cat, v]) => {
+      const start = cumulative;
+      const pct = v.actual / total;
+      cumulative += pct;
+      return { cat, pct, start, color: CATEGORY_COLORS[cat] || "hsl(0,0%,60%)" };
+    });
+  }, [stats.byCategory]);
+
+  const grouped = useMemo(() => {
+    const map: Record<string, BudgetItem[]> = {};
+    items.forEach((i) => {
+      if (!map[i.category]) map[i.category] = [];
+      map[i.category].push(i);
+    });
+    return map;
+  }, [items]);
+
+  const catLabel = (id: string) => CATEGORIES.find((c) => c.id === id);
+
   const addItem = async () => {
     if (!form.description && !form.vendor_name) {
       toast.error("Añade al menos un proveedor o descripción");
@@ -138,52 +180,7 @@ export default function WeddingBudget({ weddingId }: { weddingId: string }) {
     a.click();
   };
 
-  const stats = useMemo(() => {
-    const totalEstimated = items.reduce((s, i) => s + Number(i.estimated_cost), 0);
-    const totalActual = items.reduce((s, i) => s + Number(i.actual_cost), 0);
-    const totalPaid = items.filter((i) => i.is_paid).reduce((s, i) => s + Number(i.actual_cost || i.estimated_cost), 0);
-    const diff = totalEstimated - totalActual;
-    const paidPct = totalActual > 0 ? (totalPaid / totalActual) * 100 : 0;
-    const overBudget = budgetLimit > 0 && totalActual > budgetLimit;
-
-    const byCategory: Record<string, { estimated: number; actual: number }> = {};
-    items.forEach((i) => {
-      if (!byCategory[i.category]) byCategory[i.category] = { estimated: 0, actual: 0 };
-      byCategory[i.category].estimated += Number(i.estimated_cost);
-      byCategory[i.category].actual += Number(i.actual_cost);
-    });
-
-    return { totalEstimated, totalActual, totalPaid, diff, paidPct, overBudget, byCategory };
-  }, [items, budgetLimit]);
-
-  const pieData = useMemo(() => {
-    const entries = Object.entries(stats.byCategory)
-      .filter(([, v]) => v.actual > 0)
-      .sort((a, b) => b[1].actual - a[1].actual);
-    const total = entries.reduce((s, [, v]) => s + v.actual, 0);
-    if (total === 0) return [];
-    let cumulative = 0;
-    return entries.map(([cat, v]) => {
-      const start = cumulative;
-      const pct = v.actual / total;
-      cumulative += pct;
-      return { cat, pct, start, color: CATEGORY_COLORS[cat] || "hsl(0,0%,60%)" };
-    });
-  }, [stats.byCategory]);
-
   if (loading) return <div className="text-muted-foreground text-sm py-4">Cargando presupuesto...</div>;
-
-  const catLabel = (id: string) => CATEGORIES.find((c) => c.id === id);
-
-  // Agrupar items por categoría
-  const grouped = useMemo(() => {
-    const map: Record<string, BudgetItem[]> = {};
-    items.forEach((i) => {
-      if (!map[i.category]) map[i.category] = [];
-      map[i.category].push(i);
-    });
-    return map;
-  }, [items]);
 
   return (
     <div className="space-y-6">
