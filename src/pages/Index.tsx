@@ -71,7 +71,6 @@ const RevealSection = ({ children, className = "", delay = 0 }: { children: Reac
 
 const Index = () => {
   const { openCheckout, loading } = usePaddleCheckout();
-  const [heroLoaded, setHeroLoaded] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const [contactSubject, setContactSubject] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -152,8 +151,7 @@ const Index = () => {
   <img
     src="/decorar-banquete-boda_2c8fd058_1280x853.jpg"
     alt="Masía rústica para bodas"
-    className={`w-full h-full object-cover transition-opacity duration-[2s] ${heroLoaded ? "opacity-100" : "opacity-0"}`}
-    onLoad={() => setHeroLoaded(true)}
+    className="w-full h-full object-cover"
     loading="eager"
     fetchPriority="high"
   />
