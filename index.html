@@ -102,37 +102,73 @@
     }
     </script>
 
-    <!-- JSON-LD: Product -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Product",
-      "name": "Web de boda BodasFácil",
-      "description": "Página web personalizada para tu boda con RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda del día, mapa interactivo y 12 temas visuales.",
-      "brand": {
-        "@type": "Brand",
-        "name": "BodasFácil"
+   <!-- JSON-LD: Product -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "Web de boda BodasFácil",
+  "image": "https://bodasfacil.com/og-image.jpg",
+  "description": "Página web personalizada para tu boda con RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda del día, mapa interactivo y 12 temas visuales.",
+  "brand": {
+    "@type": "Brand",
+    "name": "BodasFácil"
+  },
+  "hasMerchantReturnPolicy": {
+    "@type": "MerchantReturnPolicy",
+    "applicableCountry": "ES",
+    "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+    "merchantReturnDays": 30,
+    "returnMethod": "https://schema.org/ReturnByMail",
+    "returnFees": "https://schema.org/FreeReturn"
+  },
+  "shippingDetails": {
+    "@type": "OfferShippingDetails",
+    "shippingRate": {
+      "@type": "MonetaryAmount",
+      "value": 0,
+      "currency": "EUR"
+    },
+    "deliveryTime": {
+      "@type": "ShippingDeliveryTime",
+      "handlingTime": {
+        "@type": "QuantitativeValue",
+        "minValue": 0,
+        "maxValue": 0,
+        "unitCode": "DAY"
       },
-      "offers": [
-        {
-          "@type": "Offer",
-          "name": "Plan Básico",
-          "price": "30",
-          "priceCurrency": "EUR",
-          "availability": "https://schema.org/InStock",
-          "url": "https://bodasfacil.com/#pricing"
-        },
-        {
-          "@type": "Offer",
-          "name": "Plan Completo",
-          "price": "60",
-          "priceCurrency": "EUR",
-          "availability": "https://schema.org/InStock",
-          "url": "https://bodasfacil.com/#pricing"
-        }
-      ]
+      "transitTime": {
+        "@type": "QuantitativeValue",
+        "minValue": 0,
+        "maxValue": 0,
+        "unitCode": "DAY"
+      }
+    },
+    "shippingDestination": {
+      "@type": "DefinedRegion",
+      "addressCountry": "ES"
     }
-    </script>
+  },
+  "offers": [
+    {
+      "@type": "Offer",
+      "name": "Plan Básico",
+      "price": "30",
+      "priceCurrency": "EUR",
+      "availability": "https://schema.org/InStock",
+      "url": "https://bodasfacil.com/#pricing"
+    },
+    {
+      "@type": "Offer",
+      "name": "Plan Completo",
+      "price": "60",
+      "priceCurrency": "EUR",
+      "availability": "https://schema.org/InStock",
+      "url": "https://bodasfacil.com/#pricing"
+    }
+  ]
+}
+</script>
 
     <!-- JSON-LD: FAQ -->
     <script type="application/ld+json">
