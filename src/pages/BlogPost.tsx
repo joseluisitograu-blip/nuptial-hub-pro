@@ -64,6 +64,43 @@ const BlogPost = () => {
       }
       document.querySelector('meta[name="twitter:title"]')?.setAttribute("content", `${post.title} — BodasFácil`);
       document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", post.description);
+
+      // Schema Article dinámico
+      const existingSchema = document.getElementById("schema-article");
+      if (existingSchema) existingSchema.remove();
+
+      const schema = document.createElement("script");
+      schema.id = "schema-article";
+      schema.type = "application/ld+json";
+      schema.text = JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": post.title,
+        "description": post.description,
+        "image": post.cover_image || "https://bodasfacil.com/og-image.jpg",
+        "author": {
+          "@type": "Organization",
+          "name": "BodasFácil",
+          "url": "https://bodasfacil.com"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "BodasFácil",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://bodasfacil.com/favicon.png"
+          }
+        },
+        "datePublished": post.created_at,
+        "dateModified": post.created_at,
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": `https://bodasfacil.com/blog/${post.slug}`
+        },
+        "url": `https://bodasfacil.com/blog/${post.slug}`,
+        "inLanguage": "es-ES"
+      });
+      document.head.appendChild(schema);
     }
 
     return () => {
@@ -77,6 +114,7 @@ const BlogPost = () => {
       document.querySelector('meta[name="twitter:title"]')?.setAttribute("content", "BodasFácil — Crea la web de tu boda perfecta desde 30€");
       document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", "RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda y 12 temas visuales. Pago único, sin suscripciones.");
       document.querySelector('meta[name="twitter:image"]')?.setAttribute("content", "https://bodasfacil.com/og-image.jpg");
+      document.getElementById("schema-article")?.remove();
     };
   }, [post]);
 
