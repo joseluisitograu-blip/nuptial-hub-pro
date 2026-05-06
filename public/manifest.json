@@ -1,6 +1,6 @@
 {
-  "name": "Click Tu Boda",
-  "short_name": "ClickTuBoda",
+  "name": "BodasFácil",
+  "short_name": "BodasFácil",
   "description": "Crea la web de tu boda en minutos con RSVP, playlist, fotos y más.",
   "start_url": "/",
   "display": "standalone",

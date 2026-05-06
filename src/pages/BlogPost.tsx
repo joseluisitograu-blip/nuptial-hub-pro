@@ -55,17 +55,30 @@ const BlogPost = () => {
       document.querySelector('meta[name="description"]')?.setAttribute("content", post.description);
       document.querySelector('link[rel="canonical"]')?.setAttribute("href", `https://bodasfacil.com/blog/${post.slug}`);
 
+      document.querySelector('meta[property="og:type"]')?.setAttribute("content", "article");
       document.querySelector('meta[property="og:title"]')?.setAttribute("content", `${post.title} — BodasFácil`);
       document.querySelector('meta[property="og:description"]')?.setAttribute("content", post.description);
       document.querySelector('meta[property="og:url"]')?.setAttribute("content", `https://bodasfacil.com/blog/${post.slug}`);
       if (post.cover_image) {
         document.querySelector('meta[property="og:image"]')?.setAttribute("content", post.cover_image);
+        document.querySelector('meta[property="og:image:alt"]')?.setAttribute("content", post.title);
         document.querySelector('meta[name="twitter:image"]')?.setAttribute("content", post.cover_image);
       }
       document.querySelector('meta[name="twitter:title"]')?.setAttribute("content", `${post.title} — BodasFácil`);
       document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", post.description);
 
-      // Schema Article dinámico
+      // Open Graph article tags
+      const setOgArticleMeta = (property: string, content: string) => {
+        let el = document.querySelector(`meta[property="${property}"]`);
+        if (!el) { el = document.createElement("meta"); el.setAttribute("property", property); document.head.appendChild(el); }
+        el.setAttribute("content", content);
+      };
+      setOgArticleMeta("article:published_time", post.created_at);
+      setOgArticleMeta("article:modified_time", post.created_at);
+      setOgArticleMeta("article:author", "BodasFácil");
+      setOgArticleMeta("article:section", "Bodas");
+
+      // Schema BlogPosting dinámico
       const existingSchema = document.getElementById("schema-article");
       if (existingSchema) existingSchema.remove();
 
@@ -74,7 +87,7 @@ const BlogPost = () => {
       schema.type = "application/ld+json";
       schema.text = JSON.stringify({
         "@context": "https://schema.org",
-        "@type": "Article",
+        "@type": "BlogPosting",
         "headline": post.title,
         "description": post.description,
         "image": post.cover_image || "https://bodasfacil.com/og-image.jpg",
@@ -107,14 +120,19 @@ const BlogPost = () => {
       document.title = "BodasFácil — Crea la web de tu boda en minutos | Desde 30€";
       document.querySelector('meta[name="description"]')?.setAttribute("content", "Crea la web de tu boda perfecta en minutos. RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda del día, mapa y 12 temas visuales. Pago único desde 30€.");
       document.querySelector('link[rel="canonical"]')?.setAttribute("href", "https://bodasfacil.com/");
+      document.querySelector('meta[property="og:type"]')?.setAttribute("content", "website");
       document.querySelector('meta[property="og:title"]')?.setAttribute("content", "BodasFácil — Crea la web de tu boda perfecta desde 30€");
       document.querySelector('meta[property="og:description"]')?.setAttribute("content", "RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda y 12 temas visuales. Pago único, sin suscripciones.");
       document.querySelector('meta[property="og:url"]')?.setAttribute("content", "https://bodasfacil.com/");
       document.querySelector('meta[property="og:image"]')?.setAttribute("content", "https://bodasfacil.com/og-image.jpg");
+      document.querySelector('meta[property="og:image:alt"]')?.setAttribute("content", "BodasFácil — Crea la web de tu boda perfecta");
       document.querySelector('meta[name="twitter:title"]')?.setAttribute("content", "BodasFácil — Crea la web de tu boda perfecta desde 30€");
       document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", "RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda y 12 temas visuales. Pago único, sin suscripciones.");
       document.querySelector('meta[name="twitter:image"]')?.setAttribute("content", "https://bodasfacil.com/og-image.jpg");
       document.getElementById("schema-article")?.remove();
+      ["article:published_time", "article:modified_time", "article:author", "article:section"].forEach((p) => {
+        document.querySelector(`meta[property="${p}"]`)?.remove();
+      });
     };
   }, [post]);
 

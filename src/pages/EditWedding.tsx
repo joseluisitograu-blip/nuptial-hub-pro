@@ -91,6 +91,13 @@ const EditWedding = () => {
   });
 
   useEffect(() => {
+    const robots = document.querySelector('meta[name="robots"]');
+    const prev = robots?.getAttribute("content") ?? "index, follow";
+    robots?.setAttribute("content", "noindex, nofollow");
+    return () => { robots?.setAttribute("content", prev); };
+  }, []);
+
+  useEffect(() => {
     if (!authLoading && !user) navigate("/auth");
   }, [user, authLoading, navigate]);
 

@@ -45,6 +45,13 @@ const Dashboard = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
+    const robots = document.querySelector('meta[name="robots"]');
+    const prev = robots?.getAttribute("content") ?? "index, follow";
+    robots?.setAttribute("content", "noindex, nofollow");
+    return () => { robots?.setAttribute("content", prev); };
+  }, []);
+
+  useEffect(() => {
     if (searchParams.get("checkout") === "success") {
       // Evento estándar de Google Ads / GA4
       window.gtag?.("event", "purchase", {
