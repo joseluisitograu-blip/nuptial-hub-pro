@@ -1,6 +1,13 @@
+
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Heart, MessageCircle } from "lucide-react";
+
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+  }
+}
 
 interface Props {
   weddingId: string;
@@ -11,9 +18,10 @@ interface Props {
 
 const WeddingRsvp = ({ weddingId, whatsappNumber, partner1, partner2 }: Props) => {
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     guest_name: "",
-    email: "",
     attending: true,
     num_guests: 1,
     dietary_notes: "",
@@ -22,16 +30,31 @@ const WeddingRsvp = ({ weddingId, whatsappNumber, partner1, partner2 }: Props) =
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await supabase.from("rsvps").insert({
+    setLoading(true);
+    setError(false);
+
+    const { error: insertError } = await supabase.from("rsvps").insert({
       wedding_id: weddingId,
       guest_name: form.guest_name,
-      email: form.email,
       attending: form.attending,
-      num_guests: form.num_guests,
+      companions: form.num_guests - 1,
       dietary_notes: form.dietary_notes,
       message: form.message,
     });
+
+    if (insertError) {
+      setError(true);
+      setLoading(false);
+      return;
+    }
+
+    window.gtag?.("event", "rsvp_completado", {
+      attending: form.attending,
+      wedding_id: weddingId,
+    });
+
     setSubmitted(true);
+    setLoading(false);
   };
 
   const whatsappRsvpUrl = whatsappNumber
@@ -99,18 +122,6 @@ const WeddingRsvp = ({ weddingId, whatsappNumber, partner1, partner2 }: Props) =
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1.5">Email</label>
-            <input
-              type="email"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              maxLength={255}
-              className="w-full px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary font-light text-sm"
-              placeholder="tu@email.com (opcional)"
-            />
-          </div>
-
-          <div>
             <label className="block text-sm font-medium text-foreground mb-1.5">¿Asistirás?</label>
             <select
               value={form.attending ? "yes" : "no"}
@@ -159,11 +170,18 @@ const WeddingRsvp = ({ weddingId, whatsappNumber, partner1, partner2 }: Props) =
             />
           </div>
 
+          {error && (
+            <p className="text-destructive text-sm text-center bg-destructive/10 rounded-lg p-3">
+              Ha habido un error. Por favor inténtalo de nuevo.
+            </p>
+          )}
+
           <button
             type="submit"
-            className="w-full py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity"
+            disabled={loading}
+            className="w-full py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
           >
-            Confirmar asistencia
+            {loading ? "Enviando..." : "Confirmar asistencia"}
           </button>
         </form>
       </div>
