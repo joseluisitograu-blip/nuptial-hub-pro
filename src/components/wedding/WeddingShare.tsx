@@ -45,7 +45,7 @@ const WeddingShare = ({ slug, partner1, partner2 }: Props) => {
         {showQR && (
           <div className="mt-8 animate-fade-in">
             <div className="inline-block bg-white p-4 rounded-xl shadow-lg">
-              <img src={qrUrl} alt="Código QR de la boda" className="w-48 h-48" />
+              <img src={qrUrl} alt="Código QR de la boda" className="w-48 h-48" loading="lazy" />
             </div>
             <p className="text-sm text-muted-foreground mt-3">Escanea para abrir la invitación</p>
           </div>
