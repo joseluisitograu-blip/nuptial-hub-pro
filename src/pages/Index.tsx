@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { Heart, Sparkles, Users, Music, Camera, MapPin, Clock, HelpCircle, BookHeart, Gift, Share2, ArrowRight, CheckCircle, Play, Menu, X, Wallet, ListChecks, Shield, Zap, RefreshCcw, Star } from "lucide-react";
-import heroImage from "@/assets/hero-wedding.webp";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import ContactModal from "@/components/ContactModal";
 
@@ -148,19 +147,19 @@ const Index = () => {
       </nav>
 
       {/* Hero */}
-      <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden bg-stone-800">
       <div className="absolute inset-0">
   <img
     src="/decorar-banquete-boda_2c8fd058_1280x853.jpg"
     alt="Masía rústica para bodas"
-    className={`w-full h-full object-cover transition-all duration-[2s] ${heroLoaded ? "scale-100 opacity-100" : "scale-110 opacity-0"}`}
+    className={`w-full h-full object-cover transition-opacity duration-[2s] ${heroLoaded ? "opacity-100" : "opacity-0"}`}
     onLoad={() => setHeroLoaded(true)}
     loading="eager"
     fetchPriority="high"
   />
   <div className="absolute inset-0 bg-gradient-to-b from-foreground/20 via-foreground/45 to-foreground/75" />
 </div>
-        <div className={`relative z-10 text-center px-5 sm:px-6 max-w-3xl transition-all duration-1000 delay-300 ${heroLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+        <div className="relative z-10 text-center px-5 sm:px-6 max-w-3xl">
           <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 mb-6 sm:mb-8">
             <Sparkles className="w-3.5 h-3.5 text-primary-foreground/80" />
             <span className="text-primary-foreground/80 text-[11px] sm:text-xs tracking-wider uppercase font-light">Más de 12 funcionalidades · Desde 30€</span>
