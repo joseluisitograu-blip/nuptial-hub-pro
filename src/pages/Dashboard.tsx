@@ -1,8 +1,9 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Plus, ExternalLink, LogOut, Heart, MessageCircle, ChevronDown, ChevronUp, Lock, Mail, BarChart3, Gift, Wallet, ListChecks, CheckCircle, ArrowRight, Sparkles } from "lucide-react";
+import { Plus, ExternalLink, LogOut, Heart, MessageCircle, ChevronDown, ChevronUp, Lock, Mail, BarChart3, Gift, Wallet, ListChecks, CheckCircle, ArrowRight, Sparkles, Copy, Check } from "lucide-react";
 import WeddingStats from "@/components/dashboard/WeddingStats";
 import ExportRsvps from "@/components/dashboard/ExportRsvps";
 import DashboardMessages from "@/components/dashboard/DashboardMessages";
@@ -37,6 +38,7 @@ const Dashboard = () => {
   const [creating, setCreating] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<WeddingTab>("stats");
+  const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
   const { hasPurchase, loading: purchaseLoading, isOwner, isCompleto } = usePurchase();
   const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
   const { toast } = useToast();
@@ -44,6 +46,12 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (searchParams.get("checkout") === "success") {
+      // Evento estándar de Google Ads / GA4
+      window.gtag?.("event", "purchase", {
+        transaction_id: `txn_${Date.now()}`,
+        value: 60,
+        currency: "EUR",
+      });
       window.gtag?.("event", "compra_completada", {});
       toast({ title: "¡Pago completado! 🎉", description: "Tu boda ya está activa. ¡Enhorabuena!" });
       searchParams.delete("checkout");
@@ -66,6 +74,7 @@ const Dashboard = () => {
         (w) => w.partner1_name || w.partner2_name || w.wedding_date
       );
       setWeddings(valid);
+      if (valid.length > 0) setExpandedId(valid[0].id);
       setLoading(false);
     };
     fetchWeddings();
@@ -97,6 +106,12 @@ const Dashboard = () => {
     });
   };
 
+  const handleCopyLink = (slug: string) => {
+    navigator.clipboard.writeText(`${window.location.origin}/w/${slug}`);
+    setCopiedSlug(slug);
+    setTimeout(() => setCopiedSlug(null), 2000);
+  };
+
   const handleToggleExpand = (id: string) => {
     if (expandedId === id) {
       setExpandedId(null);
@@ -109,7 +124,7 @@ const Dashboard = () => {
   if (authLoading || loading || purchaseLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-pulse font-heading text-2xl text-muted-foreground">Cargando...</div>
+        <Heart className="w-8 h-8 text-primary animate-pulse" />
       </div>
     );
   }
@@ -123,7 +138,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border px-6 py-4 flex items-center justify-between">
+      <header className="border-b border-border px-6 py-4 flex items-center justify-between sticky top-0 bg-background/95 backdrop-blur-md z-40">
         <div className="flex items-center gap-2">
           <Heart className="w-5 h-5 text-primary" />
           <span className="font-heading text-xl">BodasFácil</span>
@@ -149,7 +164,7 @@ const Dashboard = () => {
 
       <div className="container max-w-4xl py-8 sm:py-12 px-4 sm:px-8">
 
-        {/* Banner de upgrade — solo si no ha comprado y tiene bodas creadas */}
+        {/* Banner de upgrade */}
         {!hasPurchase && weddings.length > 0 && (
           <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 sm:p-6 mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
@@ -175,7 +190,7 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Estado: sin compra y sin bodas — onboarding */}
+        {/* Onboarding — sin compra y sin bodas */}
         {!hasPurchase && weddings.length === 0 && (
           <div className="text-center py-12 sm:py-20">
             <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
@@ -188,21 +203,15 @@ const Dashboard = () => {
               Empieza creando vuestra boda. Es gratis explorar y personalizar — solo pagas cuando queráis publicarla.
             </p>
             <p className="text-muted-foreground/60 text-sm mb-8">Desde 30€, pago único, sin suscripciones.</p>
-
             <button
               onClick={createWedding}
               disabled={creating}
               className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-primary text-primary-foreground font-medium text-lg hover:opacity-90 transition-opacity mb-8"
             >
-              <Plus className="w-5 h-5" /> Crear mi boda gratis
+              <Plus className="w-5 h-5" /> {creating ? "Creando..." : "Crear mi boda gratis"}
             </button>
-
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-lg mx-auto mt-4">
-              {[
-                "Personaliza el diseño",
-                "Añade tu información",
-                "Publica cuando estés listo",
-              ].map((s, i) => (
+              {["Personaliza el diseño", "Añade tu información", "Publica cuando estés listo"].map((s, i) => (
                 <div key={s} className="flex items-center gap-2 text-sm text-muted-foreground bg-card border border-border rounded-lg p-3">
                   <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center flex-shrink-0 font-medium">{i + 1}</span>
                   {s}
@@ -212,7 +221,7 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Estado: tiene bodas */}
+        {/* Lista de bodas */}
         {weddings.length > 0 && (
           <>
             <div className="flex items-center justify-between mb-6">
@@ -222,12 +231,13 @@ const Dashboard = () => {
                 disabled={creating}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
               >
-                <Plus className="w-4 h-4" /> Nueva boda
+                <Plus className="w-4 h-4" /> {creating ? "Creando..." : "Nueva boda"}
               </button>
             </div>
             <div className="grid gap-4">
               {weddings.map((w) => {
                 const isExpanded = expandedId === w.id;
+                const weddingUrl = `${window.location.origin}/w/${w.slug}`;
                 return (
                   <div key={w.id} className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-shadow">
                     <div className="flex items-center justify-between p-5 sm:p-6">
@@ -239,16 +249,16 @@ const Dashboard = () => {
                         </h3>
                         <p className="text-muted-foreground text-sm font-light">
                           /{w.slug}
-                          {w.wedding_date &&
-                            ` · ${new Date(w.wedding_date).toLocaleDateString("es-ES", {
-                              day: "numeric",
-                              month: "long",
-                              year: "numeric",
-                            })}`}
+                          {w.wedding_date && ` · ${new Date(w.wedding_date).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })}`}
                         </p>
                         {!hasPurchase && (
                           <span className="inline-flex items-center gap-1 text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-full px-2 py-0.5 mt-1">
                             <Lock className="w-3 h-3" /> Sin publicar
+                          </span>
+                        )}
+                        {hasPurchase && (
+                          <span className="inline-flex items-center gap-1 text-xs text-green-600 bg-green-50 border border-green-200 rounded-full px-2 py-0.5 mt-1">
+                            <CheckCircle className="w-3 h-3" /> Publicada
                           </span>
                         )}
                       </div>
@@ -259,8 +269,15 @@ const Dashboard = () => {
                         >
                           {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                         </button>
+                        <button
+                          onClick={() => handleCopyLink(w.slug)}
+                          className="p-2 rounded-md hover:bg-secondary transition-colors text-muted-foreground"
+                          title="Copiar enlace"
+                        >
+                          {copiedSlug === w.slug ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                        </button>
                         <a
-                          href={`https://wa.me/?text=${encodeURIComponent(`¡Hola! Os recordamos que nuestra boda se acerca. 💍 Toda la info aquí: ${window.location.origin}/w/${w.slug}`)}`}
+                          href={`https://wa.me/?text=${encodeURIComponent(`¡Hola! Os recordamos que nuestra boda se acerca. 💍 Toda la info aquí: ${weddingUrl}`)}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="p-2 rounded-md hover:bg-secondary transition-colors text-primary"
@@ -286,18 +303,19 @@ const Dashboard = () => {
 
                     {isExpanded && (
                       <div className="border-t border-border px-5 sm:px-6 pt-4 pb-5">
-                        <div className="flex gap-1 border-b border-border mb-4">
+                        <div className="flex gap-1 border-b border-border mb-4 overflow-x-auto scrollbar-hide">
                           {tabs.map((tab) => (
                             <button
                               key={tab.id}
                               onClick={() => setActiveTab(tab.id)}
-                              className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
+                              className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium border-b-2 transition-colors -mb-px whitespace-nowrap ${
                                 activeTab === tab.id
                                   ? "border-primary text-primary"
                                   : "border-transparent text-muted-foreground hover:text-foreground"
                               }`}
                             >
                               {tab.icon} {tab.label}
+                              {tab.requiresCompleto && !isCompleto && <Lock className="w-3 h-3 ml-1 opacity-40" />}
                             </button>
                           ))}
                         </div>
