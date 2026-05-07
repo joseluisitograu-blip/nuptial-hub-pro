@@ -2,7 +2,6 @@ import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { usePurchase } from "@/hooks/usePurchase";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import heroImage from "@/assets/hero-wedding.webp";
 import WeddingCountdown from "@/components/wedding/WeddingCountdown";
@@ -54,6 +53,7 @@ interface WeddingData {
   theme_preset: string;
   whatsapp_number: string;
   user_id?: string;
+  is_published?: boolean;
 }
 
 const themeStyles: Record<string, Record<string, string>> = {
@@ -248,7 +248,6 @@ const sections = [
 const WeddingPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const { user } = useAuth();
-  const { hasPurchase } = usePurchase();
   const { openCheckout } = usePaddleCheckout();
   const [wedding, setWedding] = useState<WeddingData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -264,7 +263,7 @@ const WeddingPage = () => {
   const [edits, setEdits] = useState<Partial<WeddingData>>({});
   const isOwner = !!(user && wedding && wedding.user_id === user.id);
   const isDemo = slug?.startsWith("demo-") ?? false;
-  const isPreview = isOwner && !hasPurchase && !isDemo;
+  const isPreview = isOwner && !wedding?.is_published && !isDemo;
 
   useEffect(() => {
     if (!slug) return;

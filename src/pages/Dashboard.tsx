@@ -26,6 +26,7 @@ interface Wedding {
   partner1_name: string;
   partner2_name: string;
   wedding_date: string | null;
+  is_published: boolean;
 }
 
 type WeddingTab = "stats" | "budget" | "gifts" | "checklist";
@@ -61,14 +62,19 @@ const Dashboard = () => {
         currency: "EUR",
       });
       window.gtag?.("event", "compra_completada", { plan });
-      toast({ title: "¡Pago completado! 🎉", description: "Tu boda ya está activa. ¡Enhorabuena!" });
+      toast({ title: "¡Pago completado! 🎉", description: "Tu boda ya está publicada. ¡Enhorabuena!" });
       searchParams.delete("checkout");
       searchParams.delete("plan");
       setSearchParams(searchParams, { replace: true });
-      // Recarga tras 2,5s para que el webhook de Paddle haya llegado y usePurchase refleje el pago
-      setTimeout(() => window.location.reload(), 2500);
+      // Tras 2,5s (webhook de Paddle procesado), publicar las bodas del usuario y recargar
+      setTimeout(async () => {
+        if (user) {
+          await supabase.from("weddings").update({ is_published: true } as any).eq("user_id", user.id);
+        }
+        window.location.reload();
+      }, 2500);
     }
-  }, [searchParams]);
+  }, [searchParams, user]);
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/auth");
@@ -79,7 +85,7 @@ const Dashboard = () => {
     const fetchWeddings = async () => {
       const { data } = await supabase
         .from("weddings")
-        .select("id, slug, partner1_name, partner2_name, wedding_date")
+        .select("id, slug, partner1_name, partner2_name, wedding_date, is_published")
         .eq("user_id", user.id);
       const valid = (data || []).filter(
         (w) => w.partner1_name || w.partner2_name || w.wedding_date
@@ -177,7 +183,7 @@ const Dashboard = () => {
       <div className="container max-w-4xl py-8 sm:py-12 px-4 sm:px-8">
 
         {/* Banner de upgrade */}
-        {!hasPurchase && weddings.length > 0 && (
+        {!hasPurchase && weddings.length > 0 && weddings.some(w => !w.is_published) && (
           <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 sm:p-6 mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <p className="font-medium text-foreground mb-1">Tu boda está lista 🎉 Solo falta publicarla</p>
@@ -263,12 +269,12 @@ const Dashboard = () => {
                           /{w.slug}
                           {w.wedding_date && ` · ${new Date(w.wedding_date).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })}`}
                         </p>
-                        {!hasPurchase && (
+                        {!w.is_published && (
                           <span className="inline-flex items-center gap-1 text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-full px-2 py-0.5 mt-1">
                             <Lock className="w-3 h-3" /> Sin publicar
                           </span>
                         )}
-                        {hasPurchase && (
+                        {w.is_published && (
                           <span className="inline-flex items-center gap-1 text-xs text-green-600 bg-green-50 border border-green-200 rounded-full px-2 py-0.5 mt-1">
                             <CheckCircle className="w-3 h-3" /> Publicada
                           </span>
