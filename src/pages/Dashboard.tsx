@@ -173,29 +173,53 @@ const Dashboard = () => {
 
       <div className="container max-w-4xl py-8 sm:py-12 px-4 sm:px-8">
 
-        {/* Banner de upgrade */}
+        {/* Banner de upgrade — comparativa de planes */}
         {!hasPurchase && weddings.length > 0 && weddings.some(w => !w.is_published) && (
-          <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 sm:p-6 mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-              <p className="font-medium text-foreground mb-1">Tu boda está lista 🎉 Solo falta publicarla</p>
-              <p className="text-muted-foreground text-sm font-light">Elige un plan para que tus invitados puedan verla. Pago único, sin suscripciones.</p>
+          <div className="bg-primary/5 border border-primary/20 rounded-xl p-5 sm:p-6 mb-8">
+            <div className="mb-4">
+              <p className="font-medium text-foreground mb-0.5">Tu boda está lista 🎉 Solo falta publicarla</p>
+              <p className="text-muted-foreground text-sm font-light">Pago único para siempre. Sin suscripciones. 30 días de garantía.</p>
             </div>
-            <div className="flex gap-3 flex-shrink-0">
-              <button
-                onClick={() => handleBuy("basico_one_time")}
-                disabled={checkoutLoading}
-                className="px-4 py-2 rounded-lg border-2 border-primary text-primary text-sm font-medium hover:bg-primary hover:text-primary-foreground transition-all whitespace-nowrap"
-              >
-                Básico · 30€
-              </button>
-              <button
-                onClick={() => handleBuy("completo_one_time")}
-                disabled={checkoutLoading}
-                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity whitespace-nowrap"
-              >
-                Completo · 60€ ⭐
-              </button>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {/* Plan Básico */}
+              <div className="bg-card rounded-xl border border-border p-4">
+                <div className="mb-3">
+                  <p className="font-heading text-lg leading-none">Básico</p>
+                  <p className="font-heading text-2xl mt-1">30€ <span className="text-sm text-muted-foreground font-normal">pago único</span></p>
+                </div>
+                <ul className="space-y-1.5 mb-4">
+                  {["RSVP online + ver confirmaciones", "Playlist colaborativa de invitados", "Muro de fotos en vivo", "Código QR · 1 tema visual"].map(f => (
+                    <li key={f} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <CheckCircle className="w-3.5 h-3.5 text-primary flex-shrink-0" /> {f}
+                    </li>
+                  ))}
+                </ul>
+                <button onClick={() => handleBuy("basico_one_time")} disabled={checkoutLoading}
+                  className="w-full py-2.5 rounded-lg border-2 border-primary text-primary text-sm font-medium hover:bg-primary hover:text-primary-foreground transition-all">
+                  Publicar con Básico →
+                </button>
+              </div>
+              {/* Plan Completo */}
+              <div className="bg-card rounded-xl border-2 border-primary p-4 relative">
+                <div className="absolute -top-3 left-4 bg-primary text-primary-foreground text-xs font-medium px-3 py-0.5 rounded-full shadow-sm">⭐ Más popular</div>
+                <div className="mb-3">
+                  <p className="font-heading text-lg leading-none">Completo</p>
+                  <p className="font-heading text-2xl mt-1">60€ <span className="text-sm text-muted-foreground font-normal">pago único</span></p>
+                </div>
+                <ul className="space-y-1.5 mb-4">
+                  {["Todo lo del plan Básico", "12 temas visuales disponibles", "📊 Gestor de presupuesto (14 cat.)", "🎁 Control de regalos y agradecimientos", "✅ Checklist profesional (18 tareas)"].map(f => (
+                    <li key={f} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <CheckCircle className="w-3.5 h-3.5 text-primary flex-shrink-0" /> {f}
+                    </li>
+                  ))}
+                </ul>
+                <button onClick={() => handleBuy("completo_one_time")} disabled={checkoutLoading}
+                  className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity shadow-md">
+                  Publicar con Completo →
+                </button>
+              </div>
             </div>
+            <p className="text-center text-xs text-muted-foreground mt-3">Pago seguro con Paddle · 30 días de garantía sin preguntas</p>
           </div>
         )}
 
@@ -261,16 +285,27 @@ const Dashboard = () => {
                           /{w.slug}
                           {w.wedding_date && ` · ${new Date(w.wedding_date).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })}`}
                         </p>
-                        {!w.is_published && (
-                          <span className="inline-flex items-center gap-1 text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-full px-2 py-0.5 mt-1">
-                            <Lock className="w-3 h-3" /> Sin publicar
-                          </span>
-                        )}
-                        {w.is_published && (
-                          <span className="inline-flex items-center gap-1 text-xs text-green-600 bg-green-50 border border-green-200 rounded-full px-2 py-0.5 mt-1">
-                            <CheckCircle className="w-3 h-3" /> Publicada
-                          </span>
-                        )}
+                        <div className="flex flex-wrap gap-1.5 mt-1">
+                          {!w.is_published && (
+                            <span className="inline-flex items-center gap-1 text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-full px-2 py-0.5">
+                              <Lock className="w-3 h-3" /> Sin publicar
+                            </span>
+                          )}
+                          {w.is_published && (
+                            <span className="inline-flex items-center gap-1 text-xs text-green-600 bg-green-50 border border-green-200 rounded-full px-2 py-0.5">
+                              <CheckCircle className="w-3 h-3" /> Publicada
+                            </span>
+                          )}
+                          {w.wedding_date && (() => {
+                            const days = Math.ceil((new Date(w.wedding_date).getTime() - Date.now()) / 86400000);
+                            if (days > 0 && days <= 365) return (
+                              <span className="inline-flex items-center gap-1 text-xs text-primary bg-primary/10 border border-primary/20 rounded-full px-2 py-0.5">
+                                ⏳ {days} días
+                              </span>
+                            );
+                            return null;
+                          })()}
+                        </div>
                       </div>
                       {/* Acciones */}
                       <div className="flex items-center gap-1.5 shrink-0">
@@ -353,7 +388,7 @@ const Dashboard = () => {
                               }`}
                             >
                               {tab.icon} {tab.label}
-                              {tab.requiresCompleto && !isCompleto && <Lock className="w-3 h-3 ml-1 opacity-40" />}
+                              {tab.requiresCompleto && !isCompleto && <span className="text-[9px] font-medium text-primary bg-primary/10 px-1.5 py-0.5 rounded-full ml-1 leading-none">PREVIEW</span>}
                             </button>
                           ))}
                         </div>
@@ -369,18 +404,129 @@ const Dashboard = () => {
                         {activeTab === "budget" && isCompleto && <WeddingBudget weddingId={w.id} />}
                         {activeTab === "gifts" && isCompleto && <WeddingGifts weddingId={w.id} />}
                         {activeTab === "checklist" && isCompleto && <WeddingChecklist weddingId={w.id} />}
-                        {(activeTab === "budget" || activeTab === "gifts" || activeTab === "checklist") && !isCompleto && (
-                          <div className="text-center py-10">
-                            <Lock className="w-10 h-10 text-muted-foreground mx-auto mb-3 opacity-40" />
-                            <p className="text-foreground font-medium mb-1">Exclusivo del plan Completo</p>
-                            <p className="text-muted-foreground text-sm mb-4">Gestiona presupuesto, regalos y checklist de tu boda.</p>
-                            <button
-                              onClick={() => handleBuy("completo_one_time")}
-                              disabled={checkoutLoading}
-                              className="px-5 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
-                            >
-                              Actualizar a Completo · 60€
-                            </button>
+                        {activeTab === "budget" && !isCompleto && (
+                          <div className="space-y-4">
+                            <div className="relative overflow-hidden rounded-xl border border-border">
+                              <div className="p-4 space-y-3 select-none pointer-events-none">
+                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">Vista previa — datos de ejemplo</p>
+                                {[
+                                  { cat: "🏛️ Lugar / Finca", est: "8.000€", pct: 80 },
+                                  { cat: "🍽️ Catering", est: "6.800€", pct: 68 },
+                                  { cat: "📸 Fotografía / Vídeo", est: "2.200€", pct: 22 },
+                                  { cat: "💐 Flores / Decoración", est: "1.200€", pct: 12 },
+                                  { cat: "🎵 Música / DJ", est: "800€", pct: 8 },
+                                ].map((item) => (
+                                  <div key={item.cat}>
+                                    <div className="flex justify-between text-xs mb-1.5">
+                                      <span className="text-foreground">{item.cat}</span>
+                                      <span className="font-medium text-foreground">{item.est}</span>
+                                    </div>
+                                    <div className="h-2 bg-secondary rounded-full overflow-hidden">
+                                      <div className="h-full bg-primary rounded-full" style={{ width: `${item.pct}%` }} />
+                                    </div>
+                                  </div>
+                                ))}
+                                <div className="flex justify-between items-center pt-3 border-t border-border mt-3">
+                                  <span className="text-sm font-medium">Total estimado</span>
+                                  <span className="font-heading text-xl text-primary">19.000€</span>
+                                </div>
+                              </div>
+                              <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-card to-transparent pointer-events-none" />
+                            </div>
+                            <div className="p-6 bg-primary/5 border border-primary/20 rounded-xl text-center">
+                              <Wallet className="w-10 h-10 text-primary mx-auto mb-3" />
+                              <h4 className="font-heading text-lg mb-1">Controla cada euro de tu boda</h4>
+                              <p className="text-muted-foreground text-sm mb-1">14 categorías · Seguimiento en tiempo real · Sin sorpresas</p>
+                              <p className="text-xs text-muted-foreground/70 mb-4">Las parejas que usan el gestor detectan desviaciones a tiempo y ahorran de media 800€.</p>
+                              <button onClick={() => handleBuy("completo_one_time")} disabled={checkoutLoading}
+                                className="px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity text-sm w-full sm:w-auto">
+                                Desbloquear con Plan Completo · 60€ →
+                              </button>
+                              <p className="text-xs text-muted-foreground mt-3">30 días de garantía · Pago único para siempre</p>
+                            </div>
+                          </div>
+                        )}
+                        {activeTab === "checklist" && !isCompleto && (
+                          <div className="space-y-4">
+                            <div className="relative overflow-hidden rounded-xl border border-border">
+                              <div className="p-4 space-y-2.5 select-none pointer-events-none">
+                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">Vista previa — datos de ejemplo</p>
+                                {[
+                                  { title: "Reservar el lugar de la ceremonia", done: true, cat: "🏛️" },
+                                  { title: "Contratar catering / menú", done: true, cat: "🍽️" },
+                                  { title: "Elegir y comprar el vestido/traje", done: true, cat: "👗" },
+                                  { title: "Contratar fotógrafo/videógrafo", done: false, cat: "📸" },
+                                  { title: "Elegir DJ o grupo de música", done: false, cat: "🎵" },
+                                  { title: "Encargar las flores y decoración", done: false, cat: "💐" },
+                                  { title: "Comprar las alianzas", done: false, cat: "💍" },
+                                ].map((item) => (
+                                  <div key={item.title} className="flex items-center gap-3">
+                                    <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${item.done ? "bg-primary border-primary" : "border-border"}`}>
+                                      {item.done && <CheckCircle className="w-3 h-3 text-primary-foreground" />}
+                                    </div>
+                                    <span className={`text-xs ${item.done ? "line-through text-muted-foreground" : "text-foreground"}`}>{item.cat} {item.title}</span>
+                                  </div>
+                                ))}
+                                <div className="mt-3 pt-3 border-t border-border flex justify-between text-xs">
+                                  <span className="text-muted-foreground">Progreso</span>
+                                  <span className="font-medium text-primary">3 / 7 tareas</span>
+                                </div>
+                              </div>
+                              <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-card to-transparent pointer-events-none" />
+                            </div>
+                            <div className="p-6 bg-primary/5 border border-primary/20 rounded-xl text-center">
+                              <ListChecks className="w-10 h-10 text-primary mx-auto mb-3" />
+                              <h4 className="font-heading text-lg mb-1">Tu checklist de boda completo</h4>
+                              <p className="text-muted-foreground text-sm mb-1">18 tareas de wedding planner profesional · Añade las tuyas</p>
+                              <p className="text-xs text-muted-foreground/70 mb-4">Fechas límite, categorías y estado de cada tarea. Nada se olvida.</p>
+                              <button onClick={() => handleBuy("completo_one_time")} disabled={checkoutLoading}
+                                className="px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity text-sm w-full sm:w-auto">
+                                Desbloquear con Plan Completo · 60€ →
+                              </button>
+                              <p className="text-xs text-muted-foreground mt-3">30 días de garantía · Pago único para siempre</p>
+                            </div>
+                          </div>
+                        )}
+                        {activeTab === "gifts" && !isCompleto && (
+                          <div className="space-y-4">
+                            <div className="relative overflow-hidden rounded-xl border border-border">
+                              <div className="p-4 space-y-3 select-none pointer-events-none">
+                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">Vista previa — datos de ejemplo</p>
+                                {[
+                                  { name: "Familia García", type: "💰", amount: "300€", thanks: true },
+                                  { name: "Ana y Pedro Martínez", type: "🏦", amount: "250€", thanks: true },
+                                  { name: "Carlos y Marta López", type: "💰", amount: "200€", thanks: false },
+                                  { name: "Los abuelos", type: "🎁", amount: "150€", thanks: false },
+                                ].map((item) => (
+                                  <div key={item.name} className="flex items-center gap-3 py-2 border-b border-border/50 last:border-0">
+                                    <span className="text-base flex-shrink-0">{item.type}</span>
+                                    <div className="flex-1 min-w-0">
+                                      <p className="text-sm font-medium text-foreground truncate">{item.name}</p>
+                                      <p className="text-xs text-muted-foreground">{item.amount}</p>
+                                    </div>
+                                    <span className={`text-xs px-2 py-0.5 rounded-full flex-shrink-0 ${item.thanks ? "bg-green-50 text-green-600 border border-green-200" : "bg-amber-50 text-amber-600 border border-amber-200"}`}>
+                                      {item.thanks ? "✓ Agradecido" : "Pendiente"}
+                                    </span>
+                                  </div>
+                                ))}
+                                <div className="pt-2 flex justify-between text-xs">
+                                  <span className="text-muted-foreground">Total recibido</span>
+                                  <span className="font-heading text-lg text-primary">900€</span>
+                                </div>
+                              </div>
+                              <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-card to-transparent pointer-events-none" />
+                            </div>
+                            <div className="p-6 bg-primary/5 border border-primary/20 rounded-xl text-center">
+                              <Gift className="w-10 h-10 text-primary mx-auto mb-3" />
+                              <h4 className="font-heading text-lg mb-1">Registra cada regalo</h4>
+                              <p className="text-muted-foreground text-sm mb-1">Tipo de regalo · Importe · Seguimiento de agradecimientos</p>
+                              <p className="text-xs text-muted-foreground/70 mb-4">Nunca olvides a quién has agradecido. Exporta la lista completa.</p>
+                              <button onClick={() => handleBuy("completo_one_time")} disabled={checkoutLoading}
+                                className="px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity text-sm w-full sm:w-auto">
+                                Desbloquear con Plan Completo · 60€ →
+                              </button>
+                              <p className="text-xs text-muted-foreground mt-3">30 días de garantía · Pago único para siempre</p>
+                            </div>
                           </div>
                         )}
                       </div>
