@@ -7,12 +7,7 @@ import { ArrowLeft, Save, ExternalLink, Plus, Trash2, Upload, Sparkles, Heart, M
 import { toast } from "sonner";
 import { usePurchase } from "@/hooks/usePurchase";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
-
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-  }
-}
+import { track, trackBeginCheckout } from "@/lib/analytics";
 
 const inputClass = "w-full min-w-0 px-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring font-light box-border text-sm";
 
@@ -153,7 +148,7 @@ const EditWedding = () => {
 
   const handleSave = async () => {
     setSaving(true);
-    window.gtag?.("event", "guardar_boda", {});
+    track("guardar_boda");
     const { error } = await supabase.from("weddings").update({
       slug: form.slug, partner1_name: form.partner1_name, partner2_name: form.partner2_name,
       wedding_date: form.wedding_date ? new Date(form.wedding_date).toISOString() : null,
@@ -190,7 +185,9 @@ const EditWedding = () => {
   };
 
   const handleBuy = (priceId: string) => {
-    window.gtag?.("event", "clic_publicar_editor", { plan: priceId });
+    const planKey = priceId.includes("basico") ? "basico" : "completo" as "basico" | "completo";
+    trackBeginCheckout(planKey);
+    track("clic_publicar_editor", { plan: planKey });
     openCheckout({ priceId, customerEmail: user?.email || undefined, customData: { userId: user?.id || "" }, successUrl: `${window.location.origin}/dashboard?checkout=success` });
   };
 

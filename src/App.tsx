@@ -7,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { lazy, Suspense } from "react";
 import { Heart } from "lucide-react";
 import CookieBanner from "./components/CookieBanner";
+import { PageViewTracker } from "./components/analytics/PageViewTracker";
 
 const Index = lazy(() => import("./pages/Index.tsx"));
 const Auth = lazy(() => import("./pages/Auth.tsx"));
@@ -36,6 +37,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <PageViewTracker />
           <Suspense fallback={<Loader />}>
             <Routes>
               <Route path="/" element={<Index />} />

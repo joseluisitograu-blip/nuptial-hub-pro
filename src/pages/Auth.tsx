@@ -3,12 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Heart, ArrowLeft, CheckCircle, Shield, Zap, RefreshCcw } from "lucide-react";
-
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-  }
-}
+import { track } from "@/lib/analytics";
 
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(true); // Por defecto registro
@@ -32,9 +27,9 @@ const Auth = () => {
     setLoading(true);
 
     if (isSignUp) {
-      window.gtag?.("event", "registro_intento", {});
+      track("registro_intento");
     } else {
-      window.gtag?.("event", "login_intento", {});
+      track("login_intento");
     }
 
     const { error } = isSignUp
@@ -44,10 +39,10 @@ const Auth = () => {
     if (error) {
       setError(error.message);
     } else if (!isSignUp) {
-      window.gtag?.("event", "login_exitoso", {});
+      track("login_exitoso");
       navigate("/dashboard");
     } else {
-      window.gtag?.("event", "registro_exitoso", {});
+      track("registro_exitoso");
       await supabase.functions.invoke("send-welcome-email", {
         body: { email },
       });

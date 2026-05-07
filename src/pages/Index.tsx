@@ -3,12 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Heart, Sparkles, Users, Music, Camera, MapPin, Clock, HelpCircle, BookHeart, Gift, Share2, ArrowRight, CheckCircle, Play, Menu, X, Wallet, ListChecks, Shield, Zap, RefreshCcw, Star } from "lucide-react";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import ContactModal from "@/components/ContactModal";
-
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-  }
-}
+import { track, trackBeginCheckout } from "@/lib/analytics";
 
 const features = [
   { icon: Heart, title: "Página inmersiva", desc: "Experiencia a pantalla completa con animaciones fluidas, temas visuales y navegación por secciones." },
@@ -72,6 +67,7 @@ const RevealSection = ({ children, className = "", delay = 0 }: { children: Reac
 const Index = () => {
   const { openCheckout, loading } = usePaddleCheckout();
   const [contactOpen, setContactOpen] = useState(false);
+  const pricingRef = useRef<HTMLElement>(null);
   const [contactSubject, setContactSubject] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -104,8 +100,45 @@ const Index = () => {
     return () => document.getElementById("schema-howto")?.remove();
   }, []);
 
+  // Scroll depth — saber hasta dónde leen la landing (25%, 50%, 75%, 90%)
+  useEffect(() => {
+    const milestones = new Set<number>();
+    const handleScroll = () => {
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      if (!total) return;
+      const pct = Math.round((window.scrollY / total) * 100);
+      ([25, 50, 75, 90] as const).forEach((m) => {
+        if (pct >= m && !milestones.has(m)) {
+          milestones.add(m);
+          track("scroll_depth", { depth: m, page: "home" });
+        }
+      });
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // View pricing — saber cuántos usuarios llegan a ver la sección de precios
+  useEffect(() => {
+    const el = pricingRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          track("view_pricing", { page: "home" });
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   const handleBuy = (priceId: string) => {
-    window.gtag?.("event", "clic_comprar", { plan: priceId });
+    const planKey = priceId.includes("basico") ? "basico" : "completo" as "basico" | "completo";
+    trackBeginCheckout(planKey);
+    track("clic_comprar", { plan: planKey });
     openCheckout({
       priceId,
       successUrl: `${window.location.origin}/dashboard?checkout=success`,
@@ -137,7 +170,7 @@ const Index = () => {
             ))}
             <Link
               to="/auth"
-              onClick={() => window.gtag?.("event", "clic_crear_boda", { location: "navbar" })}
+              onClick={() => track("clic_crear_boda", { location: "navbar" })}
               className={`text-sm font-medium px-5 py-2 rounded-lg transition-all duration-300 ${scrolled ? "bg-primary text-primary-foreground hover:opacity-90 shadow-sm" : "bg-primary-foreground/15 text-primary-foreground backdrop-blur-sm hover:bg-primary-foreground/25 border border-primary-foreground/20"}`}>
               Crear mi boda
             </Link>
@@ -158,7 +191,7 @@ const Index = () => {
             ))}
             <Link
               to="/auth"
-              onClick={() => { setMobileMenuOpen(false); window.gtag?.("event", "clic_crear_boda", { location: "navbar_mobile" }); }}
+              onClick={() => { setMobileMenuOpen(false); track("clic_crear_boda", { location: "navbar_mobile" }); }}
               className="block text-center text-sm font-medium px-5 py-2.5 rounded-lg bg-primary text-primary-foreground"
             >
               Crear mi boda
@@ -195,7 +228,7 @@ const Index = () => {
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
             <Link
               to="/auth"
-              onClick={() => window.gtag?.("event", "clic_crear_boda", { location: "hero" })}
+              onClick={() => track("clic_crear_boda", { location: "hero" })}
               className="group px-7 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-primary-foreground text-foreground font-medium text-base sm:text-lg hover:shadow-2xl hover:shadow-primary-foreground/25 hover:-translate-y-0.5 transition-all duration-300"
             >
               Crear mi web de boda gratis
@@ -203,7 +236,7 @@ const Index = () => {
             </Link>
             <a
               href="#demos"
-              onClick={() => window.gtag?.("event", "clic_ver_demos", { location: "hero" })}
+              onClick={() => track("clic_ver_demos", { location: "hero" })}
               className="group px-7 sm:px-8 py-3.5 sm:py-4 rounded-xl border-2 border-primary-foreground/30 text-primary-foreground font-light text-base sm:text-lg hover:bg-primary-foreground/10 hover:border-primary-foreground/50 transition-all duration-300"
             >
               <Play className="w-4 h-4 inline mr-2" />
@@ -288,7 +321,7 @@ const Index = () => {
               <RevealSection key={d.slug} delay={i % 2 * 120}>
                 <Link
                   to={`/w/${d.slug}`}
-                  onClick={() => window.gtag?.("event", "clic_demo", { demo: d.slug })}
+                  onClick={() => track("clic_demo", { demo: d.slug })}
                   className={`group bg-gradient-to-br ${d.gradient} bg-card border border-border rounded-xl p-5 sm:p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 block`}
                 >
                   <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
@@ -503,7 +536,7 @@ const Index = () => {
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="py-16 sm:py-24 bg-secondary">
+      <section id="pricing" ref={pricingRef} className="py-16 sm:py-24 bg-secondary">
         <div className="container max-w-5xl px-5 sm:px-8">
           <RevealSection>
             <div className="text-center mb-10 sm:mb-16">
@@ -568,7 +601,7 @@ const Index = () => {
                 </ul>
                 <Link
   to="/auth"
-  onClick={() => window.gtag?.("event", "clic_crear_boda", { location: "pricing_completo" })}
+  onClick={() => track("clic_crear_boda", { location: "pricing_completo" })}
   className="block w-full text-center px-6 py-3.5 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-all duration-300 shadow-md hover:shadow-lg"
 >
   Empezar con Plan Completo →
@@ -603,7 +636,7 @@ const Index = () => {
                 </ul>
                 <Link
   to="/auth"
-  onClick={() => window.gtag?.("event", "clic_crear_boda", { location: "pricing_basico" })}
+  onClick={() => track("clic_crear_boda", { location: "pricing_basico" })}
   className="block w-full text-center px-6 py-3.5 rounded-xl border-2 border-primary text-primary font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-300"
 >
   Empezar con Plan Básico →
@@ -712,7 +745,7 @@ const Index = () => {
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
                 to="/auth"
-                onClick={() => window.gtag?.("event", "clic_crear_boda", { location: "final_cta" })}
+                onClick={() => track("clic_crear_boda", { location: "final_cta" })}
                 className="group inline-flex items-center justify-center gap-2 px-8 sm:px-10 py-3.5 sm:py-4 rounded-xl bg-primary text-primary-foreground font-medium text-base sm:text-lg hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-0.5 transition-all duration-300"
               >
                 Crear mi web de boda gratis

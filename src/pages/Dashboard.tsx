@@ -13,12 +13,8 @@ import WeddingChecklist from "@/components/dashboard/WeddingChecklist";
 import { usePurchase } from "@/hooks/usePurchase";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { useToast } from "@/hooks/use-toast";
+import { track, trackPurchase, trackBeginCheckout } from "@/lib/analytics";
 
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-  }
-}
 
 interface Wedding {
   id: string;
@@ -54,14 +50,8 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (searchParams.get("checkout") === "success") {
-      const plan = searchParams.get("plan") || "completo";
-      const value = plan === "basico" ? 30 : 60;
-      window.gtag?.("event", "purchase", {
-        transaction_id: `txn_${Date.now()}`,
-        value,
-        currency: "EUR",
-      });
-      window.gtag?.("event", "compra_completada", { plan });
+      const plan = (searchParams.get("plan") || "completo") as "basico" | "completo";
+      trackPurchase(plan);
       toast({ title: "¡Pago completado! 🎉", description: "Tu boda ya está publicada. ¡Enhorabuena!" });
       searchParams.delete("checkout");
       searchParams.delete("plan");
@@ -100,7 +90,7 @@ const Dashboard = () => {
   const createWedding = async () => {
     if (!user) return;
     setCreating(true);
-    window.gtag?.("event", "crear_boda_click", {});
+    track("crear_boda_click");
     const slug = `boda-${Date.now().toString(36)}`;
     const { data, error } = await supabase
       .from("weddings")
@@ -114,8 +104,9 @@ const Dashboard = () => {
   };
 
   const handleBuy = (priceId: string) => {
-    const plan = priceId.includes("basico") ? "basico" : "completo";
-    window.gtag?.("event", "clic_comprar_dashboard", { plan });
+    const plan = priceId.includes("basico") ? "basico" : "completo" as "basico" | "completo";
+    trackBeginCheckout(plan);
+    track("clic_comprar_dashboard", { plan });
     openCheckout({
       priceId,
       customerEmail: user?.email || undefined,

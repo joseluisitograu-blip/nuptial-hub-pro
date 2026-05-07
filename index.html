@@ -21,7 +21,8 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-3LGVLK8YP0');
+      // send_page_view:false — el hook usePageView() lo gestiona en cada ruta SPA
+      gtag('config', 'G-3LGVLK8YP0', { send_page_view: false });
       window.addEventListener('load', function() {
         setTimeout(function() {
           var s = document.createElement('script');

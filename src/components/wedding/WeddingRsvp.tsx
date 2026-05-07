@@ -2,12 +2,7 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Heart, MessageCircle } from "lucide-react";
-
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-  }
-}
+import { track } from "@/lib/analytics";
 
 interface Props {
   weddingId: string;
@@ -48,7 +43,7 @@ const WeddingRsvp = ({ weddingId, whatsappNumber, partner1, partner2 }: Props) =
       return;
     }
 
-    window.gtag?.("event", "rsvp_completado", {
+    track("rsvp_completado", {
       attending: form.attending,
       wedding_id: weddingId,
     });
