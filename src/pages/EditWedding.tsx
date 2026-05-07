@@ -279,16 +279,16 @@ const EditWedding = () => {
 
       {/* Banner publicar */}
       {!hasPurchase && (
-        <div className="bg-amber-50 border-b border-amber-200 px-4 sm:px-6 py-2.5 flex items-center justify-between gap-4">
+        <div className="bg-amber-50 border-b border-amber-200 px-4 sm:px-6 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
           <p className="text-amber-700 text-xs font-light">Tu boda está en modo preview — publícala para que tus invitados puedan verla</p>
-          <div className="flex gap-2 shrink-0">
+          <div className="flex gap-2 shrink-0 w-full sm:w-auto">
             <button onClick={() => handleBuy("basico_one_time")} disabled={checkoutLoading}
-              className="px-3 py-1.5 rounded-lg border border-amber-400 text-amber-700 text-xs font-medium hover:bg-amber-100 transition-colors whitespace-nowrap">
-              30€
+              className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg border border-amber-400 text-amber-700 text-xs font-medium hover:bg-amber-100 transition-colors whitespace-nowrap min-h-[40px]">
+              Básico · 30€
             </button>
             <button onClick={() => handleBuy("completo_one_time")} disabled={checkoutLoading}
-              className="px-3 py-1.5 rounded-lg bg-amber-500 text-white text-xs font-medium hover:opacity-90 transition-opacity whitespace-nowrap">
-              60€ ⭐
+              className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg bg-amber-500 text-white text-xs font-medium hover:opacity-90 transition-opacity whitespace-nowrap min-h-[40px]">
+              Completo · 60€ ⭐
             </button>
           </div>
         </div>
@@ -303,7 +303,7 @@ const EditWedding = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs whitespace-nowrap transition-all flex-shrink-0 ${
+                className={`flex items-center gap-1.5 px-3 py-3 rounded-lg text-xs whitespace-nowrap transition-all flex-shrink-0 min-h-[44px] ${
                   activeTab === tab.id ? "bg-primary text-primary-foreground font-medium" : "text-muted-foreground hover:text-foreground"
                 }`}
               >

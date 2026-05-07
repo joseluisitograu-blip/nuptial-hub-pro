@@ -258,7 +258,10 @@ const Index = () => {
         <div className="relative z-10 text-center px-5 sm:px-6 max-w-3xl">
           <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 mb-6 sm:mb-8">
             <Sparkles className="w-3.5 h-3.5 text-primary-foreground/80" />
-            <span className="text-primary-foreground/80 text-[11px] sm:text-xs tracking-wider uppercase font-light">12 funcionalidades · Pago único desde 30€ · Sin suscripciones</span>
+            <span className="text-primary-foreground/80 text-[11px] sm:text-xs tracking-wider uppercase font-light">
+              <span className="sm:hidden">Pago único · Desde 30€</span>
+              <span className="hidden sm:inline">12 funcionalidades · Pago único desde 30€ · Sin suscripciones</span>
+            </span>
           </div>
           <h1 className="font-heading text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl text-primary-foreground mb-4 sm:mb-6 leading-[0.95] text-balance">
             La web de boda<br />que merece el día
@@ -762,6 +765,43 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Para proveedores */}
+      <section className="py-14 sm:py-20 bg-card border-y border-border">
+        <div className="container max-w-5xl px-5 sm:px-8">
+          <RevealSection>
+            <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+              <div className="flex-1 text-center md:text-left">
+                <span className="inline-block text-xs uppercase tracking-[0.3em] text-primary mb-3 font-medium">Para profesionales</span>
+                <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl text-foreground mb-3">
+                  ¿Eres fotógrafo, wedding planner<br className="hidden sm:block" /> o proveedor de bodas?
+                </h2>
+                <p className="text-muted-foreground font-light text-sm sm:text-base max-w-md mx-auto md:mx-0 leading-relaxed">
+                  Llega a cientos de parejas que organizan su boda ahora mismo en BodasFácil.
+                  Anúnciate y conecta con tu cliente ideal directamente.
+                </p>
+              </div>
+              <div className="flex flex-col items-center md:items-end gap-4 shrink-0 w-full md:w-auto">
+                <div className="flex flex-wrap gap-2 justify-center md:justify-end max-w-xs">
+                  {["📸 Fotografía", "💐 Floristería", "🎵 DJ · Música", "🍽️ Catering", "🏰 Fincas", "✨ Wedding Planner"].map((s) => (
+                    <span key={s} className="px-3 py-1.5 rounded-full bg-secondary border border-border text-xs text-foreground font-light">
+                      {s}
+                    </span>
+                  ))}
+                </div>
+                <a
+                  href="mailto:soporte@bodasfacil.com?subject=Quiero%20anunciarme%20en%20BodasF%C3%A1cil"
+                  onClick={() => track("clic_anunciarse")}
+                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 transition-opacity w-full sm:w-auto justify-center"
+                >
+                  Contactar con nosotros →
+                </a>
+                <p className="text-xs text-muted-foreground">soporte@bodasfacil.com · Respondemos en menos de 24h</p>
+              </div>
+            </div>
+          </RevealSection>
+        </div>
+      </section>
+
       {/* Final CTA */}
       <section className="py-20 sm:py-28 bg-secondary text-center relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.03]">
@@ -804,7 +844,8 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 sm:py-12 border-t border-border bg-background">
+      {/* pb-24 en móvil deja espacio al sticky CTA bar; md:py-12 lo anula en desktop */}
+      <footer className="pt-8 sm:pt-12 pb-24 md:py-12 border-t border-border bg-background">
         <div className="container max-w-4xl px-5 sm:px-8">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <div>
@@ -894,11 +935,14 @@ const Index = () => {
 
       {/* Sticky CTA bar (solo móvil, aparece al scrollar) */}
       {showStickyCTA && (
-        <div className="fixed bottom-0 inset-x-0 z-50 md:hidden bg-background/95 backdrop-blur-md border-t border-border px-4 py-3">
+        <div
+          className="fixed bottom-0 inset-x-0 z-50 md:hidden bg-background/95 backdrop-blur-md border-t border-border px-4 pt-3"
+          style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom, 0px))" }}
+        >
           <Link
             to="/auth"
             onClick={() => track("clic_crear_boda", { location: "sticky_mobile" })}
-            className="block w-full text-center py-3 rounded-xl bg-primary text-primary-foreground font-medium text-sm"
+            className="block w-full text-center py-3.5 rounded-xl bg-primary text-primary-foreground font-medium text-sm"
           >
             Crear mi boda gratis →
           </Link>

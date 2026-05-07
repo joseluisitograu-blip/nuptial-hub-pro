@@ -249,14 +249,15 @@ const Dashboard = () => {
                 const weddingUrl = `${window.location.origin}/w/${w.slug}`;
                 return (
                   <div key={w.id} className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between p-5 sm:p-6">
-                      <div>
-                        <h3 className="font-heading text-lg sm:text-xl">
+                    <div className="flex items-center gap-3 justify-between p-4 sm:p-6">
+                      {/* Info */}
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-heading text-lg sm:text-xl truncate">
                           {w.partner1_name && w.partner2_name
                             ? `${w.partner1_name} & ${w.partner2_name}`
                             : "Sin nombre aún"}
                         </h3>
-                        <p className="text-muted-foreground text-sm font-light">
+                        <p className="text-muted-foreground text-xs sm:text-sm font-light truncate">
                           /{w.slug}
                           {w.wedding_date && ` · ${new Date(w.wedding_date).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })}`}
                         </p>
@@ -271,16 +272,12 @@ const Dashboard = () => {
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => handleToggleExpand(w.id)}
-                          className="p-2 rounded-md hover:bg-secondary transition-colors text-muted-foreground"
-                        >
-                          {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                        </button>
+                      {/* Acciones */}
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        {/* Solo desktop */}
                         <button
                           onClick={() => handleCopyLink(w.slug)}
-                          className="p-2 rounded-md hover:bg-secondary transition-colors text-muted-foreground"
+                          className="hidden sm:flex p-2 rounded-md hover:bg-secondary transition-colors text-muted-foreground"
                           title="Copiar enlace"
                         >
                           {copiedSlug === w.slug ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
@@ -289,26 +286,58 @@ const Dashboard = () => {
                           href={`https://wa.me/?text=${encodeURIComponent(`¡Hola! Os recordamos que nuestra boda se acerca. 💍 Toda la info aquí: ${weddingUrl}`)}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="p-2 rounded-md hover:bg-secondary transition-colors text-primary"
+                          className="hidden sm:flex p-2 rounded-md hover:bg-secondary transition-colors text-primary"
                           title="Compartir por WhatsApp"
                         >
                           <MessageCircle className="w-4 h-4" />
                         </a>
                         <Link
                           to={`/w/${w.slug}`}
-                          className="p-2 rounded-md hover:bg-secondary transition-colors text-muted-foreground"
+                          className="hidden sm:flex p-2 rounded-md hover:bg-secondary transition-colors text-muted-foreground"
                           title="Ver página"
                         >
                           <ExternalLink className="w-4 h-4" />
                         </Link>
                         <Link
                           to={`/dashboard/edit/${w.id}`}
-                          className="px-4 py-2 rounded-lg bg-secondary text-secondary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+                          className="px-3 sm:px-4 py-2 rounded-lg bg-secondary text-secondary-foreground text-xs sm:text-sm font-medium hover:opacity-90 transition-opacity whitespace-nowrap"
                         >
                           Editar
                         </Link>
+                        <button
+                          onClick={() => handleToggleExpand(w.id)}
+                          className="p-2 rounded-md hover:bg-secondary transition-colors text-muted-foreground"
+                        >
+                          {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                        </button>
                       </div>
                     </div>
+                    {/* Acciones móvil — dentro del expandido */}
+                    {isExpanded && (
+                      <div className="sm:hidden flex items-center gap-2 px-4 pb-3">
+                        <button
+                          onClick={() => handleCopyLink(w.slug)}
+                          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-secondary text-muted-foreground text-xs hover:text-foreground transition-colors"
+                        >
+                          {copiedSlug === w.slug ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5" />}
+                          Copiar enlace
+                        </button>
+                        <a
+                          href={`https://wa.me/?text=${encodeURIComponent(`¡Hola! Os recordamos que nuestra boda se acerca. 💍 Toda la info aquí: ${weddingUrl}`)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-secondary text-primary text-xs hover:opacity-80 transition-opacity"
+                        >
+                          <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
+                        </a>
+                        <Link
+                          to={`/w/${w.slug}`}
+                          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-secondary text-muted-foreground text-xs hover:text-foreground transition-colors"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" /> Ver web
+                        </Link>
+                      </div>
+                    )}
 
                     {isExpanded && (
                       <div className="border-t border-border px-5 sm:px-6 pt-4 pb-5">
