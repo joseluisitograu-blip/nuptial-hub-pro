@@ -77,9 +77,7 @@ const Dashboard = () => {
         .from("weddings")
         .select("id, slug, partner1_name, partner2_name, wedding_date, is_published")
         .eq("user_id", user.id);
-      const valid = (data || []).filter(
-        (w) => w.partner1_name || w.partner2_name || w.wedding_date
-      );
+      const valid = data || [];
       setWeddings(valid);
       if (valid.length > 0) setExpandedId(valid[0].id);
       setLoading(false);
@@ -174,10 +172,12 @@ const Dashboard = () => {
       <div className="container max-w-4xl py-8 sm:py-12 px-4 sm:px-8">
 
         {/* Banner de upgrade — comparativa de planes */}
-        {!hasPurchase && weddings.length > 0 && weddings.some(w => !w.is_published) && (
+        {!hasPurchase && (
           <div className="bg-primary/5 border border-primary/20 rounded-xl p-5 sm:p-6 mb-8">
             <div className="mb-4">
-              <p className="font-medium text-foreground mb-0.5">Tu boda está lista 🎉 Solo falta publicarla</p>
+              <p className="font-medium text-foreground mb-0.5">
+                {weddings.length > 0 ? "Tu boda está lista 🎉 Solo falta publicarla" : "Elige tu plan cuando estés lista 💍"}
+              </p>
               <p className="text-muted-foreground text-sm font-light">Pago único para siempre. Sin suscripciones. 30 días de garantía.</p>
             </div>
             <div className="grid sm:grid-cols-2 gap-3">
@@ -223,8 +223,8 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Onboarding — sin compra y sin bodas */}
-        {!hasPurchase && weddings.length === 0 && (
+        {/* Onboarding — sin bodas */}
+        {weddings.length === 0 && (
           <div className="text-center py-12 sm:py-20">
             <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
               <Heart className="w-8 h-8 text-primary" />
