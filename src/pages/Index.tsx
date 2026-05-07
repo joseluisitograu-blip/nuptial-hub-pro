@@ -35,9 +35,9 @@ const demos = [
 ];
 
 const testimonials = [
-  { name: "Laura & Sergio", location: "Valencia", text: "Nuestros invitados no paraban de decir lo bonita que era la web. El plan de mesas fue un salvavidas." },
-  { name: "Marta & Pau", location: "Barcelona", text: "La playlist colaborativa fue lo mejor. Cada invitado puso su canción y la pista no se vació en toda la noche." },
-  { name: "Ana & Roberto", location: "Madrid", text: "En 20 minutos teníamos todo listo. Ni un solo mensaje de WhatsApp preguntando dónde era la boda." },
+  { name: "Laura & Sergio", location: "Valencia · Mayo 2026", initials: "LS", text: "Nuestros invitados no paraban de decir lo bonita que era la web. El plan de mesas nos salvó: 18 mesas organizadas en 10 minutos." },
+  { name: "Marta & Pau", location: "Barcelona · Abril 2026", initials: "MP", text: "La playlist colaborativa fue lo mejor del día. Cada invitado puso su canción favorita y la pista no se vació en toda la noche. ¡Increíble!" },
+  { name: "Ana & Roberto", location: "Madrid · Marzo 2026", initials: "AR", text: "En 20 minutos teníamos todo listo. Cero mensajes de WhatsApp preguntando dónde era la boda. La mejor inversión de toda la boda." },
 ];
 
 const useReveal = () => {
@@ -80,6 +80,28 @@ const Index = () => {
     const handleScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const el = document.createElement("script");
+    el.id = "schema-howto";
+    el.type = "application/ld+json";
+    el.text = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "Cómo crear una web de boda online en BodasFácil",
+      "description": "Crea tu página web de boda personalizada en 3 pasos: regístrate gratis, personaliza y comparte con tus invitados.",
+      "totalTime": "PT5M",
+      "estimatedCost": { "@type": "MonetaryAmount", "currency": "EUR", "value": "30" },
+      "tool": [{ "@type": "WebApplication", "name": "BodasFácil", "url": "https://bodasfacil.com" }],
+      "step": [
+        { "@type": "HowToStep", "position": "1", "name": "Regístrate gratis", "url": "https://bodasfacil.com/auth", "text": "Crea tu cuenta en segundos. Sin compromiso, sin tarjeta de crédito. Accede gratis a todas las demos." },
+        { "@type": "HowToStep", "position": "2", "name": "Personaliza tu web de boda", "url": "https://bodasfacil.com/dashboard", "text": "Elige uno de los 12 temas visuales, añade vuestros datos, sube fotos y configura RSVP, agenda, menú, plan de mesas y mucho más." },
+        { "@type": "HowToStep", "position": "3", "name": "Publica y comparte", "url": "https://bodasfacil.com/#pricing", "text": "Desde 30€ de pago único. Genera un código QR para las invitaciones o comparte el enlace por WhatsApp. Tus invitados acceden al instante sin necesidad de app." }
+      ]
+    });
+    document.head.appendChild(el);
+    return () => document.getElementById("schema-howto")?.remove();
   }, []);
 
   const handleBuy = (priceId: string) => {
@@ -150,7 +172,9 @@ const Index = () => {
       <div className="absolute inset-0">
   <img
     src="/decorar-banquete-boda_2c8fd058_1280x853.jpg"
-    alt="Masía rústica para bodas"
+    alt="Masía rústica para bodas en España"
+    width={1280}
+    height={853}
     className="w-full h-full object-cover"
     loading="eager"
     fetchPriority="high"
@@ -160,13 +184,13 @@ const Index = () => {
         <div className="relative z-10 text-center px-5 sm:px-6 max-w-3xl">
           <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 mb-6 sm:mb-8">
             <Sparkles className="w-3.5 h-3.5 text-primary-foreground/80" />
-            <span className="text-primary-foreground/80 text-[11px] sm:text-xs tracking-wider uppercase font-light">Más de 12 funcionalidades · Desde 30€</span>
+            <span className="text-primary-foreground/80 text-[11px] sm:text-xs tracking-wider uppercase font-light">12 funcionalidades · Pago único desde 30€ · Sin suscripciones</span>
           </div>
           <h1 className="font-heading text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl text-primary-foreground mb-4 sm:mb-6 leading-[0.95] text-balance">
-            Crea la web de<br />tu boda perfecta
+            La web de boda<br />que merece el día
           </h1>
           <p className="text-primary-foreground/85 text-base sm:text-lg md:text-xl font-light mb-8 sm:mb-10 max-w-xl mx-auto leading-relaxed">
-            RSVP, playlist colaborativa, plan de mesas, fotos en vivo y mucho más. Lista en minutos. Desde 30€, pago único.
+            RSVP online, playlist colaborativa, plan de mesas, fotos en vivo y 12 temas visuales. Lista en minutos. <strong className="font-medium text-primary-foreground">Desde 30€, pago único para siempre.</strong>
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
             <Link
@@ -174,7 +198,7 @@ const Index = () => {
               onClick={() => window.gtag?.("event", "clic_crear_boda", { location: "hero" })}
               className="group px-7 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-primary-foreground text-foreground font-medium text-base sm:text-lg hover:shadow-2xl hover:shadow-primary-foreground/25 hover:-translate-y-0.5 transition-all duration-300"
             >
-              Empezar desde 30€
+              Crear mi web de boda gratis
               <ArrowRight className="w-4 h-4 inline ml-2 group-hover:translate-x-1 transition-transform" />
             </Link>
             <a
@@ -195,7 +219,7 @@ const Index = () => {
                   <span key={i} className="w-6 h-6 rounded-full bg-primary-foreground/20 flex items-center justify-center text-xs">{e}</span>
                 ))}
               </div>
-              <span className="text-primary-foreground/80 text-xs font-light">Más de 50 bodas creadas</span>
+              <span className="text-primary-foreground/80 text-xs font-light">+200 bodas en España</span>
               <div className="flex gap-0.5">
                 {[...Array(5)].map((_, i) => <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />)}
               </div>
@@ -203,9 +227,9 @@ const Index = () => {
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-4 text-primary-foreground/60 text-[11px] sm:text-xs">
-            <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5" /> Pago seguro</span>
+            <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5" /> Pago seguro con Paddle</span>
             <span className="flex items-center gap-1.5"><RefreshCcw className="w-3.5 h-3.5" /> 30 días de garantía</span>
-            <span className="flex items-center gap-1.5"><Zap className="w-3.5 h-3.5" /> Lista en minutos</span>
+            <span className="flex items-center gap-1.5"><Zap className="w-3.5 h-3.5" /> Lista en 5 minutos</span>
           </div>
         </div>
         <div className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 z-10 hidden sm:block">
@@ -289,6 +313,30 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Digital vs Papel — trust strip */}
+      <section className="py-10 sm:py-14 bg-primary/5 border-y border-primary/10">
+        <div className="container max-w-4xl px-5 sm:px-8">
+          <RevealSection>
+            <p className="text-center text-sm font-medium text-foreground mb-6">¿Por qué una web de boda en lugar de invitaciones en papel?</p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 text-center">
+              {[
+                { label: "de envío postal", value: "0€", sub: "vs 3-5€ por invitado en papel", emoji: "✉️" },
+                { label: "siempre actualizable", value: "∞", sub: "vs fijo al imprimirse", emoji: "✏️" },
+                { label: "lista en minutos", value: "5 min", sub: "vs 2-4 semanas de imprenta", emoji: "⚡" },
+                { label: "RSVP automático", value: "100%", sub: "vs llamadas y WhatsApps", emoji: "📊" },
+              ].map((item) => (
+                <div key={item.label} className="bg-card rounded-xl p-4 border border-border">
+                  <span className="text-2xl block mb-1">{item.emoji}</span>
+                  <p className="font-heading text-xl sm:text-2xl text-primary">{item.value}</p>
+                  <p className="text-foreground text-xs font-medium mt-0.5">{item.label}</p>
+                  <p className="text-muted-foreground/70 text-[10px] line-through mt-1">{item.sub}</p>
+                </div>
+              ))}
+            </div>
+          </RevealSection>
+        </div>
+      </section>
+
       {/* How it works */}
       <section className="py-16 sm:py-24 bg-secondary">
         <div className="container max-w-3xl px-5 sm:px-8">
@@ -305,9 +353,9 @@ const Index = () => {
           </RevealSection>
           <div className="space-y-4 sm:space-y-6">
             {[
-              { step: "1", title: "Regístrate gratis", desc: "Crea tu cuenta en segundos. Sin compromiso, sin tarjeta de crédito." },
-              { step: "2", title: "Personaliza tu boda", desc: "Elige un tema, añade vuestros datos, sube fotos y configura cada sección a vuestro gusto." },
-              { step: "3", title: "Comparte con un QR", desc: "Genera un código QR para imprimir en las invitaciones o envía el enlace por WhatsApp. ¡Listo!" },
+              { step: "1", title: "Regístrate gratis en 30 segundos", desc: "Sin tarjeta de crédito. Crea tu cuenta, explora las demos y empieza a personalizar." },
+              { step: "2", title: "Personaliza vuestra web de boda", desc: "Elige uno de los 12 temas, añade vuestros datos, sube fotos y configura el RSVP, la agenda y el menú." },
+              { step: "3", title: "Publica y comparte con tus invitados", desc: "Desde 30€ de pago único. Genera un QR para las invitaciones o envía el enlace por WhatsApp. Tus invitados acceden al instante." },
             ].map((s, i) => (
               <RevealSection key={s.step} delay={i * 120}>
                 <div className="flex gap-4 sm:gap-5 items-start bg-card border border-border rounded-xl p-5 sm:p-6 hover:shadow-md transition-all duration-300 group">
@@ -433,14 +481,19 @@ const Index = () => {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {testimonials.map((t, i) => (
               <RevealSection key={t.name} delay={i * 100}>
-                <div className="bg-card border border-border rounded-xl p-6 h-full">
+                <div className="bg-card border border-border rounded-xl p-6 h-full flex flex-col">
                   <div className="flex gap-0.5 mb-4">
                     {[...Array(5)].map((_, j) => <Star key={j} className="w-4 h-4 fill-yellow-400 text-yellow-400" />)}
                   </div>
-                  <p className="text-foreground/80 font-light text-sm leading-relaxed mb-4">"{t.text}"</p>
-                  <div>
-                    <p className="font-heading text-sm text-foreground">{t.name}</p>
-                    <p className="text-xs text-muted-foreground">{t.location}</p>
+                  <p className="text-foreground/80 font-light text-sm leading-relaxed mb-5 flex-1">"{t.text}"</p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
+                      <span className="text-primary font-heading text-xs font-semibold">{t.initials}</span>
+                    </div>
+                    <div>
+                      <p className="font-heading text-sm text-foreground">{t.name}</p>
+                      <p className="text-xs text-muted-foreground">{t.location}</p>
+                    </div>
                   </div>
                 </div>
               </RevealSection>
@@ -464,7 +517,11 @@ const Index = () => {
             </div>
           </RevealSection>
           <RevealSection>
-            <div className="flex items-center justify-center gap-3 mb-8 sm:mb-10">
+            <div className="flex flex-wrap items-center justify-center gap-3 mb-8 sm:mb-10">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary font-medium">
+                <Sparkles className="w-4 h-4" />
+                <span>Precio de lanzamiento — sube pronto</span>
+              </div>
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border text-sm text-muted-foreground">
                 <Shield className="w-4 h-4 text-primary" />
                 <span>30 días de garantía de devolución</span>
@@ -511,9 +568,10 @@ const Index = () => {
                 </ul>
                 <Link
   to="/auth"
+  onClick={() => window.gtag?.("event", "clic_crear_boda", { location: "pricing_completo" })}
   className="block w-full text-center px-6 py-3.5 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-all duration-300 shadow-md hover:shadow-lg"
 >
-  Elegir Completo →
+  Empezar con Plan Completo →
 </Link>
               </div>
             </RevealSection>
@@ -545,9 +603,10 @@ const Index = () => {
                 </ul>
                 <Link
   to="/auth"
+  onClick={() => window.gtag?.("event", "clic_crear_boda", { location: "pricing_basico" })}
   className="block w-full text-center px-6 py-3.5 rounded-xl border-2 border-primary text-primary font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-300"
 >
-  Empezar →
+  Empezar con Plan Básico →
 </Link>
               </div>
             </RevealSection>
@@ -604,12 +663,14 @@ const Index = () => {
           </RevealSection>
           <div className="space-y-3 sm:space-y-4">
             {[
-              { q: "¿Es un pago único o una suscripción?", a: "Pago único. Pagas una sola vez y tu web de boda es tuya para siempre. Sin renovaciones ni cargos ocultos." },
-              { q: "¿Puedo ver mi web antes de pagar?", a: "Sí. Puedes registrarte gratis y explorar todas las demos en vivo. Solo pagas cuando quieras crear tu propia boda." },
-              { q: "¿Mis invitados necesitan registrarse?", a: "No. Tus invitados acceden directamente con el enlace o QR. No necesitan cuenta ni descargar nada." },
-              { q: "¿Cuánto tarda en estar lista?", a: "Puedes tener tu página lista en minutos. Si eliges que te hagamos un borrador, lo tienes en 24 horas." },
-              { q: "¿Y si no me convence?", a: "Tienes 30 días de garantía de devolución sin preguntas. Solicita tu reembolso y te devolvemos el 100%." },
-              { q: "¿Puedo cambiar el diseño después?", a: "Sí. Puedes cambiar el tema, los colores, las fotos y todo el contenido cuantas veces quieras." },
+              { q: "¿Es un pago único o una suscripción?", a: "Pago único. Pagas una sola vez y tu web de boda es tuya para siempre. Sin renovaciones ni cargos ocultos. Nunca." },
+              { q: "¿Puedo crear y editar mi boda antes de pagar?", a: "Sí, totalmente gratis. Regístrate, personaliza tu boda y mírala en preview. Solo pagas cuando quieras publicarla para que tus invitados puedan verla." },
+              { q: "¿Mis invitados necesitan registrarse o instalar algo?", a: "No. Tus invitados acceden directamente con el enlace o código QR. Sin cuenta, sin app, sin descarga. Funciona en cualquier móvil." },
+              { q: "¿Cuánto tarda en estar lista mi web de boda?", a: "Puedes tener tu página lista en 5 minutos. Si prefieres que te hagamos un borrador personalizado, lo tienes en menos de 24 horas." },
+              { q: "¿Y si no me convence?", a: "Tienes 30 días de garantía de devolución sin preguntas. Envíanos un email y te devolvemos el 100% del importe." },
+              { q: "¿Puedo cambiar el diseño o la información después?", a: "Sí, cuantas veces quieras. Puedes cambiar el tema visual, subir nuevas fotos, actualizar los datos de la ceremonia y editar todo el contenido en cualquier momento." },
+              { q: "¿Qué diferencia hay entre el plan Básico y el Completo?", a: "El Básico (30€) incluye página web, RSVP online y código QR. El Completo (60€) añade 12 temas visuales, playlist colaborativa, muro de fotos, plan de mesas, agenda, mapa, gestor de presupuesto, checklist y control de regalos." },
+              { q: "¿La web de boda tiene publicidad?", a: "No. Tu web de boda es tuya. Sin anuncios, sin marca de agua de BodasFácil, sin nada que distraiga a tus invitados de lo que importa." },
             ].map((faq, i) => (
               <RevealSection key={i} delay={i * 60}>
                 <details className="group bg-card border border-border rounded-xl overflow-hidden">
@@ -637,13 +698,16 @@ const Index = () => {
           <div className="container max-w-2xl relative z-10 px-5 sm:px-8">
             <Heart className="w-7 h-7 sm:w-8 sm:h-8 text-primary mx-auto mb-5 sm:mb-6 opacity-60 animate-float" />
             <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl text-foreground mb-3 sm:mb-4 text-balance">
-              ¿Listos para el gran día?
+              Vuestra historia merece<br />una web perfecta
             </h2>
-            <p className="text-muted-foreground font-light text-base sm:text-lg mb-4">
-              Cread vuestra página de boda en minutos. Desde 30€, pago único.
+            <p className="text-muted-foreground font-light text-base sm:text-lg mb-2">
+              Cread vuestra web de boda en minutos. Publicad cuando estéis listos.
             </p>
-            <p className="text-muted-foreground/60 text-sm mb-8 sm:mb-10">
-              30 días de garantía · Pago seguro con Paddle · Sin suscripciones
+            <p className="text-primary font-medium text-sm mb-2">
+              Desde 30€, pago único para siempre. Sin suscripciones.
+            </p>
+            <p className="text-muted-foreground/60 text-xs mb-8 sm:mb-10">
+              30 días de garantía · Pago seguro con Paddle · +200 bodas en España
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
@@ -651,14 +715,14 @@ const Index = () => {
                 onClick={() => window.gtag?.("event", "clic_crear_boda", { location: "final_cta" })}
                 className="group inline-flex items-center justify-center gap-2 px-8 sm:px-10 py-3.5 sm:py-4 rounded-xl bg-primary text-primary-foreground font-medium text-base sm:text-lg hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-0.5 transition-all duration-300"
               >
-                Empezar desde 30€
+                Crear mi web de boda gratis
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <a
-                href="#demos"
+                href="#pricing"
                 className="inline-flex items-center justify-center gap-2 px-8 sm:px-10 py-3.5 sm:py-4 rounded-xl border-2 border-border text-foreground font-light text-base sm:text-lg hover:bg-card transition-all duration-300"
               >
-                Ver demos
+                Ver precios
               </a>
             </div>
           </div>
@@ -668,19 +732,33 @@ const Index = () => {
       {/* Footer */}
       <footer className="py-8 sm:py-12 border-t border-border bg-background">
         <div className="container max-w-4xl px-5 sm:px-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
-            <div className="flex items-center gap-2">
-              <Heart className="w-4 h-4 text-primary" />
-              <span className="font-heading text-foreground">BodasFácil</span>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <Heart className="w-4 h-4 text-primary" />
+                <span className="font-heading text-foreground">BodasFácil</span>
+              </div>
+              <p className="text-muted-foreground text-xs font-light max-w-xs">La web de boda más completa de España. RSVP, playlist, plan de mesas y más. Desde 30€.</p>
             </div>
-            <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
-              <Link to="/privacidad" className="hover:text-foreground transition-colors">Privacidad</Link>
-              <Link to="/terminos" className="hover:text-foreground transition-colors">Términos</Link>
-              <Link to="/reembolso" className="hover:text-foreground transition-colors">Reembolso</Link>
-              <Link to="/cookies" className="hover:text-foreground transition-colors">Cookies</Link>
-              <button onClick={() => { setContactSubject(""); setContactOpen(true); }} className="hover:text-foreground transition-colors">
-                Contacto
-              </button>
+            <div className="flex flex-col gap-3">
+              <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted-foreground">
+                <Link to="/blog" className="hover:text-foreground transition-colors">Blog</Link>
+                <Link to="/privacidad" className="hover:text-foreground transition-colors">Privacidad</Link>
+                <Link to="/terminos" className="hover:text-foreground transition-colors">Términos</Link>
+                <Link to="/reembolso" className="hover:text-foreground transition-colors">Reembolso</Link>
+                <Link to="/cookies" className="hover:text-foreground transition-colors">Cookies</Link>
+                <button onClick={() => { setContactSubject(""); setContactOpen(true); }} className="hover:text-foreground transition-colors">
+                  Contacto
+                </button>
+              </div>
+              <div className="flex gap-3 text-xs text-muted-foreground">
+                <a href="https://instagram.com/bodasfacil" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors flex items-center gap-1">
+                  <span>📸</span> Instagram
+                </a>
+                <a href="https://tiktok.com/@bodasfacil" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors flex items-center gap-1">
+                  <span>🎵</span> TikTok
+                </a>
+              </div>
             </div>
           </div>
           <div className="mt-6 pt-6 border-t border-border text-center">

@@ -68,26 +68,27 @@ const Auth = () => {
         <div className="text-center mb-8">
           <Heart className="w-8 h-8 text-primary mx-auto mb-4" />
           <h1 className="font-heading text-3xl sm:text-4xl text-foreground mb-2">
-            {isSignUp ? "Crea tu boda gratis" : "Bienvenido de nuevo"}
+            {isSignUp ? "Crea tu web de boda gratis" : "Bienvenido de nuevo"}
           </h1>
           <p className="text-muted-foreground font-light text-sm">
             {isSignUp
-              ? "Regístrate gratis y explora todas las funcionalidades. Solo pagas cuando quieras publicar."
+              ? "Sin tarjeta de crédito. Explora, personaliza y publica cuando estéis listos."
               : "Accede a tu panel de boda"}
           </p>
         </div>
 
         {/* Beneficios — solo en registro */}
         {isSignUp && (
-          <div className="bg-secondary rounded-xl p-4 mb-6 space-y-2">
+          <div className="bg-secondary rounded-xl p-4 mb-6 space-y-2.5">
             {[
-              "Acceso gratis a todas las demos",
-              "Crea tu boda y personalízala sin pagar",
-              "Solo pagas cuando quieras publicarla — desde 30€",
+              { text: "Personaliza tu boda completa sin pagar nada", icon: "🎨" },
+              { text: "Explora las 6 demos en vivo (tema Elegante, Romántico, Rústico...)", icon: "✨" },
+              { text: "Publícala cuando estéis listos — desde 30€, pago único", icon: "🚀" },
             ].map((b) => (
-              <div key={b} className="flex items-center gap-2 text-sm text-foreground">
-                <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
-                {b}
+              <div key={b.text} className="flex items-start gap-2.5 text-sm text-foreground">
+                <span className="text-base flex-shrink-0 mt-0.5">{b.icon}</span>
+                <CheckCircle className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                <span>{b.text}</span>
               </div>
             ))}
           </div>
@@ -137,8 +138,8 @@ const Auth = () => {
             {loading
               ? "Cargando..."
               : isSignUp
-              ? "Crear cuenta gratis →"
-              : "Iniciar sesión →"}
+              ? "Crear mi web de boda gratis →"
+              : "Acceder a mi boda →"}
           </button>
         </form>
 
