@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -89,13 +90,6 @@ const EditWedding = () => {
     menu_starters: "", menu_mains: "", menu_desserts: "",
     theme_preset: "elegant", whatsapp_number: "", hero_image_url: "",
   });
-
-  useEffect(() => {
-    const robots = document.querySelector('meta[name="robots"]');
-    const prev = robots?.getAttribute("content") ?? "index, follow";
-    robots?.setAttribute("content", "noindex, nofollow");
-    return () => { robots?.setAttribute("content", prev); };
-  }, []);
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/auth");
@@ -303,6 +297,27 @@ const EditWedding = () => {
         </div>
       )}
 
+      {/* Tabs — mobile (fuera del flex) */}
+      <div className="md:hidden border-b border-border bg-card/50">
+        <div className="flex overflow-x-auto scrollbar-hide px-2 py-1.5 gap-1">
+          {TABS.map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs whitespace-nowrap transition-all flex-shrink-0 ${
+                  activeTab === tab.id ? "bg-primary text-primary-foreground font-medium" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       <div className="flex min-h-[calc(100vh-57px)]">
         {/* Sidebar tabs — desktop */}
         <aside className="hidden md:flex flex-col w-52 border-r border-border bg-card/50 shrink-0 sticky top-[57px] h-[calc(100vh-57px)] overflow-y-auto">
@@ -326,27 +341,6 @@ const EditWedding = () => {
             })}
           </div>
         </aside>
-
-        {/* Tabs — mobile */}
-        <div className="md:hidden w-full">
-          <div className="flex overflow-x-auto scrollbar-hide border-b border-border bg-card/50 px-2 py-1.5 gap-1">
-            {TABS.map((tab) => {
-              const Icon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs whitespace-nowrap transition-all flex-shrink-0 ${
-                    activeTab === tab.id ? "bg-primary text-primary-foreground font-medium" : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <Icon className="w-3.5 h-3.5" />
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
 
         {/* Contenido */}
         <main className="flex-1 min-w-0">
