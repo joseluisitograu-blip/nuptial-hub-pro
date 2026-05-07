@@ -21,9 +21,10 @@ const EditableText = ({
 }: Props) => {
   const ref = useRef<HTMLElement>(null);
 
-  // Sync external value changes
+  // Sync external value changes only when the element is not focused
+  // (avoids cursor reset while the user is actively typing)
   useEffect(() => {
-    if (ref.current && ref.current.textContent !== value) {
+    if (ref.current && document.activeElement !== ref.current) {
       ref.current.textContent = value || "";
     }
   }, [value]);
@@ -55,9 +56,7 @@ const EditableText = ({
       className={`${className} outline-none ring-2 ring-primary/30 ring-offset-2 ring-offset-background rounded-sm cursor-text transition-shadow hover:ring-primary/50 focus:ring-primary/70 empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/50`}
       data-placeholder={placeholder}
       style={{ minWidth: "2rem" }}
-    >
-      {value || ""}
-    </Tag>
+    />
   );
 };
 
