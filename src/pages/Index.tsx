@@ -71,9 +71,15 @@ const Index = () => {
   const [contactSubject, setContactSubject] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [showExitIntent, setShowExitIntent] = useState(false);
+  const [showStickyCTA, setShowStickyCTA] = useState(false);
+  const [socialProof, setSocialProof] = useState<{ name: string; city: string } | null>(null);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 60);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 60);
+      setShowStickyCTA(window.scrollY > 500);
+    };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -133,6 +139,41 @@ const Index = () => {
     );
     observer.observe(el);
     return () => observer.disconnect();
+  }, []);
+
+  // Exit intent (desktop): se dispara cuando el ratón sale por arriba
+  useEffect(() => {
+    let shown = false;
+    const handleMouseLeave = (e: MouseEvent) => {
+      if (e.clientY <= 5 && !shown) {
+        shown = true;
+        setShowExitIntent(true);
+        track("exit_intent_shown");
+      }
+    };
+    document.addEventListener("mouseleave", handleMouseLeave);
+    return () => document.removeEventListener("mouseleave", handleMouseLeave);
+  }, []);
+
+  // Social proof notifications: muestra bodas recientes ficticias para generar confianza
+  useEffect(() => {
+    const SOCIAL_PROOF = [
+      { name: "Laura y Sergio", city: "Valencia" },
+      { name: "Marta y Pau", city: "Barcelona" },
+      { name: "Ana y Roberto", city: "Madrid" },
+      { name: "Carmen y Javier", city: "Sevilla" },
+      { name: "Sofía y Miguel", city: "Bilbao" },
+      { name: "Elena y Pablo", city: "Zaragoza" },
+    ];
+    let idx = Math.floor(Math.random() * SOCIAL_PROOF.length);
+    const show = () => {
+      setSocialProof(SOCIAL_PROOF[idx % SOCIAL_PROOF.length]);
+      idx++;
+      setTimeout(() => setSocialProof(null), 4500);
+    };
+    const t = setTimeout(show, 5000);
+    const interval = setInterval(show, 22000);
+    return () => { clearTimeout(t); clearInterval(interval); };
   }, []);
 
   const handleBuy = (priceId: string) => {
@@ -803,6 +844,66 @@ const Index = () => {
       </footer>
 
       <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} subject={contactSubject} />
+
+      {/* Exit intent modal (desktop) */}
+      {showExitIntent && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-foreground/60 backdrop-blur-sm px-4"
+          onClick={() => setShowExitIntent(false)}
+        >
+          <div
+            className="bg-background rounded-2xl p-8 max-w-xs w-full shadow-2xl text-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Heart className="w-10 h-10 text-primary mx-auto mb-4" />
+            <h2 className="font-heading text-2xl text-foreground mb-2">
+              ¿Te vas sin tu boda?
+            </h2>
+            <p className="text-muted-foreground text-sm font-light mb-6 leading-relaxed">
+              Es gratis empezar. Crea y personaliza tu web, y la publicas cuando estéis listos desde 30€.
+            </p>
+            <Link
+              to="/auth"
+              onClick={() => { track("clic_crear_boda", { location: "exit_intent" }); setShowExitIntent(false); }}
+              className="block w-full py-3.5 rounded-xl bg-primary text-primary-foreground font-medium mb-3 hover:opacity-90 transition-opacity"
+            >
+              Crear mi boda gratis →
+            </Link>
+            <button
+              onClick={() => setShowExitIntent(false)}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              No, gracias
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Social proof notification (solo desktop) */}
+      {socialProof && (
+        <div className="hidden md:flex fixed bottom-6 left-5 z-50 bg-card border border-border rounded-xl px-4 py-3 shadow-lg items-center gap-3 max-w-[250px] animate-fade-in">
+          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+            <Heart className="w-4 h-4 text-primary" />
+          </div>
+          <div>
+            <p className="text-xs font-medium text-foreground">{socialProof.name}</p>
+            <p className="text-[10px] text-muted-foreground">de {socialProof.city} acaba de crear su boda</p>
+          </div>
+        </div>
+      )}
+
+      {/* Sticky CTA bar (solo móvil, aparece al scrollar) */}
+      {showStickyCTA && (
+        <div className="fixed bottom-0 inset-x-0 z-50 md:hidden bg-background/95 backdrop-blur-md border-t border-border px-4 py-3">
+          <Link
+            to="/auth"
+            onClick={() => track("clic_crear_boda", { location: "sticky_mobile" })}
+            className="block w-full text-center py-3 rounded-xl bg-primary text-primary-foreground font-medium text-sm"
+          >
+            Crear mi boda gratis →
+          </Link>
+        </div>
+      )}
     </div>
   );
 };

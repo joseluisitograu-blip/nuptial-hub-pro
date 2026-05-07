@@ -46,7 +46,7 @@ const Auth = () => {
       await supabase.functions.invoke("send-welcome-email", {
         body: { email },
       });
-      // En lugar de pedir confirmación de email, llevar al dashboard directamente
+      supabase.functions.invoke("notify-admin", { body: { email } }).catch(() => {});
       navigate("/dashboard");
     }
     setLoading(false);
