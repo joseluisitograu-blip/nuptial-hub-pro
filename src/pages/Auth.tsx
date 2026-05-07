@@ -5,6 +5,18 @@ import { supabase } from "@/integrations/supabase/client";
 import { Heart, ArrowLeft, CheckCircle, Shield, Zap, RefreshCcw } from "lucide-react";
 import { track } from "@/lib/analytics";
 
+const translateAuthError = (msg: string): string => {
+  if (msg.includes("Invalid login credentials")) return "Email o contraseña incorrectos";
+  if (msg.includes("User already registered")) return "Este email ya tiene cuenta — inicia sesión";
+  if (msg.includes("Email not confirmed")) return "Confirma tu email antes de acceder. Revisa tu bandeja de entrada";
+  if (msg.includes("Password should be at least 6 characters")) return "La contraseña debe tener al menos 6 caracteres";
+  if (msg.includes("Too many requests") || msg.includes("rate limit")) return "Demasiados intentos. Espera unos minutos e inténtalo de nuevo";
+  if (msg.includes("Invalid email") || msg.includes("invalid email")) return "El email introducido no es válido";
+  if (msg.includes("Email already in use") || msg.includes("already been registered")) return "Este email ya tiene cuenta — inicia sesión";
+  if (msg.includes("Signup is disabled")) return "El registro está desactivado temporalmente";
+  return msg;
+};
+
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(true); // Por defecto registro
   const [email, setEmail] = useState("");
@@ -37,7 +49,7 @@ const Auth = () => {
       : await signIn(email, password);
 
     if (error) {
-      setError(error.message);
+      setError(translateAuthError(error.message));
     } else if (!isSignUp) {
       track("login_exitoso");
       navigate("/dashboard");

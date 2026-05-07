@@ -269,8 +269,58 @@ const Dashboard = () => {
             </div>
             <div className="grid gap-4">
               {weddings.map((w) => {
+                const isEmpty = !w.partner1_name && !w.partner2_name;
                 const isExpanded = expandedId === w.id;
                 const weddingUrl = `${window.location.origin}/w/${w.slug}`;
+
+                /* ── Onboarding card for empty weddings ── */
+                if (isEmpty) {
+                  return (
+                    <div key={w.id} className="bg-card border-2 border-primary/30 rounded-xl p-5 sm:p-6 animate-fade-in">
+                      <div className="mb-4">
+                        <span className="text-xs font-medium text-primary bg-primary/10 px-2.5 py-1 rounded-full">Boda creada ✓</span>
+                        <h3 className="font-heading text-xl mt-3">¡Ahora personalízala en 3 pasos!</h3>
+                        <p className="text-muted-foreground text-sm mt-0.5">Tarda menos de 5 minutos. Gratis hasta que la publiques.</p>
+                      </div>
+                      <div className="grid gap-3 sm:grid-cols-3">
+                        <Link
+                          to={`/dashboard/edit/${w.id}?tab=pareja`}
+                          className="flex items-start gap-3 p-4 rounded-xl bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
+                        >
+                          <span className="text-xl flex-shrink-0 mt-0.5">💑</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm leading-tight">1. Añade vuestros nombres</p>
+                            <p className="text-xs opacity-75 mt-0.5">Y la fecha de la boda</p>
+                          </div>
+                          <ArrowRight className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                        </Link>
+                        <Link
+                          to={`/dashboard/edit/${w.id}?tab=diseno`}
+                          className="flex items-start gap-3 p-4 rounded-xl border border-border hover:border-primary/40 hover:bg-primary/5 transition-all"
+                        >
+                          <span className="text-xl flex-shrink-0 mt-0.5">🎨</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm leading-tight text-foreground">2. Elige un tema</p>
+                            <p className="text-xs text-muted-foreground mt-0.5">Elegante, rústico, romántico...</p>
+                          </div>
+                          <ArrowRight className="w-4 h-4 flex-shrink-0 mt-0.5 text-muted-foreground" />
+                        </Link>
+                        <Link
+                          to={`/w/${w.slug}`}
+                          className="flex items-start gap-3 p-4 rounded-xl border border-border hover:border-primary/40 hover:bg-primary/5 transition-all"
+                        >
+                          <span className="text-xl flex-shrink-0 mt-0.5">👁️</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm leading-tight text-foreground">3. Previsualiza tu boda</p>
+                            <p className="text-xs text-muted-foreground mt-0.5">Así la verán tus invitados</p>
+                          </div>
+                          <ExternalLink className="w-4 h-4 flex-shrink-0 mt-0.5 text-muted-foreground" />
+                        </Link>
+                      </div>
+                    </div>
+                  );
+                }
+
                 return (
                   <div key={w.id} className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-shadow">
                     <div className="flex items-center gap-3 justify-between p-4 sm:p-6">

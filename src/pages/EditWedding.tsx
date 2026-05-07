@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Save, ExternalLink, Plus, Trash2, Upload, Sparkles, Heart, MapPin, UtensilsCrossed, Hotel, Clock, Users, HelpCircle, Gift, Phone, Palette, ChevronRight } from "lucide-react";
@@ -68,6 +68,7 @@ const EditWedding = () => {
   const navigate = useNavigate();
   const { hasPurchase } = usePurchase();
   const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
+  const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadingHero, setUploadingHero] = useState(false);
@@ -136,6 +137,14 @@ const EditWedding = () => {
         guests: assigns.filter((a: any) => a.table_id === t.id).map((a: any) => a.guest_name),
       })));
       setLoading(false);
+      // Prefer explicit ?tab= param (from dashboard onboarding links), then auto-open
+      // "pareja" on first visit when the form has no data yet
+      const tabFromUrl = searchParams.get("tab");
+      if (tabFromUrl && TABS.some((t) => t.id === tabFromUrl)) {
+        setActiveTab(tabFromUrl);
+      } else if (wedding && !wedding.partner1_name && !wedding.partner2_name) {
+        setActiveTab("pareja");
+      }
     };
     fetchData();
   }, [user, id]);
@@ -379,6 +388,12 @@ const EditWedding = () => {
             {/* PAREJA */}
             {activeTab === "pareja" && (
               <>
+                {!form.partner1_name && !form.partner2_name && (
+                  <div className="flex items-center gap-3 px-4 py-3 bg-primary/10 border border-primary/20 rounded-xl text-sm text-primary animate-fade-in">
+                    <span className="text-lg flex-shrink-0">💍</span>
+                    <span>Empieza aquí — pon vuestros nombres y la fecha de la boda</span>
+                  </div>
+                )}
                 <div>
                   <h2 className="font-heading text-xl text-foreground mb-4">Los novios</h2>
                   <div className="grid sm:grid-cols-2 gap-4">
