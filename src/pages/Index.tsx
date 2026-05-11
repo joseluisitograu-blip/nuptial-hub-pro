@@ -6,18 +6,12 @@ import ContactModal from "@/components/ContactModal";
 import { track, trackBeginCheckout } from "@/lib/analytics";
 
 const features = [
-  { icon: Heart, title: "Página inmersiva", desc: "Experiencia a pantalla completa con animaciones fluidas, temas visuales y navegación por secciones." },
-  { icon: Users, title: "RSVP online", desc: "Tus invitados confirman asistencia, acompañantes y notas de dieta en un solo clic." },
-  { icon: Music, title: "Playlist colaborativa", desc: "Que tus invitados sugieran y voten las canciones de la fiesta." },
-  { icon: Camera, title: "Muro de fotos", desc: "Todos comparten sus mejores fotos del gran día en un muro en vivo." },
-  { icon: MapPin, title: "Mapas integrados", desc: "Google Maps embebido con ubicación exacta de ceremonia y recepción." },
-  { icon: Clock, title: "Agenda del día", desc: "Timeline visual del evento: ceremonia → cóctel → banquete → fiesta." },
-  { icon: BookHeart, title: "Vuestra historia", desc: "Línea de tiempo con los hitos de amor de vuestra relación." },
-  { icon: Gift, title: "Lista de regalos", desc: "Cuenta bancaria con revelado elegante para los invitados." },
-  { icon: HelpCircle, title: "FAQ inteligente", desc: "Parking, niños, código de vestimenta, alojamiento... todo resuelto." },
-  { icon: Share2, title: "QR & WhatsApp", desc: "Comparte con un QR imprimible o directamente por WhatsApp." },
-  { icon: Sparkles, title: "12 temas visuales", desc: "Elegante, Romántico, Rústico, Moderno, Jardín, Bohemio, Minimal y más." },
-  { icon: Users, title: "Plan de mesas", desc: "Asigna invitados a mesas. Visible solo un día antes de la boda." },
+  { icon: Users, title: "RSVP sin WhatsApp", desc: "Tus invitados confirman asistencia, acompañantes y restricciones de dieta en un clic. Tú lo ves todo en tiempo real.", badge: null },
+  { icon: Music, title: "Playlist colaborativa", desc: "Cada invitado sugiere y vota canciones para la fiesta. La pista no se vaciará en toda la noche.", badge: null },
+  { icon: Camera, title: "Muro de fotos en vivo", desc: "Todos comparten sus mejores fotos del gran día. Un recuerdo colectivo que se construye solo.", badge: null },
+  { icon: Users, title: "Plan de mesas inteligente", desc: "Arrastra y suelta a tus invitados entre mesas. Visible solo un día antes — crea expectación.", badge: null },
+  { icon: Sparkles, title: "Historia de amor con IA", desc: "La primera plataforma en España que usa IA para escribir vuestra historia romántica personalizada en 10 segundos.", badge: "Solo en BodasFácil ✦" },
+  { icon: Heart, title: "12 temas visuales únicos", desc: "Elegante, Romántico, Rústico, Moderno, Otoñal, Valenciano y más. Personaliza cada detalle del diseño.", badge: null },
 ];
 
 const demos = [
@@ -30,9 +24,9 @@ const demos = [
 ];
 
 const testimonials = [
-  { name: "Laura & Sergio", location: "Valencia · Mayo 2026", initials: "LS", text: "Nuestros invitados no paraban de decir lo bonita que era la web. El plan de mesas nos salvó: 18 mesas organizadas en 10 minutos." },
-  { name: "Marta & Pau", location: "Barcelona · Abril 2026", initials: "MP", text: "La playlist colaborativa fue lo mejor del día. Cada invitado puso su canción favorita y la pista no se vació en toda la noche. ¡Increíble!" },
-  { name: "Ana & Roberto", location: "Madrid · Marzo 2026", initials: "AR", text: "En 20 minutos teníamos todo listo. Cero mensajes de WhatsApp preguntando dónde era la boda. La mejor inversión de toda la boda." },
+  { name: "Laura & Sergio", location: "Valencia · Mayo 2026", initials: "LS", text: "La IA escribió nuestra historia de amor y lloré leyéndola. El día de la boda, los invitados no paraban de decir lo bonita que era. El plan de mesas: 18 mesas en 10 minutos." },
+  { name: "Marta & Pau", location: "Barcelona · Abril 2026", initials: "MP", text: "La playlist colaborativa fue lo mejor del día. Cada invitado votó sus canciones y la pista no se vació en toda la noche. Cero llamadas de coordinación. Cero grupos de WhatsApp." },
+  { name: "Ana & Roberto", location: "Madrid · Marzo 2026", initials: "AR", text: "En 20 minutos teníamos todo listo: RSVP, fotos, agenda. La IA nos escribió una historia que enmarcamos para el salón. La mejor inversión de toda la boda, sin duda." },
 ];
 
 const useReveal = () => {
@@ -74,6 +68,40 @@ const Index = () => {
   const [showExitIntent, setShowExitIntent] = useState(false);
   const [showStickyCTA, setShowStickyCTA] = useState(false);
   const [socialProof, setSocialProof] = useState<{ name: string; city: string } | null>(null);
+
+  // IA — generador de historia de amor
+  const [aiName1, setAiName1] = useState("");
+  const [aiName2, setAiName2] = useState("");
+  const [aiHowMet, setAiHowMet] = useState("");
+  const [aiProposal, setAiProposal] = useState("");
+  const [aiStory, setAiStory] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState("");
+
+  const generateStory = async () => {
+    if (!aiName1.trim() || !aiName2.trim() || !aiHowMet.trim()) return;
+    setAiLoading(true);
+    setAiError("");
+    setAiStory("");
+    track("ia_generar_historia");
+    try {
+      const res = await fetch("https://bcrymaflkapbfvytcjaq.supabase.co/functions/v1/generate-wedding-story", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ partner1: aiName1.trim(), partner2: aiName2.trim(), howWeMet: aiHowMet.trim(), proposalStory: aiProposal.trim() }),
+      });
+      const data = await res.json();
+      if (data.story) {
+        setAiStory(data.story);
+        track("ia_historia_generada");
+      } else {
+        setAiError("Ups, algo salió mal. Inténtalo de nuevo.");
+      }
+    } catch {
+      setAiError("Error de conexión. Inténtalo de nuevo.");
+    }
+    setAiLoading(false);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -259,15 +287,15 @@ const Index = () => {
           <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 mb-6 sm:mb-8">
             <Sparkles className="w-3.5 h-3.5 text-primary-foreground/80" />
             <span className="text-primary-foreground/80 text-[11px] sm:text-xs tracking-wider uppercase font-light">
-              <span className="sm:hidden">Pago único · Desde 30€</span>
-              <span className="hidden sm:inline">12 funcionalidades · Pago único desde 30€ · Sin suscripciones</span>
+              <span className="sm:hidden">IA · Desde 30€ pago único</span>
+              <span className="hidden sm:inline">✦ Primera plataforma de bodas con IA en España · Pago único desde 30€</span>
             </span>
           </div>
           <h1 className="font-heading text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl text-primary-foreground mb-4 sm:mb-6 leading-[0.95] text-balance">
-            La web de boda<br />que merece el día
+            La web de boda<br />que cuenta vuestra historia
           </h1>
           <p className="text-primary-foreground/85 text-base sm:text-lg md:text-xl font-light mb-8 sm:mb-10 max-w-xl mx-auto leading-relaxed">
-            Sin grupos de WhatsApp, sin llamadas de confirmación. RSVP, playlist colaborativa, plan de mesas y fotos en vivo. Lista en 5 minutos. <strong className="font-medium text-primary-foreground">Desde 30€, pago único para siempre.</strong>
+            La única plataforma en España con IA que escribe vuestra historia de amor. Más RSVP, playlist, plan de mesas y fotos en vivo. Lista en 5 minutos. <strong className="font-medium text-primary-foreground">Desde 30€, pago único para siempre.</strong>
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
             <Link
@@ -367,6 +395,130 @@ const Index = () => {
         </div>
       </section>
 
+      {/* IA — Generador de historia de amor */}
+      <section className="py-16 sm:py-24 bg-background relative overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.025] pointer-events-none">
+          <div className="absolute top-1/3 left-1/4 w-96 h-96 rounded-full bg-primary blur-3xl" />
+          <div className="absolute bottom-1/3 right-1/4 w-72 h-72 rounded-full bg-primary blur-3xl" />
+        </div>
+        <div className="container max-w-3xl px-5 sm:px-8 relative z-10">
+          <RevealSection>
+            <div className="text-center mb-10">
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-xs font-medium mb-5 shadow-md">
+                <Sparkles className="w-3.5 h-3.5" /> Solo en BodasFácil · Exclusivo en España
+              </span>
+              <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl text-foreground mb-4 text-balance">
+                IA que escribe vuestra<br />historia de amor
+              </h2>
+              <p className="text-muted-foreground font-light text-base sm:text-lg max-w-lg mx-auto">
+                Responde 3 preguntas. Nuestra IA genera en 10 segundos una historia romántica y personalizada lista para vuestra web.
+              </p>
+            </div>
+
+            <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 shadow-xl">
+              <div className="grid sm:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wider">Vuestra pareja *</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      placeholder="Ana"
+                      value={aiName1}
+                      onChange={e => setAiName1(e.target.value)}
+                      className="flex-1 min-w-0 px-3 py-2.5 rounded-lg border border-border bg-background text-foreground text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    />
+                    <span className="text-muted-foreground text-sm shrink-0">&</span>
+                    <input
+                      type="text"
+                      placeholder="Roberto"
+                      value={aiName2}
+                      onChange={e => setAiName2(e.target.value)}
+                      className="flex-1 min-w-0 px-3 py-2.5 rounded-lg border border-border bg-background text-foreground text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wider">¿Cómo os conocisteis? *</label>
+                  <input
+                    type="text"
+                    placeholder="en la universidad, en Tinder..."
+                    value={aiHowMet}
+                    onChange={e => setAiHowMet(e.target.value)}
+                    className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-foreground text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  />
+                </div>
+              </div>
+              <div className="mb-5">
+                <label className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wider">
+                  ¿Cómo fue la pedida? <span className="normal-case text-muted-foreground/50 font-normal">(opcional)</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="en la playa de Valencia al atardecer con todos los amigos..."
+                  value={aiProposal}
+                  onChange={e => setAiProposal(e.target.value)}
+                  className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-foreground text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                />
+              </div>
+
+              <button
+                onClick={generateStory}
+                disabled={!aiName1.trim() || !aiName2.trim() || !aiHowMet.trim() || aiLoading}
+                className="w-full py-4 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-all disabled:opacity-40 flex items-center justify-center gap-2.5 text-base shadow-md hover:shadow-lg hover:-translate-y-0.5"
+              >
+                {aiLoading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                    Escribiendo vuestra historia...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4" /> Generar nuestra historia con IA →
+                  </>
+                )}
+              </button>
+
+              {aiError && (
+                <p className="text-destructive text-sm text-center mt-3 bg-destructive/10 rounded-lg px-4 py-2">{aiError}</p>
+              )}
+
+              {aiStory && (
+                <div className="mt-6 animate-fade-in">
+                  <div className="bg-primary/5 border border-primary/20 rounded-xl p-5 sm:p-6 mb-5">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Heart className="w-4 h-4 text-primary" />
+                      <p className="font-heading text-base text-foreground">La historia de {aiName1} & {aiName2}</p>
+                    </div>
+                    <div className="space-y-4">
+                      {aiStory.split("\n\n").filter(Boolean).map((para, i) => (
+                        <p key={i} className="text-sm text-foreground/80 font-light leading-relaxed">{para}</p>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm text-muted-foreground mb-4">
+                      ¿Os gusta? Guardadla en vuestra web de boda — es gratis empezar 💍
+                    </p>
+                    <Link
+                      to="/auth"
+                      onClick={() => track("clic_guardar_historia_ia")}
+                      className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-all hover:-translate-y-0.5 shadow-md hover:shadow-lg"
+                    >
+                      Guardar nuestra historia — gratis <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <p className="text-center text-xs text-muted-foreground mt-4 flex items-center justify-center gap-4 flex-wrap">
+              <span className="flex items-center gap-1"><Shield className="w-3.5 h-3.5" /> No guardamos datos hasta que te registres</span>
+              <span className="flex items-center gap-1"><Zap className="w-3.5 h-3.5" /> Totalmente gratis probarlo</span>
+            </p>
+          </RevealSection>
+        </div>
+      </section>
+
       {/* Features */}
       <section id="features" className="py-16 sm:py-24 bg-secondary">
         <div className="container max-w-5xl px-5 sm:px-8">
@@ -384,9 +536,14 @@ const Index = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {features.map((f, i) => (
               <RevealSection key={f.title} delay={i % 3 * 80}>
-                <div className="bg-card border border-border rounded-xl p-5 sm:p-6 group hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 hover:-translate-y-1 h-full">
-                  <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 group-hover:bg-primary/10 transition-all duration-300">
-                    <f.icon className="w-[18px] h-[18px] text-muted-foreground group-hover:text-primary transition-colors duration-300" />
+                <div className={`bg-card border rounded-xl p-5 sm:p-6 group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 h-full relative ${f.badge ? "border-primary/40 shadow-sm" : "border-border hover:shadow-primary/5"}`}>
+                  {f.badge && (
+                    <span className="absolute -top-2.5 left-4 text-[10px] font-medium bg-primary text-primary-foreground px-2.5 py-0.5 rounded-full shadow-sm">
+                      {f.badge}
+                    </span>
+                  )}
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition-all duration-300 ${f.badge ? "bg-primary/10 group-hover:bg-primary/15" : "bg-secondary group-hover:bg-primary/10"}`}>
+                    <f.icon className={`w-[18px] h-[18px] transition-colors duration-300 ${f.badge ? "text-primary" : "text-muted-foreground group-hover:text-primary"}`} />
                   </div>
                   <h3 className="font-heading text-lg mb-1.5">{f.title}</h3>
                   <p className="text-muted-foreground font-light text-sm leading-relaxed">{f.desc}</p>
@@ -627,6 +784,61 @@ const Index = () => {
               </RevealSection>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Tabla comparativa */}
+      <section className="py-14 sm:py-20 bg-card border-y border-border">
+        <div className="container max-w-4xl px-5 sm:px-8">
+          <RevealSection>
+            <div className="text-center mb-10">
+              <span className="inline-block text-xs uppercase tracking-[0.3em] text-primary mb-3 font-medium">Comparativa</span>
+              <h2 className="font-heading text-3xl sm:text-4xl text-foreground mb-2">¿Por qué BodasFácil?</h2>
+              <p className="text-muted-foreground text-sm font-light">Frente a las alternativas del mercado</p>
+            </div>
+            <div className="overflow-x-auto rounded-xl border border-border">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left py-4 px-5 text-muted-foreground font-normal text-xs uppercase tracking-wider w-2/5"></th>
+                    <th className="py-4 px-4 text-center text-muted-foreground font-normal text-sm">Agencia</th>
+                    <th className="py-4 px-4 text-center text-muted-foreground font-normal text-sm">WedSites</th>
+                    <th className="py-4 px-4 text-center bg-primary/8 font-semibold text-primary text-sm">BodasFácil</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    ["Precio", "~500€+", "15€/mes", "Desde 30€ — único"],
+                    ["IA que escribe tu historia ✦", "❌", "❌", "✅"],
+                    ["En español nativo", "Depende", "❌", "✅"],
+                    ["Sin suscripción", "✅", "❌", "✅"],
+                    ["RSVP + confirmaciones en tiempo real", "❌", "✅", "✅"],
+                    ["Plan de mesas", "❌", "Básico", "✅"],
+                    ["Playlist colaborativa", "❌", "❌", "✅"],
+                    ["Lista en 5 minutos", "❌", "Parcial", "✅"],
+                    ["Soporte en español", "Depende", "❌", "✅"],
+                    ["30 días de garantía", "❌", "❌", "✅"],
+                  ].map(([feat, agency, wedSites, bf], i) => (
+                    <tr key={feat} className={`border-b border-border/50 last:border-0 transition-colors ${i % 2 === 0 ? "" : "bg-secondary/30"}`}>
+                      <td className="py-3 px-5 text-foreground font-medium text-sm">{feat}</td>
+                      <td className="py-3 px-4 text-center text-muted-foreground">{agency}</td>
+                      <td className="py-3 px-4 text-center text-muted-foreground">{wedSites}</td>
+                      <td className="py-3 px-4 text-center bg-primary/5 font-semibold text-primary">{bf}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="text-center mt-6">
+              <Link
+                to="/auth"
+                onClick={() => track("clic_crear_boda", { location: "comparison_table" })}
+                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity"
+              >
+                Crear mi boda gratis — sin tarjeta <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </RevealSection>
         </div>
       </section>
 
