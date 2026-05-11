@@ -316,6 +316,57 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Pain — ¿Te suena esto? */}
+      <section className="py-12 sm:py-16 bg-card">
+        <div className="container max-w-4xl px-5 sm:px-8">
+          <RevealSection>
+            <p className="text-center font-heading text-xl sm:text-2xl text-foreground mb-7 sm:mb-8">¿Te suena esto?</p>
+            <div className="grid sm:grid-cols-2 gap-4 sm:gap-5">
+              <div className="bg-destructive/5 border border-destructive/15 rounded-xl p-5 sm:p-6 space-y-3">
+                <p className="text-xs font-medium uppercase tracking-[0.25em] text-destructive/60 mb-4">Sin web de boda</p>
+                {[
+                  '"¿Dónde era la boda? ¿A qué hora?"',
+                  "Grupo de WhatsApp con 80 personas saturado",
+                  "Excel de confirmaciones siempre desactualizado",
+                  '"¿Puedo llevar a mi pareja?" × 40 invitados',
+                  "Llamadas para saber quién viene y quién no",
+                ].map((pain) => (
+                  <div key={pain} className="flex items-start gap-2.5">
+                    <span className="text-destructive/50 flex-shrink-0 mt-0.5 font-bold text-sm">✕</span>
+                    <p className="text-sm text-foreground/60 italic">{pain}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="bg-primary/5 border border-primary/15 rounded-xl p-5 sm:p-6 space-y-3">
+                <p className="text-xs font-medium uppercase tracking-[0.25em] text-primary mb-4">Con BodasFácil</p>
+                {[
+                  "Todo en un enlace: lugar, hora y agenda",
+                  "RSVP online — sin mensajes, sin llamadas",
+                  "Confirmaciones en tiempo real en tu panel",
+                  "Playlist colaborativa que se llena sola",
+                  "Muro de fotos en vivo el día de la boda",
+                ].map((fix) => (
+                  <div key={fix} className="flex items-start gap-2.5">
+                    <CheckCircle className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-foreground/85">{fix}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="text-center mt-7">
+              <Link
+                to="/auth"
+                onClick={() => track("clic_crear_boda", { location: "pain_section" })}
+                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity"
+              >
+                Crear mi web gratis — sin tarjeta <ArrowRight className="w-4 h-4" />
+              </Link>
+              <p className="text-xs text-muted-foreground mt-2">Desde 30€ pago único · Sin suscripciones · 30 días de garantía</p>
+            </div>
+          </RevealSection>
+        </div>
+      </section>
+
       {/* Features */}
       <section id="features" className="py-16 sm:py-24 bg-secondary">
         <div className="container max-w-5xl px-5 sm:px-8">

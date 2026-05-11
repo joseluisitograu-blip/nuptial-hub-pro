@@ -356,6 +356,22 @@ const Dashboard = () => {
                             return null;
                           })()}
                         </div>
+                        {/* Completion bar */}
+                        {!w.is_published && (() => {
+                          const filled = [w.partner1_name, w.partner2_name, w.wedding_date].filter(Boolean).length;
+                          const pct = Math.round((filled / 3) * 100);
+                          if (pct === 100) return null;
+                          return (
+                            <div className="flex items-center gap-2 mt-2">
+                              <div className="flex-1 h-1 bg-secondary rounded-full overflow-hidden">
+                                <div className="h-full bg-primary/50 rounded-full transition-all duration-500" style={{ width: `${pct}%` }} />
+                              </div>
+                              <Link to={`/dashboard/edit/${w.id}?tab=pareja`} className="text-[10px] text-primary/70 hover:text-primary shrink-0 font-medium transition-colors">
+                                {pct === 0 ? "Personaliza →" : `${pct}% — continuar →`}
+                              </Link>
+                            </div>
+                          );
+                        })()}
                       </div>
                       {/* Acciones */}
                       <div className="flex items-center gap-1.5 shrink-0">
