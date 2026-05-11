@@ -58,6 +58,34 @@ const RevealSection = ({ children, className = "", delay = 0 }: { children: Reac
   );
 };
 
+const wrapTextCanvas = (
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  maxWidth: number,
+  lineHeight: number,
+  maxLines = 10
+): void => {
+  const words = text.split(" ");
+  let line = "";
+  let currentY = y;
+  let lineCount = 0;
+  for (let n = 0; n < words.length; n++) {
+    const testLine = line + words[n] + " ";
+    if (ctx.measureText(testLine).width > maxWidth && n > 0) {
+      if (lineCount >= maxLines - 1) { ctx.fillText(line.trim() + "...", x, currentY); return; }
+      ctx.fillText(line.trim(), x, currentY);
+      line = words[n] + " ";
+      currentY += lineHeight;
+      lineCount++;
+    } else {
+      line = testLine;
+    }
+  }
+  if (line.trim()) ctx.fillText(line.trim(), x, currentY);
+};
+
 const Index = () => {
   const { openCheckout, loading } = usePaddleCheckout();
   const [contactOpen, setContactOpen] = useState(false);
@@ -77,6 +105,71 @@ const Index = () => {
   const [aiStory, setAiStory] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState("");
+
+  const generateShareCard = () => {
+    const size = 1080;
+    const canvas = document.createElement("canvas");
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    // Fondo degradado cálido
+    const bg = ctx.createLinearGradient(0, 0, 0, size);
+    bg.addColorStop(0, "#faf9f7");
+    bg.addColorStop(1, "#e8ddd0");
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, size, size);
+
+    // Marco elegante
+    ctx.strokeStyle = "#c4a882";
+    ctx.lineWidth = 4;
+    ctx.strokeRect(52, 52, size - 104, size - 104);
+    ctx.strokeStyle = "#e0cdb0";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(64, 64, size - 128, size - 128);
+
+    // Corazón decorativo
+    ctx.font = "88px serif";
+    ctx.fillStyle = "#8a6d3b";
+    ctx.textAlign = "center";
+    ctx.fillText("♡", size / 2, 210);
+
+    // Nombres de la pareja
+    const namesText = `${aiName1} & ${aiName2}`;
+    ctx.fillStyle = "#3d2c16";
+    ctx.font = "bold 74px Georgia, serif";
+    if (ctx.measureText(namesText).width > size - 180) ctx.font = "bold 56px Georgia, serif";
+    ctx.fillText(namesText, size / 2, 330);
+
+    // Línea separadora
+    ctx.fillStyle = "#c4a882";
+    ctx.fillRect(size / 2 - 90, 358, 180, 2);
+
+    // Historia (primer párrafo)
+    ctx.font = "34px Georgia, serif";
+    ctx.fillStyle = "#5c4030";
+    const firstPara = aiStory.split("\n\n")[0] || aiStory;
+    wrapTextCanvas(ctx, firstPara, size / 2, 420, size - 200, 52, 9);
+
+    // Branding
+    ctx.font = "italic 26px Georgia, serif";
+    ctx.fillStyle = "#9a8060";
+    ctx.fillText("— bodasfacil.com", size / 2, size - 78);
+
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `historia-${aiName1}-${aiName2}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      track("ia_compartir_instagram");
+    }, "image/png");
+  };
 
   const generateStory = async () => {
     if (!aiName1.trim() || !aiName2.trim() || !aiHowMet.trim()) return;
@@ -495,17 +588,31 @@ const Index = () => {
                       ))}
                     </div>
                   </div>
-                  <div className="text-center">
-                    <p className="text-sm text-muted-foreground mb-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-4 text-center">
                       ¿Os gusta? Guardadla en vuestra web de boda — es gratis empezar 💍
                     </p>
-                    <Link
-                      to="/auth"
-                      onClick={() => track("clic_guardar_historia_ia")}
-                      className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-all hover:-translate-y-0.5 shadow-md hover:shadow-lg"
-                    >
-                      Guardar nuestra historia — gratis <ArrowRight className="w-4 h-4" />
-                    </Link>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <button
+                        onClick={generateShareCard}
+                        className="flex-1 flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl border-2 border-border text-foreground font-medium hover:border-primary hover:text-primary transition-all duration-300 text-sm"
+                      >
+                        📸 Descargar para Instagram Stories
+                      </button>
+                      <Link
+                        to="/auth"
+                        onClick={() => {
+                          track("clic_guardar_historia_ia");
+                          localStorage.setItem("bf_pending_ai", JSON.stringify({ name1: aiName1, name2: aiName2, story: aiStory }));
+                        }}
+                        className="flex-1 flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-all hover:-translate-y-0.5 shadow-md hover:shadow-lg text-sm"
+                      >
+                        Guardar en mi web — gratis <ArrowRight className="w-4 h-4" />
+                      </Link>
+                    </div>
+                    <p className="text-xs text-muted-foreground text-center mt-2">
+                      💡 La imagen incluye vuestra historia — perfecta para Instagram Stories
+                    </p>
                   </div>
                 </div>
               )}

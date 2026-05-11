@@ -18,13 +18,24 @@ const translateAuthError = (msg: string): string => {
 };
 
 const Auth = () => {
-  const [isSignUp, setIsSignUp] = useState(true); // Por defecto registro
+  const [isSignUp, setIsSignUp] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [pendingStory, setPendingStory] = useState<{ name1: string; name2: string } | null>(null);
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const raw = localStorage.getItem("bf_pending_ai");
+    if (raw) {
+      try {
+        const { name1, name2 } = JSON.parse(raw);
+        if (name1 && name2) setPendingStory({ name1, name2 });
+      } catch {}
+    }
+  }, []);
 
   useEffect(() => {
     const robots = document.querySelector('meta[name="robots"]');
@@ -55,10 +66,41 @@ const Auth = () => {
       navigate("/dashboard");
     } else {
       track("registro_exitoso");
-      await supabase.functions.invoke("send-welcome-email", {
-        body: { email },
-      });
+      await supabase.functions.invoke("send-welcome-email", { body: { email } });
       supabase.functions.invoke("notify-admin", { body: { email } }).catch(() => {});
+
+      // Si el usuario vino del generador de IA: crear boda con historia pre-cargada
+      const raw = localStorage.getItem("bf_pending_ai");
+      if (raw) {
+        try {
+          const { name1, name2, story } = JSON.parse(raw);
+          localStorage.removeItem("bf_pending_ai");
+          const { data: { user: newUser } } = await supabase.auth.getUser();
+          if (newUser) {
+            const slug = `boda-${Date.now().toString(36)}`;
+            const { data: newWedding } = await supabase
+              .from("weddings")
+              .insert({ user_id: newUser.id, slug, partner1_name: name1 || "", partner2_name: name2 || "" } as any)
+              .select("id")
+              .single();
+            if (newWedding?.id) {
+              await supabase.from("wedding_stories").insert({
+                wedding_id: newWedding.id,
+                title: "Nuestra historia de amor",
+                description: story,
+                sort_order: 0,
+              } as any);
+              track("ia_historia_guardada");
+              navigate(`/dashboard/edit/${newWedding.id}?tab=historia`);
+              setLoading(false);
+              return;
+            }
+          }
+        } catch {
+          localStorage.removeItem("bf_pending_ai");
+        }
+      }
+
       navigate("/dashboard");
     }
     setLoading(false);
@@ -75,21 +117,39 @@ const Auth = () => {
         <div className="text-center mb-8">
           <Heart className="w-8 h-8 text-primary mx-auto mb-4" />
           <h1 className="font-heading text-3xl sm:text-4xl text-foreground mb-2">
-            {isSignUp ? "Crea tu web de boda gratis" : "Bienvenido de nuevo"}
+            {pendingStory
+              ? `Guarda la historia de ${pendingStory.name1} & ${pendingStory.name2}`
+              : isSignUp ? "Crea tu web de boda gratis" : "Bienvenido de nuevo"}
           </h1>
           <p className="text-muted-foreground font-light text-sm">
-            {isSignUp
+            {pendingStory
+              ? "Crea tu cuenta y la guardaremos automáticamente en vuestra web."
+              : isSignUp
               ? "Sin tarjeta de crédito. Explora, personaliza y publica cuando estéis listos."
               : "Accede a tu panel de boda"}
           </p>
         </div>
 
-        {/* Beneficios — solo en registro */}
-        {isSignUp && (
+        {/* Banner historia IA pendiente */}
+        {pendingStory && isSignUp && (
+          <div className="bg-primary/10 border border-primary/25 rounded-xl p-4 mb-6 flex items-start gap-3 animate-fade-in">
+            <span className="text-xl flex-shrink-0 mt-0.5">💍</span>
+            <div>
+              <p className="text-sm font-medium text-foreground">¡Vuestra historia está lista!</p>
+              <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+                En cuanto crees tu cuenta, la añadiremos automáticamente a la web de{" "}
+                <strong>{pendingStory.name1} & {pendingStory.name2}</strong> — lista para que la vean vuestros invitados.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Beneficios — solo en registro sin historia pendiente */}
+        {isSignUp && !pendingStory && (
           <div className="bg-secondary rounded-xl p-4 mb-6 space-y-2.5">
             {[
               { text: "Personaliza tu boda completa sin pagar nada", icon: "🎨" },
-              { text: "Explora las 6 demos en vivo (tema Elegante, Romántico, Rústico...)", icon: "✨" },
+              { text: "IA que escribe vuestra historia de amor en 10 segundos", icon: "✨" },
               { text: "Publícala cuando estéis listos — desde 30€, pago único", icon: "🚀" },
             ].map((b) => (
               <div key={b.text} className="flex items-start gap-2.5 text-sm text-foreground">
