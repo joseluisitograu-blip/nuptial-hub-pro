@@ -267,7 +267,7 @@ const Index = () => {
             La web de boda<br />que merece el día
           </h1>
           <p className="text-primary-foreground/85 text-base sm:text-lg md:text-xl font-light mb-8 sm:mb-10 max-w-xl mx-auto leading-relaxed">
-            RSVP online, playlist colaborativa, plan de mesas, fotos en vivo y 12 temas visuales. Lista en minutos. <strong className="font-medium text-primary-foreground">Desde 30€, pago único para siempre.</strong>
+            Sin grupos de WhatsApp, sin llamadas de confirmación. RSVP, playlist colaborativa, plan de mesas y fotos en vivo. Lista en 5 minutos. <strong className="font-medium text-primary-foreground">Desde 30€, pago único para siempre.</strong>
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
             <Link
@@ -606,9 +606,66 @@ const Index = () => {
             </div>
           </RevealSection>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6">
+          {/* Anchoring strip */}
+          <RevealSection>
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-8 text-xs text-muted-foreground">
+              <div className="flex items-center gap-2 px-3 py-2 bg-card border border-border rounded-lg">
+                <span className="font-medium">Agencia tradicional</span>
+                <span className="font-heading text-sm line-through text-muted-foreground/50">~500€</span>
+              </div>
+              <span className="text-muted-foreground/40 font-medium">vs</span>
+              <div className="flex items-center gap-2 px-3 py-2 bg-card border border-border rounded-lg">
+                <span className="font-medium">WedSites / Withjoy</span>
+                <span className="font-heading text-sm line-through text-muted-foreground/50">15€/mes</span>
+              </div>
+              <span className="text-muted-foreground/40 font-medium">vs</span>
+              <div className="flex items-center gap-2 px-4 py-2 bg-primary/10 border-2 border-primary/30 rounded-lg text-primary">
+                <span className="font-medium">BodasFácil</span>
+                <span className="font-heading text-sm font-bold">Desde 30€</span>
+                <span className="text-[10px] opacity-80">pago único ✓</span>
+              </div>
+            </div>
+          </RevealSection>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6 max-w-2xl mx-auto">
+            {/* Plan Básico */}
+            <RevealSection delay={0}>
+              <div className="bg-card border border-border rounded-xl p-6 sm:p-7 flex flex-col h-full hover:shadow-lg transition-all duration-300">
+                <h3 className="font-heading text-2xl text-foreground mb-1">Básico</h3>
+                <div className="mb-3 sm:mb-4">
+                  <span className="font-heading text-3xl sm:text-4xl text-foreground">30€</span>
+                  <span className="text-muted-foreground text-sm ml-1">pago único</span>
+                </div>
+                <p className="text-muted-foreground text-sm font-light mb-5 sm:mb-6">Para parejas que quieren algo sencillo y bonito.</p>
+                <ul className="space-y-2.5 sm:space-y-3 mb-6 sm:mb-8 flex-1">
+                  {[
+                    "Página web personalizada",
+                    "1 tema visual a elegir",
+                    "RSVP online + ver confirmaciones",
+                    "Playlist colaborativa de los invitados",
+                    "Muro de fotos en vivo",
+                    "Código QR para invitaciones",
+                    "Información de ceremonia y recepción",
+                    "Cuenta atrás del gran día",
+                  ].map((item) => (
+                    <li key={item} className="flex items-start gap-2 sm:gap-2.5 text-sm text-foreground">
+                      <CheckCircle className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  to="/auth"
+                  onClick={() => track("clic_crear_boda", { location: "pricing_basico" })}
+                  className="block w-full text-center px-6 py-3.5 rounded-xl border-2 border-primary text-primary font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                >
+                  Empezar con Plan Básico →
+                </Link>
+              </div>
+            </RevealSection>
+
             {/* Plan Completo */}
-            <RevealSection delay={0} className="sm:order-2 order-first">
+            <RevealSection delay={100}>
               <div className="bg-card border-2 border-primary rounded-xl p-6 sm:p-7 flex flex-col relative shadow-lg hover:shadow-xl transition-all duration-300 h-full animate-pulse-glow">
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-medium px-4 py-1 rounded-full shadow-md">
                   ⭐ Más popular
@@ -633,81 +690,6 @@ const Index = () => {
                     "🎁 Control de regalos y agradecimientos",
                     "✅ Checklist de boda profesional (18 tareas)",
                     "Soporte 24 horas",
-                    "Borrador de la web en 24h",
-                  ].map((item) => (
-                    <li key={item} className="flex items-start gap-2 sm:gap-2.5 text-sm text-foreground">
-                      <CheckCircle className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-  to="/auth"
-  onClick={() => track("clic_crear_boda", { location: "pricing_completo" })}
-  className="block w-full text-center px-6 py-3.5 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-all duration-300 shadow-md hover:shadow-lg"
->
-  Empezar con Plan Completo →
-</Link>
-              </div>
-            </RevealSection>
-
-            {/* Plan Básico */}
-            <RevealSection delay={100} className="sm:order-1">
-              <div className="bg-card border border-border rounded-xl p-6 sm:p-7 flex flex-col h-full hover:shadow-lg transition-all duration-300">
-                <h3 className="font-heading text-2xl text-foreground mb-1">Básico</h3>
-                <div className="mb-3 sm:mb-4">
-                  <span className="font-heading text-3xl sm:text-4xl text-foreground">30€</span>
-                  <span className="text-muted-foreground text-sm ml-1">pago único</span>
-                </div>
-                <p className="text-muted-foreground text-sm font-light mb-5 sm:mb-6">Para parejas que quieren algo sencillo y bonito.</p>
-                <ul className="space-y-2.5 sm:space-y-3 mb-6 sm:mb-8 flex-1">
-                  {[
-                    "Página web personalizada",
-                    "1 tema visual a elegir",
-                    "RSVP online + ver confirmaciones",
-                    "Playlist colaborativa de los invitados",
-                    "Muro de fotos en vivo",
-                    "Código QR para invitaciones",
-                    "Información de ceremonia y recepción",
-                    "Cuenta atrás del gran día",
-                    "Borrador de la web en 24h",
-                  ].map((item) => (
-                    <li key={item} className="flex items-start gap-2 sm:gap-2.5 text-sm text-foreground">
-                      <CheckCircle className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-  to="/auth"
-  onClick={() => track("clic_crear_boda", { location: "pricing_basico" })}
-  className="block w-full text-center px-6 py-3.5 rounded-xl border-2 border-primary text-primary font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-300"
->
-  Empezar con Plan Básico →
-</Link>
-              </div>
-            </RevealSection>
-
-            {/* Plan Organizador */}
-            <RevealSection delay={200} className="sm:order-3">
-              <div className="bg-card border border-border rounded-xl p-6 sm:p-7 flex flex-col h-full hover:shadow-lg transition-all duration-300">
-                <h3 className="font-heading text-2xl text-foreground mb-1">Organizador</h3>
-                <div className="mb-3 sm:mb-4">
-                  <span className="font-heading text-2xl sm:text-3xl text-foreground">A medida</span>
-                </div>
-                <p className="text-muted-foreground text-sm font-light mb-5 sm:mb-6">Para profesionales con múltiples bodas.</p>
-                <ul className="space-y-2.5 sm:space-y-3 mb-6 sm:mb-8 flex-1">
-                  {[
-                    "Todo lo del plan Completo",
-                    "Dashboard multi-boda",
-                    "Bodas ilimitadas",
-                    "QR individual por boda",
-                    "Personalización avanzada",
-                    "Sin marca de agua",
-                    "Soporte prioritario 24h",
-                    "Mantenimiento incluido",
-                    "Borrador de cada web en 24h",
-                    "Precios especiales por volumen",
                   ].map((item) => (
                     <li key={item} className="flex items-start gap-2 sm:gap-2.5 text-sm text-foreground">
                       <CheckCircle className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
@@ -716,14 +698,38 @@ const Index = () => {
                   ))}
                 </ul>
                 <button
-                  onClick={() => { setContactSubject("Plan Wedding Planner"); setContactOpen(true); }}
-                  className="block w-full text-center px-6 py-3.5 rounded-xl border-2 border-primary text-primary font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                  onClick={() => handleBuy("completo_one_time")}
+                  disabled={loading}
+                  className="w-full text-center px-6 py-3.5 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-all duration-300 shadow-md hover:shadow-lg disabled:opacity-50"
                 >
-                  Contáctanos →
+                  {loading ? "Cargando..." : "Comprar Plan Completo →"}
                 </button>
+                <p className="text-center text-xs text-muted-foreground mt-2">
+                  o{" "}
+                  <Link to="/auth" onClick={() => track("clic_crear_boda", { location: "pricing_completo_fallback" })} className="underline underline-offset-4 hover:text-foreground transition-colors">
+                    crea tu boda gratis primero
+                  </Link>
+                </p>
               </div>
             </RevealSection>
           </div>
+
+          {/* Plan Organizador — slim banner */}
+          <RevealSection delay={200}>
+            <div className="mt-5 bg-card border border-border rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-3 sm:gap-5 max-w-2xl mx-auto">
+              <div className="flex-1 text-center sm:text-left">
+                <span className="text-xs uppercase tracking-widest font-medium text-muted-foreground">Para profesionales</span>
+                <h3 className="font-heading text-lg text-foreground mt-0.5">Plan Organizador — Múltiples bodas</h3>
+                <p className="text-muted-foreground text-xs font-light mt-0.5">Wedding planners y fotógrafos. Dashboard multi-boda, precios por volumen y soporte prioritario.</p>
+              </div>
+              <button
+                onClick={() => { setContactSubject("Plan Wedding Planner"); setContactOpen(true); }}
+                className="shrink-0 px-5 py-2.5 rounded-xl border-2 border-border text-foreground text-sm font-medium hover:border-primary hover:text-primary transition-all duration-300"
+              >
+                Pedir info →
+              </button>
+            </div>
+          </RevealSection>
         </div>
       </section>
 
@@ -746,7 +752,7 @@ const Index = () => {
               { q: "¿Cuánto tarda en estar lista mi web de boda?", a: "Puedes tener tu página lista en 5 minutos. Si prefieres que te hagamos un borrador personalizado, lo tienes en menos de 24 horas." },
               { q: "¿Y si no me convence?", a: "Tienes 30 días de garantía de devolución sin preguntas. Envíanos un email y te devolvemos el 100% del importe." },
               { q: "¿Puedo cambiar el diseño o la información después?", a: "Sí, cuantas veces quieras. Puedes cambiar el tema visual, subir nuevas fotos, actualizar los datos de la ceremonia y editar todo el contenido en cualquier momento." },
-              { q: "¿Qué diferencia hay entre el plan Básico y el Completo?", a: "El Básico (30€) incluye página web, RSVP online y código QR. El Completo (60€) añade 12 temas visuales, playlist colaborativa, muro de fotos, plan de mesas, agenda, mapa, gestor de presupuesto, checklist y control de regalos." },
+              { q: "¿Qué diferencia hay entre el plan Básico y el Completo?", a: "El Básico (30€) incluye página web, RSVP online, playlist colaborativa, muro de fotos en vivo y código QR. El Completo (60€) añade 12 temas visuales, plan de mesas, agenda del día, mapa interactivo, FAQ, historia de amor, gestor de presupuesto, checklist de boda y control de regalos." },
               { q: "¿La web de boda tiene publicidad?", a: "No. Tu web de boda es tuya. Sin anuncios, sin marca de agua de BodasFácil, sin nada que distraiga a tus invitados de lo que importa." },
             ].map((faq, i) => (
               <RevealSection key={i} delay={i * 60}>
