@@ -3,18 +3,18 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Plus, ExternalLink, LogOut, Heart, MessageCircle, ChevronDown, ChevronUp, Lock, Mail, BarChart3, Gift, Wallet, ListChecks, CheckCircle, ArrowRight, Sparkles, Copy, Check } from "lucide-react";
+import { Plus, ExternalLink, LogOut, Heart, MessageCircle, ChevronDown, ChevronUp, Lock, Mail, BarChart3, Gift, Wallet, ListChecks, CheckCircle, ArrowRight, Sparkles, Copy, Check, Send } from "lucide-react";
 import WeddingStats from "@/components/dashboard/WeddingStats";
 import ExportRsvps from "@/components/dashboard/ExportRsvps";
 import DashboardMessages from "@/components/dashboard/DashboardMessages";
 import WeddingBudget from "@/components/dashboard/WeddingBudget";
 import WeddingGifts from "@/components/dashboard/WeddingGifts";
 import WeddingChecklist from "@/components/dashboard/WeddingChecklist";
+import AdminOutreach from "@/components/dashboard/AdminOutreach";
 import { usePurchase } from "@/hooks/usePurchase";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { useToast } from "@/hooks/use-toast";
 import { track, trackPurchase, trackBeginCheckout } from "@/lib/analytics";
-
 
 interface Wedding {
   id: string;
@@ -56,7 +56,6 @@ const Dashboard = () => {
       searchParams.delete("checkout");
       searchParams.delete("plan");
       setSearchParams(searchParams, { replace: true });
-      // Tras 2,5s (webhook de Paddle procesado), publicar las bodas del usuario y recargar
       setTimeout(async () => {
         if (user) {
           await supabase.from("weddings").update({ is_published: true } as any).eq("user_id", user.id);
@@ -95,9 +94,7 @@ const Dashboard = () => {
       .insert({ user_id: user.id, slug, partner1_name: "", partner2_name: "" })
       .select("id")
       .single();
-    if (!error && data) {
-      navigate(`/dashboard/edit/${data.id}`);
-    }
+    if (!error && data) navigate(`/dashboard/edit/${data.id}`);
     setCreating(false);
   };
 
@@ -171,7 +168,7 @@ const Dashboard = () => {
 
       <div className="container max-w-4xl py-8 sm:py-12 px-4 sm:px-8">
 
-        {/* Banner de upgrade — comparativa de planes */}
+        {/* Banner upgrade */}
         {!hasPurchase && (
           <div className="bg-primary/5 border border-primary/20 rounded-xl p-5 sm:p-6 mb-8">
             <div className="mb-4">
@@ -181,7 +178,6 @@ const Dashboard = () => {
               <p className="text-muted-foreground text-sm font-light">Pago único para siempre. Sin suscripciones. 30 días de garantía.</p>
             </div>
             <div className="grid sm:grid-cols-2 gap-3">
-              {/* Plan Básico */}
               <div className="bg-card rounded-xl border border-border p-4">
                 <div className="mb-3">
                   <p className="font-heading text-lg leading-none">Básico</p>
@@ -199,7 +195,6 @@ const Dashboard = () => {
                   Publicar con Básico →
                 </button>
               </div>
-              {/* Plan Completo */}
               <div className="bg-card rounded-xl border-2 border-primary p-4 relative">
                 <div className="absolute -top-3 left-4 bg-primary text-primary-foreground text-xs font-medium px-3 py-0.5 rounded-full shadow-sm">⭐ Más popular</div>
                 <div className="mb-3">
@@ -223,15 +218,13 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Onboarding — sin bodas */}
+        {/* Onboarding sin bodas */}
         {weddings.length === 0 && (
           <div className="text-center py-12 sm:py-20">
             <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
               <Heart className="w-8 h-8 text-primary" />
             </div>
-            <h2 className="font-heading text-2xl sm:text-3xl text-foreground mb-3">
-              Bienvenido a BodasFácil 💍
-            </h2>
+            <h2 className="font-heading text-2xl sm:text-3xl text-foreground mb-3">Bienvenido a BodasFácil 💍</h2>
             <p className="text-muted-foreground font-light mb-2 max-w-md mx-auto">
               Empieza creando vuestra boda. Es gratis explorar y personalizar — solo pagas cuando queráis publicarla.
             </p>
@@ -273,7 +266,6 @@ const Dashboard = () => {
                 const isExpanded = expandedId === w.id;
                 const weddingUrl = `${window.location.origin}/w/${w.slug}`;
 
-                /* ── Onboarding card for empty weddings ── */
                 if (isEmpty) {
                   return (
                     <div key={w.id} className="bg-card border-2 border-primary/30 rounded-xl p-5 sm:p-6 animate-fade-in">
@@ -283,10 +275,8 @@ const Dashboard = () => {
                         <p className="text-muted-foreground text-sm mt-0.5">Tarda menos de 5 minutos. Gratis hasta que la publiques.</p>
                       </div>
                       <div className="grid gap-3 sm:grid-cols-3">
-                        <Link
-                          to={`/dashboard/edit/${w.id}?tab=pareja`}
-                          className="flex items-start gap-3 p-4 rounded-xl bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
-                        >
+                        <Link to={`/dashboard/edit/${w.id}?tab=pareja`}
+                          className="flex items-start gap-3 p-4 rounded-xl bg-primary text-primary-foreground hover:opacity-90 transition-opacity">
                           <span className="text-xl flex-shrink-0 mt-0.5">💑</span>
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-sm leading-tight">1. Añade vuestros nombres</p>
@@ -294,10 +284,8 @@ const Dashboard = () => {
                           </div>
                           <ArrowRight className="w-4 h-4 flex-shrink-0 mt-0.5" />
                         </Link>
-                        <Link
-                          to={`/dashboard/edit/${w.id}?tab=diseno`}
-                          className="flex items-start gap-3 p-4 rounded-xl border border-border hover:border-primary/40 hover:bg-primary/5 transition-all"
-                        >
+                        <Link to={`/dashboard/edit/${w.id}?tab=diseno`}
+                          className="flex items-start gap-3 p-4 rounded-xl border border-border hover:border-primary/40 hover:bg-primary/5 transition-all">
                           <span className="text-xl flex-shrink-0 mt-0.5">🎨</span>
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-sm leading-tight text-foreground">2. Elige un tema</p>
@@ -305,10 +293,8 @@ const Dashboard = () => {
                           </div>
                           <ArrowRight className="w-4 h-4 flex-shrink-0 mt-0.5 text-muted-foreground" />
                         </Link>
-                        <Link
-                          to={`/w/${w.slug}`}
-                          className="flex items-start gap-3 p-4 rounded-xl border border-border hover:border-primary/40 hover:bg-primary/5 transition-all"
-                        >
+                        <Link to={`/w/${w.slug}`}
+                          className="flex items-start gap-3 p-4 rounded-xl border border-border hover:border-primary/40 hover:bg-primary/5 transition-all">
                           <span className="text-xl flex-shrink-0 mt-0.5">👁️</span>
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-sm leading-tight text-foreground">3. Previsualiza tu boda</p>
@@ -324,12 +310,9 @@ const Dashboard = () => {
                 return (
                   <div key={w.id} className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-shadow">
                     <div className="flex items-center gap-3 justify-between p-4 sm:p-6">
-                      {/* Info */}
                       <div className="min-w-0 flex-1">
                         <h3 className="font-heading text-lg sm:text-xl truncate">
-                          {w.partner1_name && w.partner2_name
-                            ? `${w.partner1_name} & ${w.partner2_name}`
-                            : "Sin nombre aún"}
+                          {w.partner1_name && w.partner2_name ? `${w.partner1_name} & ${w.partner2_name}` : "Sin nombre aún"}
                         </h3>
                         <p className="text-muted-foreground text-xs sm:text-sm font-light truncate">
                           /{w.slug}
@@ -356,7 +339,6 @@ const Dashboard = () => {
                             return null;
                           })()}
                         </div>
-                        {/* Completion bar */}
                         {!w.is_published && (() => {
                           const filled = [w.partner1_name, w.partner2_name, w.wedding_date].filter(Boolean).length;
                           const pct = Math.round((filled / 3) * 100);
@@ -373,68 +355,45 @@ const Dashboard = () => {
                           );
                         })()}
                       </div>
-                      {/* Acciones */}
                       <div className="flex items-center gap-1.5 shrink-0">
-                        {/* Solo desktop */}
-                        <button
-                          onClick={() => handleCopyLink(w.slug)}
-                          className="hidden sm:flex p-2 rounded-md hover:bg-secondary transition-colors text-muted-foreground"
-                          title="Copiar enlace"
-                        >
+                        <button onClick={() => handleCopyLink(w.slug)}
+                          className="hidden sm:flex p-2 rounded-md hover:bg-secondary transition-colors text-muted-foreground" title="Copiar enlace">
                           {copiedSlug === w.slug ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
                         </button>
-                        <a
-                          href={`https://wa.me/?text=${encodeURIComponent(`¡Hola! Os recordamos que nuestra boda se acerca. 💍 Toda la info aquí: ${weddingUrl}`)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="hidden sm:flex p-2 rounded-md hover:bg-secondary transition-colors text-primary"
-                          title="Compartir por WhatsApp"
-                        >
+                        <a href={`https://wa.me/?text=${encodeURIComponent(`¡Hola! Os recordamos que nuestra boda se acerca. 💍 Toda la info aquí: ${weddingUrl}`)}`}
+                          target="_blank" rel="noopener noreferrer"
+                          className="hidden sm:flex p-2 rounded-md hover:bg-secondary transition-colors text-primary" title="Compartir por WhatsApp">
                           <MessageCircle className="w-4 h-4" />
                         </a>
-                        <Link
-                          to={`/w/${w.slug}`}
-                          className="hidden sm:flex p-2 rounded-md hover:bg-secondary transition-colors text-muted-foreground"
-                          title="Ver página"
-                        >
+                        <Link to={`/w/${w.slug}`}
+                          className="hidden sm:flex p-2 rounded-md hover:bg-secondary transition-colors text-muted-foreground" title="Ver página">
                           <ExternalLink className="w-4 h-4" />
                         </Link>
-                        <Link
-                          to={`/dashboard/edit/${w.id}`}
-                          className="px-3 sm:px-4 py-2 rounded-lg bg-secondary text-secondary-foreground text-xs sm:text-sm font-medium hover:opacity-90 transition-opacity whitespace-nowrap"
-                        >
+                        <Link to={`/dashboard/edit/${w.id}`}
+                          className="px-3 sm:px-4 py-2 rounded-lg bg-secondary text-secondary-foreground text-xs sm:text-sm font-medium hover:opacity-90 transition-opacity whitespace-nowrap">
                           Editar
                         </Link>
-                        <button
-                          onClick={() => handleToggleExpand(w.id)}
-                          className="p-2 rounded-md hover:bg-secondary transition-colors text-muted-foreground"
-                        >
+                        <button onClick={() => handleToggleExpand(w.id)}
+                          className="p-2 rounded-md hover:bg-secondary transition-colors text-muted-foreground">
                           {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                         </button>
                       </div>
                     </div>
-                    {/* Acciones móvil — dentro del expandido */}
+
                     {isExpanded && (
                       <div className="sm:hidden flex items-center gap-2 px-4 pb-3">
-                        <button
-                          onClick={() => handleCopyLink(w.slug)}
-                          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-secondary text-muted-foreground text-xs hover:text-foreground transition-colors"
-                        >
+                        <button onClick={() => handleCopyLink(w.slug)}
+                          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-secondary text-muted-foreground text-xs hover:text-foreground transition-colors">
                           {copiedSlug === w.slug ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5" />}
                           Copiar enlace
                         </button>
-                        <a
-                          href={`https://wa.me/?text=${encodeURIComponent(`¡Hola! Os recordamos que nuestra boda se acerca. 💍 Toda la info aquí: ${weddingUrl}`)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-secondary text-primary text-xs hover:opacity-80 transition-opacity"
-                        >
+                        <a href={`https://wa.me/?text=${encodeURIComponent(`¡Hola! Os recordamos que nuestra boda se acerca. 💍 Toda la info aquí: ${weddingUrl}`)}`}
+                          target="_blank" rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-secondary text-primary text-xs hover:opacity-80 transition-opacity">
                           <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
                         </a>
-                        <Link
-                          to={`/w/${w.slug}`}
-                          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-secondary text-muted-foreground text-xs hover:text-foreground transition-colors"
-                        >
+                        <Link to={`/w/${w.slug}`}
+                          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-secondary text-muted-foreground text-xs hover:text-foreground transition-colors">
                           <ExternalLink className="w-3.5 h-3.5" /> Ver web
                         </Link>
                       </div>
@@ -444,15 +403,10 @@ const Dashboard = () => {
                       <div className="border-t border-border px-5 sm:px-6 pt-4 pb-5">
                         <div className="flex gap-1 border-b border-border mb-4 overflow-x-auto scrollbar-hide">
                           {tabs.map((tab) => (
-                            <button
-                              key={tab.id}
-                              onClick={() => setActiveTab(tab.id)}
+                            <button key={tab.id} onClick={() => setActiveTab(tab.id)}
                               className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium border-b-2 transition-colors -mb-px whitespace-nowrap ${
-                                activeTab === tab.id
-                                  ? "border-primary text-primary"
-                                  : "border-transparent text-muted-foreground hover:text-foreground"
-                              }`}
-                            >
+                                activeTab === tab.id ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
+                              }`}>
                               {tab.icon} {tab.label}
                               {tab.requiresCompleto && !isCompleto && <span className="text-[9px] font-medium text-primary bg-primary/10 px-1.5 py-0.5 rounded-full ml-1 leading-none">PREVIEW</span>}
                             </button>
@@ -470,6 +424,7 @@ const Dashboard = () => {
                         {activeTab === "budget" && isCompleto && <WeddingBudget weddingId={w.id} />}
                         {activeTab === "gifts" && isCompleto && <WeddingGifts weddingId={w.id} />}
                         {activeTab === "checklist" && isCompleto && <WeddingChecklist weddingId={w.id} />}
+
                         {activeTab === "budget" && !isCompleto && (
                           <div className="space-y-4">
                             <div className="relative overflow-hidden rounded-xl border border-border">
@@ -604,14 +559,25 @@ const Dashboard = () => {
           </>
         )}
 
+        {/* Sección admin — solo visible para ti */}
         {isOwner && (
-          <div className="mt-12">
-            <div className="flex items-center gap-2 mb-6">
-              <Mail className="w-5 h-5 text-primary" />
-              <h2 className="font-heading text-2xl">Mensajes</h2>
+          <>
+            <div className="mt-12">
+              <div className="flex items-center gap-2 mb-6">
+                <Mail className="w-5 h-5 text-primary" />
+                <h2 className="font-heading text-2xl">Mensajes</h2>
+              </div>
+              <DashboardMessages />
             </div>
-            <DashboardMessages />
-          </div>
+
+            <div className="mt-12">
+              <div className="flex items-center gap-2 mb-6">
+                <Send className="w-5 h-5 text-primary" />
+                <h2 className="font-heading text-2xl">Outreach — Wedding Planners</h2>
+              </div>
+              <AdminOutreach />
+            </div>
+          </>
         )}
       </div>
     </div>
