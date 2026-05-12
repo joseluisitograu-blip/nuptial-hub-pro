@@ -225,6 +225,90 @@ const themeStyles: Record<string, Record<string, string>> = {
     "--border": "230 15% 25%",
     "--accent": "45 50% 50%",
   },
+  vintage: {
+    "--background": "35 22% 94%",
+    "--foreground": "25 28% 17%",
+    "--card": "35 18% 90%",
+    "--card-foreground": "25 28% 17%",
+    "--primary": "345 28% 50%",
+    "--primary-foreground": "35 22% 97%",
+    "--secondary": "35 16% 85%",
+    "--secondary-foreground": "25 28% 22%",
+    "--muted": "35 12% 88%",
+    "--muted-foreground": "25 10% 48%",
+    "--border": "35 14% 78%",
+    "--accent": "30 38% 52%",
+  },
+  coastal: {
+    "--background": "200 18% 97%",
+    "--foreground": "210 38% 13%",
+    "--card": "200 14% 93%",
+    "--card-foreground": "210 38% 13%",
+    "--primary": "210 52% 36%",
+    "--primary-foreground": "0 0% 100%",
+    "--secondary": "40 28% 89%",
+    "--secondary-foreground": "210 38% 16%",
+    "--muted": "200 14% 91%",
+    "--muted-foreground": "210 14% 45%",
+    "--border": "200 14% 82%",
+    "--accent": "38 58% 58%",
+  },
+  celestial: {
+    "--background": "240 38% 8%",
+    "--foreground": "220 18% 88%",
+    "--card": "240 32% 12%",
+    "--card-foreground": "220 18% 88%",
+    "--primary": "45 72% 58%",
+    "--primary-foreground": "240 38% 8%",
+    "--secondary": "240 25% 18%",
+    "--secondary-foreground": "220 18% 82%",
+    "--muted": "240 20% 16%",
+    "--muted-foreground": "220 12% 52%",
+    "--border": "240 22% 22%",
+    "--accent": "45 55% 42%",
+  },
+  spring: {
+    "--background": "345 28% 97%",
+    "--foreground": "330 22% 15%",
+    "--card": "345 22% 94%",
+    "--card-foreground": "330 22% 15%",
+    "--primary": "345 52% 62%",
+    "--primary-foreground": "0 0% 100%",
+    "--secondary": "345 16% 90%",
+    "--secondary-foreground": "330 22% 18%",
+    "--muted": "345 12% 92%",
+    "--muted-foreground": "330 10% 48%",
+    "--border": "345 14% 84%",
+    "--accent": "120 28% 52%",
+  },
+  forest: {
+    "--background": "130 18% 92%",
+    "--foreground": "140 38% 9%",
+    "--card": "130 14% 88%",
+    "--card-foreground": "140 38% 9%",
+    "--primary": "140 42% 26%",
+    "--primary-foreground": "130 18% 95%",
+    "--secondary": "130 12% 83%",
+    "--secondary-foreground": "140 38% 13%",
+    "--muted": "130 10% 86%",
+    "--muted-foreground": "140 10% 44%",
+    "--border": "130 12% 76%",
+    "--accent": "30 52% 44%",
+  },
+  sunset: {
+    "--background": "28 38% 96%",
+    "--foreground": "15 32% 13%",
+    "--card": "28 30% 92%",
+    "--card-foreground": "15 32% 13%",
+    "--primary": "15 68% 50%",
+    "--primary-foreground": "28 38% 97%",
+    "--secondary": "30 24% 87%",
+    "--secondary-foreground": "15 32% 18%",
+    "--muted": "28 18% 90%",
+    "--muted-foreground": "15 12% 46%",
+    "--border": "28 18% 80%",
+    "--accent": "45 68% 50%",
+  },
 };
 
 const sections = [
@@ -324,10 +408,10 @@ useEffect(() => {
   }
 
   return () => {
-    document.querySelector('meta[name="description"]')?.setAttribute("content", "Crea la web de tu boda perfecta en minutos. RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda del día, mapa y 12 temas visuales. Pago único desde 30€.");
+    document.querySelector('meta[name="description"]')?.setAttribute("content", "Crea la web de tu boda perfecta en minutos. RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda del día, mapa y 18 temas visuales. Pago único desde 30€.");
     document.querySelector('link[rel="canonical"]')?.setAttribute("href", "https://bodasfacil.com/");
     document.querySelector('meta[property="og:title"]')?.setAttribute("content", "BodasFácil — Crea la web de tu boda perfecta desde 30€");
-    document.querySelector('meta[property="og:description"]')?.setAttribute("content", "RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda y 12 temas visuales. Pago único, sin suscripciones.");
+    document.querySelector('meta[property="og:description"]')?.setAttribute("content", "RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda y 18 temas visuales. Pago único, sin suscripciones.");
     document.querySelector('meta[property="og:url"]')?.setAttribute("content", "https://bodasfacil.com/");
     document.querySelector('meta[property="og:image"]')?.setAttribute("content", "https://bodasfacil.com/og-image.jpg");
     document.getElementById("schema-wedding")?.remove();

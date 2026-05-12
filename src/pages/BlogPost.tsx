@@ -142,16 +142,16 @@ const BlogPost = () => {
 
     return () => {
       document.title = "BodasFácil — Crea la web de tu boda en minutos | Desde 30€";
-      document.querySelector('meta[name="description"]')?.setAttribute("content", "Crea la web de tu boda perfecta en minutos. RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda del día, mapa y 12 temas visuales. Pago único desde 30€.");
+      document.querySelector('meta[name="description"]')?.setAttribute("content", "Crea la web de tu boda perfecta en minutos. RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda del día, mapa y 18 temas visuales. Pago único desde 30€.");
       document.querySelector('link[rel="canonical"]')?.setAttribute("href", "https://bodasfacil.com/");
       document.querySelector('meta[property="og:type"]')?.setAttribute("content", "website");
       document.querySelector('meta[property="og:title"]')?.setAttribute("content", "BodasFácil — Crea la web de tu boda perfecta desde 30€");
-      document.querySelector('meta[property="og:description"]')?.setAttribute("content", "RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda y 12 temas visuales. Pago único, sin suscripciones.");
+      document.querySelector('meta[property="og:description"]')?.setAttribute("content", "RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda y 18 temas visuales. Pago único, sin suscripciones.");
       document.querySelector('meta[property="og:url"]')?.setAttribute("content", "https://bodasfacil.com/");
       document.querySelector('meta[property="og:image"]')?.setAttribute("content", "https://bodasfacil.com/og-image.jpg");
       document.querySelector('meta[property="og:image:alt"]')?.setAttribute("content", "BodasFácil — Crea la web de tu boda perfecta");
       document.querySelector('meta[name="twitter:title"]')?.setAttribute("content", "BodasFácil — Crea la web de tu boda perfecta desde 30€");
-      document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", "RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda y 12 temas visuales. Pago único, sin suscripciones.");
+      document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", "RSVP online, playlist colaborativa, muro de fotos en vivo, plan de mesas, agenda y 18 temas visuales. Pago único, sin suscripciones.");
       document.querySelector('meta[name="twitter:image"]')?.setAttribute("content", "https://bodasfacil.com/og-image.jpg");
       document.getElementById("schema-article")?.remove();
       document.getElementById("schema-breadcrumb-post")?.remove();

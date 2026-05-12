@@ -12,7 +12,7 @@ const features = [
   { icon: Camera, title: "Muro de fotos en vivo", desc: "Todos comparten sus mejores fotos del gran día. Un recuerdo colectivo que se construye solo.", badge: null },
   { icon: Users, title: "Plan de mesas inteligente", desc: "Arrastra y suelta a tus invitados entre mesas. Visible solo un día antes — crea expectación.", badge: null },
   { icon: Sparkles, title: "Historia de amor con IA", desc: "La primera plataforma en España que usa IA para escribir vuestra historia romántica personalizada en 10 segundos.", badge: "Solo en BodasFácil ✦" },
-  { icon: Heart, title: "12 temas visuales únicos", desc: "Elegante, Romántico, Rústico, Moderno, Otoñal, Valenciano y más. Personaliza cada detalle del diseño.", badge: null },
+  { icon: Heart, title: "18 temas visuales únicos", desc: "Elegante, Vintage, Costero, Celestial, Primavera, Bosque, Atardecer y más. Personaliza cada detalle del diseño.", badge: null },
 ];
 
 const demos = [
@@ -22,6 +22,8 @@ const demos = [
   { slug: "demo-modern", theme: "Moderno", couple: "Martina & Álex", color: "hsl(220, 25%, 18%)", gradient: "from-slate-800/20 to-slate-600/10" },
   { slug: "demo-autumn", theme: "Otoñal", couple: "Carmen & Javier", color: "hsl(15, 60%, 40%)", gradient: "from-orange-900/20 to-amber-700/10" },
   { slug: "demo-valencia", theme: "Valenciano", couple: "Lucia & Marcos", color: "hsl(33, 70%, 45%)", gradient: "from-orange-700/20 to-amber-500/10" },
+  { slug: "demo-nocturnal", theme: "Nocturno", couple: "Valentina & Hugo", color: "hsl(45, 60%, 58%)", gradient: "from-slate-900/30 to-slate-700/15" },
+  { slug: "demo-coastal", theme: "Costero", couple: "Marina & Nico", color: "hsl(210, 52%, 36%)", gradient: "from-blue-700/20 to-sky-500/10" },
 ];
 
 const testimonials = [
@@ -220,7 +222,7 @@ const Index = () => {
       "tool": [{ "@type": "WebApplication", "name": "BodasFácil", "url": "https://bodasfacil.com" }],
       "step": [
         { "@type": "HowToStep", "position": "1", "name": "Regístrate gratis", "url": "https://bodasfacil.com/auth", "text": "Crea tu cuenta en segundos. Sin compromiso, sin tarjeta de crédito. Accede gratis a todas las demos." },
-        { "@type": "HowToStep", "position": "2", "name": "Personaliza tu web de boda", "url": "https://bodasfacil.com/dashboard", "text": "Elige uno de los 12 temas visuales, añade vuestros datos, sube fotos y configura RSVP, agenda, menú, plan de mesas y mucho más." },
+        { "@type": "HowToStep", "position": "2", "name": "Personaliza tu web de boda", "url": "https://bodasfacil.com/dashboard", "text": "Elige uno de los 18 temas visuales, añade vuestros datos, sube fotos y configura RSVP, agenda, menú, plan de mesas y mucho más." },
         { "@type": "HowToStep", "position": "3", "name": "Publica y comparte", "url": "https://bodasfacil.com/#pricing", "text": "Desde 30€ de pago único. Genera un código QR para las invitaciones o comparte el enlace por WhatsApp. Tus invitados acceden al instante sin necesidad de app." }
       ]
     });
@@ -639,7 +641,7 @@ const Index = () => {
                 Todo lo que necesitas para<br className="hidden sm:block" /> el día perfecto
               </h2>
               <p className="text-muted-foreground font-light text-base sm:text-lg max-w-lg mx-auto">
-                12 funcionalidades diseñadas para que tu boda sea inolvidable
+                18 temas y todas las funcionalidades para que tu boda sea inolvidable
               </p>
             </div>
           </RevealSection>
@@ -754,7 +756,7 @@ const Index = () => {
           <div className="space-y-4 sm:space-y-6">
             {[
               { step: "1", title: "Regístrate gratis en 30 segundos", desc: "Sin tarjeta de crédito. Crea tu cuenta, explora las demos y empieza a personalizar." },
-              { step: "2", title: "Personaliza vuestra web de boda", desc: "Elige uno de los 12 temas, añade vuestros datos, sube fotos y configura el RSVP, la agenda y el menú." },
+              { step: "2", title: "Personaliza vuestra web de boda", desc: "Elige uno de los 18 temas, añade vuestros datos, sube fotos y configura el RSVP, la agenda y el menú." },
               { step: "3", title: "Publica y comparte con tus invitados", desc: "Desde 30€ de pago único. Genera un QR para las invitaciones o envía el enlace por WhatsApp. Tus invitados acceden al instante." },
             ].map((s, i) => (
               <RevealSection key={s.step} delay={i * 120}>
@@ -1062,7 +1064,7 @@ const Index = () => {
                 <ul className="space-y-2.5 sm:space-y-3 mb-6 sm:mb-8 flex-1">
                   {[
                     "Todo lo del plan Básico",
-                    "12 temas visuales disponibles",
+                    "18 temas visuales disponibles",
                     "Plan de mesas inteligente",
                     "Agenda del día completa",
                     "FAQ + Mapa interactivo",
@@ -1135,7 +1137,7 @@ const Index = () => {
               { q: "¿Cuánto tarda en estar lista mi web de boda?", a: <>Puedes tener tu página lista en 5 minutos. Si prefieres que te hagamos un borrador personalizado, lo tienes en menos de 24 horas. <Link to="/blog/pagina-web-boda-gratis" className="underline underline-offset-2 hover:text-foreground transition-colors">Ver guía →</Link></> },
               { q: "¿Y si no me convence?", a: "Tienes 30 días de garantía de devolución sin preguntas. Envíanos un email y te devolvemos el 100% del importe." },
               { q: "¿Puedo cambiar el diseño o la información después?", a: "Sí, cuantas veces quieras. Puedes cambiar el tema visual, subir nuevas fotos, actualizar los datos de la ceremonia y editar todo el contenido en cualquier momento." },
-              { q: "¿Qué diferencia hay entre el plan Básico y el Completo?", a: <>El Básico (30€) incluye página web, <Link to="/blog/rsvp-digital-boda-confirmacion-asistencia" className="underline underline-offset-2 hover:text-foreground transition-colors">RSVP online</Link>, playlist colaborativa, muro de fotos en vivo y código QR. El Completo (60€) añade 12 temas visuales, <Link to="/blog/plan-de-mesas-boda-consejos" className="underline underline-offset-2 hover:text-foreground transition-colors">plan de mesas</Link>, agenda, historia de amor con IA, gestor de presupuesto y <Link to="/blog/checklist-boda-completo" className="underline underline-offset-2 hover:text-foreground transition-colors">checklist de boda</Link>.</> },
+              { q: "¿Qué diferencia hay entre el plan Básico y el Completo?", a: <>El Básico (30€) incluye página web, <Link to="/blog/rsvp-digital-boda-confirmacion-asistencia" className="underline underline-offset-2 hover:text-foreground transition-colors">RSVP online</Link>, playlist colaborativa, muro de fotos en vivo y código QR. El Completo (60€) añade 18 temas visuales, <Link to="/blog/plan-de-mesas-boda-consejos" className="underline underline-offset-2 hover:text-foreground transition-colors">plan de mesas</Link>, agenda, historia de amor con IA, gestor de presupuesto y <Link to="/blog/checklist-boda-completo" className="underline underline-offset-2 hover:text-foreground transition-colors">checklist de boda</Link>.</> },
               { q: "¿La web de boda tiene publicidad?", a: "No. Tu web de boda es tuya. Sin anuncios, sin marca de agua de BodasFácil, sin nada que distraiga a tus invitados de lo que importa." },
             ] as { q: string; a: React.ReactNode }[]).map((faq, i) => (
               <RevealSection key={i} delay={i * 60}>

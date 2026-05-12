@@ -202,7 +202,7 @@ const Dashboard = () => {
                   <p className="font-heading text-2xl mt-1">60€ <span className="text-sm text-muted-foreground font-normal">pago único</span></p>
                 </div>
                 <ul className="space-y-1.5 mb-4">
-                  {["Todo lo del plan Básico", "12 temas visuales disponibles", "📊 Gestor de presupuesto (14 cat.)", "🎁 Control de regalos y agradecimientos", "✅ Checklist profesional (18 tareas)"].map(f => (
+                  {["Todo lo del plan Básico", "18 temas visuales disponibles", "📊 Gestor de presupuesto (14 cat.)", "🎁 Control de regalos y agradecimientos", "✅ Checklist profesional (18 tareas)"].map(f => (
                     <li key={f} className="flex items-center gap-1.5 text-xs text-muted-foreground">
                       <CheckCircle className="w-3.5 h-3.5 text-primary flex-shrink-0" /> {f}
                     </li>
