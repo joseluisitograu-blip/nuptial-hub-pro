@@ -4,6 +4,7 @@ import { useParams, useNavigate, Link, useSearchParams } from "react-router-dom"
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Save, ExternalLink, Plus, Trash2, Upload, Sparkles, Heart, MapPin, UtensilsCrossed, Hotel, Clock, Users, HelpCircle, Gift, Phone, Palette, ChevronRight } from "lucide-react";
+import SeatingMapEditor from "@/components/wedding/SeatingMapEditor";
 import { toast } from "sonner";
 import { usePurchase } from "@/hooks/usePurchase";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
@@ -238,6 +239,8 @@ const EditWedding = () => {
   const removeSeatingTable = (i: number) => setSeatingTables(seatingTables.filter((_, idx) => idx !== i));
   const updateSeatingTable = (i: number, key: string, val: any) => setSeatingTables(seatingTables.map((t, idx) => idx === i ? { ...t, [key]: val } : t));
   const updateSeatingGuests = (i: number, val: string) => setSeatingTables(seatingTables.map((t, idx) => idx === i ? { ...t, guests: val.split("\n") } : t));
+  const addGuestToTable = (i: number, name: string) => setSeatingTables(seatingTables.map((t, idx) => idx === i ? { ...t, guests: [...t.guests, name] } : t));
+  const removeGuestFromTable = (i: number, gi: number) => setSeatingTables(seatingTables.map((t, idx) => idx === i ? { ...t, guests: t.guests.filter((_, gidx) => gidx !== gi) } : t));
 
   const addFaqItem = () => setFaqItems([...faqItems, { question: "", answer: "", sort_order: faqItems.length }]);
   const removeFaqItem = (i: number) => setFaqItems(faqItems.filter((_, idx) => idx !== i));
@@ -492,37 +495,15 @@ const EditWedding = () => {
 
             {/* MESAS */}
             {activeTab === "mesas" && (
-              <>
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <h2 className="font-heading text-xl text-foreground">Plan de mesas</h2>
-                    <p className="text-xs text-muted-foreground mt-0.5">Los invitados solo verán las mesas un día antes de la boda</p>
-                  </div>
-                  <button onClick={addSeatingTable} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:opacity-90">
-                    <Plus className="w-3.5 h-3.5" /> Añadir mesa
-                  </button>
-                </div>
-                {seatingTables.length === 0 && (
-                  <div className="text-center py-8 border-2 border-dashed border-border rounded-xl">
-                    <Users className="w-10 h-10 text-muted-foreground mx-auto mb-2 opacity-40" />
-                    <p className="text-muted-foreground text-sm">Sin mesas todavía. Añade tus mesas y asigna invitados.</p>
-                  </div>
-                )}
-                {seatingTables.map((t, i) => (
-                  <div key={i} className="bg-card border border-border rounded-xl p-4 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-muted-foreground">Mesa {i + 1} · {t.guests.filter(g => g.trim()).length} invitados</span>
-                      <button onClick={() => removeSeatingTable(i)} className="text-muted-foreground hover:text-red-500 transition-colors"><Trash2 className="w-4 h-4" /></button>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <input value={t.table_name} onChange={(e) => updateSeatingTable(i, "table_name", e.target.value)} className={inputClass} placeholder="Nombre (Mesa 1, Nupcial...)" />
-                      <input type="number" value={t.capacity} onChange={(e) => updateSeatingTable(i, "capacity", parseInt(e.target.value) || 8)} className={inputClass} placeholder="Capacidad" />
-                    </div>
-                    <textarea value={t.guests.join("\n")} onChange={(e) => updateSeatingGuests(i, e.target.value)}
-                      className={`${inputClass} resize-none`} rows={4} placeholder="Un invitado por línea..." />
-                  </div>
-                ))}
-              </>
+              <SeatingMapEditor
+                tables={seatingTables}
+                onAdd={addSeatingTable}
+                onRemove={removeSeatingTable}
+                onUpdateName={(i, name) => updateSeatingTable(i, "table_name", name)}
+                onUpdateCapacity={(i, cap) => updateSeatingTable(i, "capacity", cap)}
+                onAddGuest={addGuestToTable}
+                onRemoveGuest={removeGuestFromTable}
+              />
             )}
 
             {/* ALOJAMIENTO */}
