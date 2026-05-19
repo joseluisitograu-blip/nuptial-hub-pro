@@ -278,7 +278,7 @@ const EditWedding = () => {
             title={showPreview ? "Ocultar preview" : "Mostrar preview"}>
             {showPreview ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
           </button>
-          <Link to={`/w/${form.slug}`} target="_blank"
+          <Link to={`/w/${form.slug}`}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-secondary-foreground text-xs hover:opacity-90">
             <ExternalLink className="w-3.5 h-3.5" /> Ver
           </Link>
