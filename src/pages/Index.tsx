@@ -24,6 +24,7 @@ const demos = [
   { slug: "demo-valencia", theme: "Valenciano", couple: "Lucia & Marcos", color: "hsl(33, 70%, 45%)", gradient: "from-orange-700/20 to-amber-500/10" },
   { slug: "demo-nocturnal", theme: "Nocturno", couple: "Valentina & Hugo", color: "hsl(45, 60%, 58%)", gradient: "from-slate-900/30 to-slate-700/15" },
   { slug: "demo-coastal", theme: "Costero", couple: "Marina & Nico", color: "hsl(210, 52%, 36%)", gradient: "from-blue-700/20 to-sky-500/10" },
+  { slug: "demo-elegante-cayetano", theme: "Aristocrático", couple: "Catalina & Alfonso", color: "hsl(45, 72%, 58%)", gradient: "from-yellow-900/20 to-amber-700/10" },
 ];
 
 const testimonials = [
