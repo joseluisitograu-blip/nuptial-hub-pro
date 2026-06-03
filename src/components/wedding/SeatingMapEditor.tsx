@@ -191,12 +191,12 @@ export default function SeatingMapEditor({ tables: propTables, onAdd, onRemove, 
         </div>
       </div>
 
-      <div className="grid md:grid-cols-[1fr_200px] gap-4">
+      <div className="grid lg:grid-cols-[1fr_200px] gap-4">
         {/* Plano */}
         <div
           ref={floorRef}
           className="relative bg-secondary/40 rounded-xl border border-border overflow-hidden"
-          style={{ height: 440 }}
+          style={{ height: 600 }}
           onClick={e => { if (e.target === e.currentTarget) setSelectedTable(null); }}
           onDragOver={e => e.preventDefault()}
         >
