@@ -84,6 +84,7 @@ const EditWedding = () => {
   const [uploadingHero, setUploadingHero] = useState(false);
   const [activeTab, setActiveTab] = useState("diseno");
   const [showPreview, setShowPreview] = useState(true);
+  const [userToggledPreview, setUserToggledPreview] = useState(false);
   const [stories, setStories] = useState<StoryItem[]>([]);
   const [accommodations, setAccommodations] = useState<AccommodationItem[]>([]);
   const [agendaItems, setAgendaItems] = useState<AgendaItem[]>([]);
@@ -102,6 +103,12 @@ const EditWedding = () => {
     ([form.partner1_name, form.partner2_name, form.wedding_date, form.ceremony_venue,
       form.ceremony_address, form.reception_venue, form.hero_image_url].filter(Boolean).length / 7) * 100
   );
+
+  // Ocultar preview automáticamente en tabs que necesitan espacio
+  useEffect(() => {
+    if (userToggledPreview) return;
+    setShowPreview(activeTab !== "mesas" && activeTab !== "agenda");
+  }, [activeTab, userToggledPreview]);
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/auth");
@@ -273,7 +280,8 @@ const EditWedding = () => {
               <Sparkles className="w-3 h-3" /> Publicar
             </button>
           )}
-          <button onClick={() => setShowPreview(!showPreview)}
+          <button
+            onClick={() => { setUserToggledPreview(true); setShowPreview(p => !p); }}
             className="hidden md:flex p-2 rounded-lg hover:bg-secondary transition-colors text-muted-foreground"
             title={showPreview ? "Ocultar preview" : "Mostrar preview"}>
             {showPreview ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -622,10 +630,8 @@ const EditWedding = () => {
                 <ExternalLink className="w-3 h-3" /> Abrir
               </Link>
             </div>
-
             <div className="flex-1 overflow-auto p-6 flex items-start justify-center">
               <div className="w-72 rounded-2xl overflow-hidden shadow-2xl border border-border">
-                {/* Hero */}
                 <div className="relative h-56 flex items-center justify-center overflow-hidden"
                   style={{ backgroundColor: currentTheme.bg }}>
                   {form.hero_image_url && (
@@ -634,13 +640,9 @@ const EditWedding = () => {
                   <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, ${currentTheme.bg}55, ${currentTheme.bg}dd)` }} />
                   <div className="relative text-center px-6">
                     <p className="text-white/50 text-[9px] tracking-[0.3em] uppercase mb-2">¡Nos casamos!</p>
-                    <h2 className="text-white text-2xl font-serif leading-tight">
-                      {form.partner1_name || "Nombre"}
-                    </h2>
+                    <h2 className="text-white text-2xl font-serif leading-tight">{form.partner1_name || "Nombre"}</h2>
                     <p className="text-white/40 text-base my-1">&</p>
-                    <h2 className="text-white text-2xl font-serif leading-tight">
-                      {form.partner2_name || "Nombre"}
-                    </h2>
+                    <h2 className="text-white text-2xl font-serif leading-tight">{form.partner2_name || "Nombre"}</h2>
                     {form.wedding_date && (
                       <p className="text-white/60 text-xs mt-2 font-light">
                         {new Date(form.wedding_date + "T12:00:00").toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })}
@@ -648,20 +650,13 @@ const EditWedding = () => {
                     )}
                   </div>
                 </div>
-
-                {/* Contenido */}
                 <div className="p-4 space-y-3" style={{ backgroundColor: currentTheme.accent }}>
-                  {/* Nav */}
                   <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
                     {["Inicio", "Lugar", "RSVP", "Menú", "Playlist"].map((s) => (
                       <span key={s} className="px-2 py-1 rounded-full text-[9px] whitespace-nowrap font-medium flex-shrink-0"
-                        style={{ backgroundColor: currentTheme.bg, color: currentTheme.accent }}>
-                        {s}
-                      </span>
+                        style={{ backgroundColor: currentTheme.bg, color: currentTheme.accent }}>{s}</span>
                     ))}
                   </div>
-
-                  {/* Lugar */}
                   {(form.ceremony_venue || form.ceremony_address) && (
                     <div className="rounded-lg p-2.5 border" style={{ borderColor: `${currentTheme.bg}33`, backgroundColor: `${currentTheme.bg}11` }}>
                       {form.ceremony_venue && <p className="text-[11px] font-medium mb-0.5" style={{ color: currentTheme.bg }}>{form.ceremony_venue}</p>}
@@ -669,16 +664,12 @@ const EditWedding = () => {
                       {form.ceremony_time && <p className="text-[10px] opacity-60 mt-0.5" style={{ color: currentTheme.bg }}>🕐 {form.ceremony_time}</p>}
                     </div>
                   )}
-
-                  {/* Dress code */}
                   {form.dress_code && (
                     <div className="text-center py-1">
                       <p className="text-[9px] opacity-40 uppercase tracking-wider mb-0.5" style={{ color: currentTheme.bg }}>Vestimenta</p>
                       <p className="text-[11px] font-medium" style={{ color: currentTheme.bg }}>{form.dress_code}</p>
                     </div>
                   )}
-
-                  {/* Menú */}
                   {form.menu_starters && (
                     <div className="rounded-lg p-2.5 border" style={{ borderColor: `${currentTheme.bg}33`, backgroundColor: `${currentTheme.bg}11` }}>
                       <p className="text-[9px] uppercase tracking-wider opacity-40 mb-1" style={{ color: currentTheme.bg }}>Entrantes</p>
@@ -687,8 +678,6 @@ const EditWedding = () => {
                       ))}
                     </div>
                   )}
-
-                  {/* Selector rápido de tema */}
                   <div className="flex items-center justify-between pt-1">
                     <span className="text-[9px] opacity-30" style={{ color: currentTheme.bg }}>Tema: {currentTheme.label}</span>
                     <div className="flex gap-1">
@@ -702,10 +691,7 @@ const EditWedding = () => {
                   </div>
                 </div>
               </div>
-
-              <p className="text-center text-xs text-muted-foreground mt-4 absolute bottom-4">
-                Vista previa en tiempo real
-              </p>
+              <p className="text-center text-xs text-muted-foreground mt-4 absolute bottom-4">Vista previa en tiempo real</p>
             </div>
           </div>
         )}
